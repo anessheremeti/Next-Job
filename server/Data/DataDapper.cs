@@ -55,5 +55,24 @@ namespace HelloWorld.Data
             Query => kthen te dhena ne shume rreshta te tipit IENumberable
             Execute => perdoret per te shtuar,fshir,krijuar,edituar te dhena        
         */
+
+        public async Task<bool> ExecuteSqlAsync(string sql, object parameters)
+        {
+            try
+            {
+                using (var dbConnection = new SqlConnection(_connectionString))
+                {
+                    await dbConnection.OpenAsync(); 
+                    var result = await dbConnection.ExecuteAsync(sql, parameters);
+                    return result > 0;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
     }
 }

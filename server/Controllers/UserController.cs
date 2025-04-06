@@ -63,8 +63,36 @@ namespace HelloWorld.Controllers
         }
 
         // POST api/user
+        // [HttpPost]
+        // public IActionResult CreateUser([FromBody] User user)
+        // {
+        //     try
+        //     {
+        //         if (user == null || !user.IsValid())
+        //         {
+        //             return BadRequest("Invalid user data.");
+        //         }
+
+        //         var sql = $"INSERT INTO Users (UserType, FullName, CompanyName, Email, PasswordHash, CreatedAt) " +
+        //                   $"VALUES ('{user.UserType}', '{user.FullName}', '{user.CompanyName}', '{user.Email}', '{user.PasswordHash}', '{user.CreatedAt}')";
+
+        //         bool isCreated = _dataDapper.ExecuteSql(sql);
+
+        //         if (!isCreated)
+        //         {
+        //             return StatusCode(500, "Failed to create user.");
+        //         }
+
+        //         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return StatusCode(500, $"Internal server error: {ex.Message}");
+        //     }
+        // }
+        // POST api/user
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             try
             {
@@ -76,7 +104,7 @@ namespace HelloWorld.Controllers
                 var sql = $"INSERT INTO Users (UserType, FullName, CompanyName, Email, PasswordHash, CreatedAt) " +
                           $"VALUES ('{user.UserType}', '{user.FullName}', '{user.CompanyName}', '{user.Email}', '{user.PasswordHash}', '{user.CreatedAt}')";
 
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                bool isCreated = await _dataDapper.ExecuteSqlAsync(sql, new { user.UserType, user.FullName, user.CompanyName, user.Email, user.PasswordHash, user.CreatedAt });
 
                 if (!isCreated)
                 {
@@ -90,5 +118,9 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+
+
     }
 }
