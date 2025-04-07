@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class NotificationController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly INotificationService _notificationService;
 
-        public NotificationController(DataDapper dataDapper)
+        public NotificationController(INotificationService notificationService)
         {
-            _dataDapper = dataDapper;
+            _notificationService = notificationService;
         }
 
         // GET api/notification
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Notification";
-
-                var notifications = await Task.Run(() => _dataDapper.LoadData<Notification>(sql));
+                var notifications = await _notificationService.GetNotificationsAsync();
 
                 if (notifications == null || !notifications.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Notification WHERE Id = {id}";
-
-                var notification = await Task.Run(() => _dataDapper.LoadDataSingle<Notification>(sql));
+                var notification = await _notificationService.GetNotificationByIdAsync(id);
 
                 if (notification == null)
                 {
@@ -69,9 +64,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Notification WHERE UserId = {userId}";
-
-                var notifications = await Task.Run(() => _dataDapper.LoadData<Notification>(sql));
+                var notifications = await _notificationService.GetNotificationsByUserAsync(userId);
 
                 if (notifications == null || !notifications.Any())
                 {
@@ -88,7 +81,7 @@ namespace HelloWorld.Controllers
 
         // POST api/notification
         [HttpPost]
-        public IActionResult CreateNotification([FromBody] Notification notification)
+        public async Task<IActionResult> CreateNotification([FromBody] Notification notification)
         {
             try
             {
@@ -104,10 +97,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO Notification (UserId, Message, IsRead, CreatedAt) " +
-                          $"VALUES ({notification.UserId}, '{notification.Message}', {notification.IsRead}, '{notification.CreatedAt}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _notificationService.CreateNotificationAsync(notification);
 
                 if (!isCreated)
                 {
@@ -124,20 +114,18 @@ namespace HelloWorld.Controllers
 
         // PUT api/notification/{id}
         [HttpPut("{id}")]
-        public IActionResult MarkAsRead(int id)
+        public async Task<IActionResult> MarkAsRead(int id)
         {
             try
             {
-                var sql = $"UPDATE Notification SET IsRead = 1 WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _notificationService.MarkAsReadAsync(id);
 
                 if (!isUpdated)
                 {
                     return NotFound($"Notification with ID {id} not found.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -147,20 +135,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/notification/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteNotification(int id)
+        public async Task<IActionResult> DeleteNotification(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Notification WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _notificationService.DeleteNotificationAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Notification with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -169,3 +155,4 @@ namespace HelloWorld.Controllers
         }
     }
 }
+

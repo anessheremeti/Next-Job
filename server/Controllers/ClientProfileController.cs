@@ -1,8 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+using HelloWorld.Services;
 using HelloWorld.Data;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +12,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class ClientProfileController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IClientService _clientService;
 
-        public ClientProfileController(DataDapper dataDapper)
+        public ClientProfileController(IClientService clientService)
         {
-            _dataDapper = dataDapper;
+            _clientService = clientService;
         }
 
         // GET api/clientprofile
@@ -23,9 +25,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM ClientProfiles";
-
-                var clientProfiles = await Task.Run(() => _dataDapper.LoadData<ClientProfile>(sql));
+                var clientProfiles = await _clientService.GetClientProfilesAsync();
 
                 if (clientProfiles == null || !clientProfiles.Any())
                 {
@@ -46,9 +46,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM ClientProfiles WHERE Id = {id}";
-
-                var clientProfile = await Task.Run(() => _dataDapper.LoadDataSingle<ClientProfile>(sql));
+                var clientProfile = await _clientService.GetClientProfileByIdAsync(id);
 
                 if (clientProfile == null)
                 {
@@ -65,7 +63,7 @@ namespace HelloWorld.Controllers
 
         // POST api/clientprofile
         [HttpPost]
-        public IActionResult CreateClientProfile([FromBody] ClientProfile clientProfile)
+        public async Task<IActionResult> CreateClientProfile([FromBody] ClientProfile clientProfile)
         {
             try
             {
@@ -74,10 +72,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid client profile data.");
                 }
 
-                var sql = $"INSERT INTO ClientProfiles (UserId, Image, Skills, JobSuccess, TotalJobs, TotalHours, InQueueService, Location, LastDelivery, MemberSince, Education, Gender, EnglishLevel) " +
-                          $"VALUES ({clientProfile.UserId}, '{clientProfile.Image}', '{clientProfile.Skills}', {clientProfile.JobSuccess}, {clientProfile.TotalJobs}, {clientProfile.TotalHours}, {clientProfile.InQueueService}, '{clientProfile.Location}', '{clientProfile.LastDelivery}', '{clientProfile.MemberSince}', '{clientProfile.Education}', '{clientProfile.Gender}', '{clientProfile.EnglishLevel}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _clientService.CreateClientProfileAsync(clientProfile);
 
                 if (!isCreated)
                 {
@@ -94,7 +89,7 @@ namespace HelloWorld.Controllers
 
         // PUT api/clientprofile/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateClientProfile(int id, [FromBody] ClientProfile clientProfile)
+        public async Task<IActionResult> UpdateClientProfile(int id, [FromBody] ClientProfile clientProfile)
         {
             try
             {
@@ -103,20 +98,14 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid client profile data.");
                 }
 
-                var sql = $"UPDATE ClientProfiles SET UserId = {clientProfile.UserId}, Image = '{clientProfile.Image}', Skills = '{clientProfile.Skills}', " +
-                          $"JobSuccess = {clientProfile.JobSuccess}, TotalJobs = {clientProfile.TotalJobs}, TotalHours = {clientProfile.TotalHours}, " +
-                          $"InQueueService = {clientProfile.InQueueService}, Location = '{clientProfile.Location}', LastDelivery = '{clientProfile.LastDelivery}', " +
-                          $"MemberSince = '{clientProfile.MemberSince}', Education = '{clientProfile.Education}', Gender = '{clientProfile.Gender}', " +
-                          $"EnglishLevel = '{clientProfile.EnglishLevel}' WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _clientService.UpdateClientProfileAsync(id, clientProfile);
 
                 if (!isUpdated)
                 {
                     return StatusCode(500, "Failed to update client profile.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -126,20 +115,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/clientprofile/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteClientProfile(int id)
+        public async Task<IActionResult> DeleteClientProfile(int id)
         {
             try
             {
-                var sql = $"DELETE FROM ClientProfiles WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _clientService.DeleteClientProfileAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Client profile with ID {id} not found.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -148,3 +135,4 @@ namespace HelloWorld.Controllers
         }
     }
 }
+

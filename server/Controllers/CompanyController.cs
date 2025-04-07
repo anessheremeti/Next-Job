@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(DataDapper dataDapper)
+        public CompanyController(ICompanyService companyService)
         {
-            _dataDapper = dataDapper;
+            _companyService = companyService;
         }
 
         // GET api/company
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Companies";
-
-                var companies = await Task.Run(() => _dataDapper.LoadData<Company>(sql));
+                var companies = await _companyService.GetCompaniesAsync();
 
                 if (companies == null || !companies.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Companies WHERE Id = {id}";
-
-                var company = await Task.Run(() => _dataDapper.LoadDataSingle<Company>(sql));
+                var company = await _companyService.GetCompanyByIdAsync(id);
 
                 if (company == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/company
         [HttpPost]
-        public IActionResult CreateCompany([FromBody] Company company)
+        public async Task<IActionResult> CreateCompany([FromBody] Company company)
         {
             try
             {
@@ -74,16 +69,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Company data is required.");
                 }
 
-                string validationMessage;
-                if (!company.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
-
-                var sql = $"INSERT INTO Companies (OwnerId, Name, Description, Website, CreatedAt) " +
-                          $"VALUES ({company.OwnerId}, '{company.Name}', '{company.Description}', '{company.Website}', '{company.CreatedAt}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _companyService.CreateCompanyAsync(company);
 
                 if (!isCreated)
                 {
@@ -100,7 +86,7 @@ namespace HelloWorld.Controllers
 
         // PUT api/company/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateCompany(int id, [FromBody] Company company)
+        public async Task<IActionResult> UpdateCompany(int id, [FromBody] Company company)
         {
             try
             {
@@ -109,24 +95,14 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid company data.");
                 }
 
-                string validationMessage;
-                if (!company.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
-
-                var sql = $"UPDATE Companies SET OwnerId = {company.OwnerId}, Name = '{company.Name}', " +
-                          $"Description = '{company.Description}', Website = '{company.Website}', " +
-                          $"CreatedAt = '{company.CreatedAt}' WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _companyService.UpdateCompanyAsync(id, company);
 
                 if (!isUpdated)
                 {
                     return StatusCode(500, "Failed to update company.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -136,20 +112,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/company/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteCompany(int id)
+        public async Task<IActionResult> DeleteCompany(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Companies WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _companyService.DeleteCompanyAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Company with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {

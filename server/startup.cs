@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using HelloWorld.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HelloWorld.Services;
 
 public class Startup
 {
@@ -26,6 +27,18 @@ public class Startup
         });
 
         services.AddScoped<DataDapper>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IApplicationService, ApplicationService>();
+        services.AddScoped<IClientService, ClientService>();
+        services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IContractService, ContractService>();
+        services.AddScoped<IFreelancerProfileService, FreelancerProfileService>();
+        services.AddScoped<IHistoryService, HistoryService>();
+        services.AddScoped<IJobInfoService, JobInfoService>();
+        services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<IReviewService, ReviewService>();
 
         var jwtKey = Configuration["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))

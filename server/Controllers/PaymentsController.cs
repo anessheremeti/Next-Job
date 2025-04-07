@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IPaymentService _paymentService;
 
-        public PaymentController(DataDapper dataDapper)
+        public PaymentController(IPaymentService paymentService)
         {
-            _dataDapper = dataDapper;
+            _paymentService = paymentService;
         }
 
         // GET api/payment
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Payment";
-
-                var payments = await Task.Run(() => _dataDapper.LoadData<Payment>(sql));
+                var payments = await _paymentService.GetPaymentsAsync();
 
                 if (payments == null || !payments.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Payment WHERE Id = {id}";
-
-                var payment = await Task.Run(() => _dataDapper.LoadDataSingle<Payment>(sql));
+                var payment = await _paymentService.GetPaymentByIdAsync(id);
 
                 if (payment == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/payment
         [HttpPost]
-        public IActionResult CreatePayment([FromBody] Payment payment)
+        public async Task<IActionResult> CreatePayment([FromBody] Payment payment)
         {
             try
             {
@@ -81,10 +76,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO Payment (ContractId, Amount, PaymentDate, Status) " +
-                          $"VALUES ({payment.ContractId}, {payment.Amount}, '{payment.PaymentDate}', '{payment.Status}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _paymentService.CreatePaymentAsync(payment);
 
                 if (!isCreated)
                 {
@@ -101,26 +93,18 @@ namespace HelloWorld.Controllers
 
         // PUT api/payment/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdatePaymentStatus(int id, [FromBody] string status)
+        public async Task<IActionResult> UpdatePaymentStatus(int id, [FromBody] string status)
         {
             try
             {
-                var validStatuses = new[] { "Pending", "Completed", "Failed" };
-                if (!validStatuses.Contains(status))
-                {
-                    return BadRequest("Invalid status.");
-                }
-
-                var sql = $"UPDATE Payment SET Status = '{status}' WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _paymentService.UpdatePaymentStatusAsync(id, status);
 
                 if (!isUpdated)
                 {
                     return NotFound($"Payment with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -130,20 +114,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/payment/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeletePayment(int id)
+        public async Task<IActionResult> DeletePayment(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Payment WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _paymentService.DeletePaymentAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Payment with ID {id} not found.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {

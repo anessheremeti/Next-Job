@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace HelloWorld.Controllers
 {
@@ -9,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IUserService _userService;
 
-        public UserController(DataDapper dataDapper)
+        public UserController(IUserService userService)
         {
-            _dataDapper = dataDapper;
+            _userService = userService;
         }
 
         // GET api/user
@@ -22,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Users";
-
-                var users = await Task.Run(() => _dataDapper.LoadData<User>(sql));
+                var users = await _userService.GetUsersAsync();
 
                 if (users == null || !users.Any())
                 {
@@ -45,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Users WHERE Id = {id}";
-
-                var user = await Task.Run(() => _dataDapper.LoadDataSingle<User>(sql));
+                var user = await _userService.GetUserByIdAsync(id);
 
                 if (user == null)
                 {
@@ -61,6 +57,9 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // POST api/user
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             try
@@ -70,21 +69,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid user data.");
                 }
 
-                var sql = @"INSERT INTO Users (user_type, full_name, company_name, email, password_hash, created_at) 
-                    VALUES (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt); 
-                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
-
-                var parameters = new
-                {
-                    UserType = user.UserType,
-                    FullName = user.FullName,
-                    CompanyName = user.CompanyName,
-                    Email = user.Email,
-                    PasswordHash = user.PasswordHash,
-                    CreatedAt = user.CreatedAt
-                };
-
-                bool isCreated = await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var isCreated = await _userService.CreateUserAsync(user);
 
                 if (!isCreated)
                 {
