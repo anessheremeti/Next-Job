@@ -73,3 +73,5 @@ C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\refint\server.dl
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\server.pdb
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\server.genruntimeconfig.cache
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\ref\server.dll
+C:\Users\engje\OneDrive\Bureau\next-job\server\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\engje\OneDrive\Bureau\next-job\server\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

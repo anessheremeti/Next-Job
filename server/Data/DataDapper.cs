@@ -62,7 +62,7 @@ namespace HelloWorld.Data
             {
                 using (var dbConnection = new SqlConnection(_connectionString))
                 {
-                    await dbConnection.OpenAsync(); 
+                    await dbConnection.OpenAsync();
                     var result = await dbConnection.ExecuteAsync(sql, parameters);
                     return result > 0;
                 }
@@ -72,6 +72,41 @@ namespace HelloWorld.Data
                 return false;
             }
         }
+        public bool ExecuteSqlOpen(string sql, object parameters)
+        {
+            try
+            {
+                using (IDbConnection dbConnection = new SqlConnection(_connectionString))
+                {
+                    dbConnection.Open();
+                    var result = dbConnection.Execute(sql, parameters);
+                    return result > 0;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        public T? LoadDataSingle<T>(string sql, object? parameters = null)
+        {
+            try
+            {
+                using (IDbConnection dbConnection = new SqlConnection(_connectionString))
+                {
+                    dbConnection.Open();
+                    return dbConnection.QuerySingleOrDefault<T>(sql, parameters);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Gabim në LoadDataSingle: {ex.Message}");
+                return default(T);
+            }
+        }
+        
 
 
     }
