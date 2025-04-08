@@ -107,9 +107,7 @@ public class AuthController : ControllerBase
             return StatusCode(500, $"Database connection failed: {ex.Message}");
         }
     }
-
-
-
+    
     private string GenerateJwtToken(User user)
     {
         var secretKey = _configuration["Jwt:Key"];
