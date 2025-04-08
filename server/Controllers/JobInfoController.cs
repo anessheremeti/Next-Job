@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class JobInfoController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IJobInfoService _jobInfoService;
 
-        public JobInfoController(DataDapper dataDapper)
+        public JobInfoController(IJobInfoService jobInfoService)
         {
-            _dataDapper = dataDapper;
+            _jobInfoService = jobInfoService;
         }
 
         // GET api/jobinfo
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM JobInfo";
-
-                var jobs = await Task.Run(() => _dataDapper.LoadData<JobInfo>(sql));
+                var jobs = await _jobInfoService.GetJobsAsync();
 
                 if (jobs == null || !jobs.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM JobInfo WHERE Id = {id}";
-
-                var job = await Task.Run(() => _dataDapper.LoadDataSingle<JobInfo>(sql));
+                var job = await _jobInfoService.GetJobByIdAsync(id);
 
                 if (job == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/jobinfo
         [HttpPost]
-        public IActionResult CreateJob([FromBody] JobInfo job)
+        public async Task<IActionResult> CreateJob([FromBody] JobInfo job)
         {
             try
             {
@@ -81,12 +76,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO JobInfo (JobTitle, Vacancies, JobTypes, JobTag, JobCategory, BudgetType, Budget, " +
-                          $"ExperienceLevel, Deadline, JobDescription) " +
-                          $"VALUES ('{job.JobTitle}', {job.Vacancies}, '{job.JobTypes}', '{job.JobTag}', '{job.JobCategory}', " +
-                          $"'{job.BudgetType}', {job.Budget}, '{job.ExperienceLevel}', '{job.Deadline}', '{job.JobDescription}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _jobInfoService.CreateJobAsync(job);
 
                 if (!isCreated)
                 {
@@ -103,20 +93,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/jobinfo/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteJob(int id)
+        public async Task<IActionResult> DeleteJob(int id)
         {
             try
             {
-                var sql = $"DELETE FROM JobInfo WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _jobInfoService.DeleteJobAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Job with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {

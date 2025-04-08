@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
+using HelloWorld.Services;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace HelloWorld.Controllers
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class ApplicationController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IApplicationService _applicationService;
 
-        public ApplicationController(DataDapper dataDapper)
+        public ApplicationController(IApplicationService applicationService)
         {
-            _dataDapper = dataDapper;
+            _applicationService = applicationService;
         }
 
         // GET api/application
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Applications";
-
-                var applications = await Task.Run(() => _dataDapper.LoadData<Application>(sql));
+                var applications = await _applicationService.GetApplicationsAsync();
 
                 if (applications == null || !applications.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Applications WHERE Id = {id}";
-
-                var application = await Task.Run(() => _dataDapper.LoadDataSingle<Application>(sql));
+                var application = await _applicationService.GetApplicationByIdAsync(id);
 
                 if (application == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/application
         [HttpPost]
-        public IActionResult CreateApplication([FromBody] Application application)
+        public async Task<IActionResult> CreateApplication([FromBody] Application application)
         {
             try
             {
@@ -74,10 +69,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid application data.");
                 }
 
-                var sql = $"INSERT INTO Applications (JobId, FreelancerId, CoverLetter, DateApplied) " +
-                          $"VALUES ({application.JobId}, {application.FreelancerId}, '{application.CoverLetter}', '{application.DateApplied}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                bool isCreated = await _applicationService.CreateApplicationAsync(application);
 
                 if (!isCreated)
                 {
@@ -94,7 +86,7 @@ namespace HelloWorld.Controllers
 
         // PUT api/application/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateApplication(int id, [FromBody] Application application)
+        public async Task<IActionResult> UpdateApplication(int id, [FromBody] Application application)
         {
             try
             {
@@ -103,18 +95,14 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid application data.");
                 }
 
-                var sql = $"UPDATE Applications SET JobId = {application.JobId}, FreelancerId = {application.FreelancerId}, " +
-                          $"CoverLetter = '{application.CoverLetter}', DateApplied = '{application.DateApplied}' " +
-                          $"WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                bool isUpdated = await _applicationService.UpdateApplicationAsync(id, application);
 
                 if (!isUpdated)
                 {
                     return StatusCode(500, "Failed to update application.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -124,20 +112,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/application/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteApplication(int id)
+        public async Task<IActionResult> DeleteApplication(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Applications WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                bool isDeleted = await _applicationService.DeleteApplicationAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Application with ID {id} not found.");
                 }
 
-                return NoContent();  // Successfully deleted.
+                return NoContent();
             }
             catch (Exception ex)
             {

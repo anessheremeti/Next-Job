@@ -106,7 +106,50 @@ namespace HelloWorld.Data
                 return default(T);
             }
         }
-        
+
+
+        public async Task<IEnumerable<T>> LoadDataAsync<T>(string sql, object? parameters = null)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                return await connection.QueryAsync<T>(sql, parameters ?? new { });
+            }
+        }
+        public async Task<T?> LoadDataSingleAsync<T>(string sql, object? parameters = null)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Gabim në LoadDataSingle: {ex.Message}");
+                return default(T);
+            }
+        }
+        public async Task<T?> LoadDataSingleFromDatabase<T>(string sql, object parameters)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Gabim në LoadDataSingle: {ex.Message}");
+                return default(T);
+            }
+        }
+
 
 
     }

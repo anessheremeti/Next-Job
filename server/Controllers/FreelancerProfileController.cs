@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class FreelancerProfileController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IFreelancerProfileService _freelancerProfileService;
 
-        public FreelancerProfileController(DataDapper dataDapper)
+        public FreelancerProfileController(IFreelancerProfileService freelancerProfileService)
         {
-            _dataDapper = dataDapper;
+            _freelancerProfileService = freelancerProfileService;
         }
 
         // GET api/freelancerprofile
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM FreelancerProfiles";
-
-                var profiles = await Task.Run(() => _dataDapper.LoadData<FreelancerProfile>(sql));
+                var profiles = await _freelancerProfileService.GetFreelancerProfilesAsync();
 
                 if (profiles == null || !profiles.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM FreelancerProfiles WHERE Id = {id}";
-
-                var profile = await Task.Run(() => _dataDapper.LoadDataSingle<FreelancerProfile>(sql));
+                var profile = await _freelancerProfileService.GetFreelancerProfileByIdAsync(id);
 
                 if (profile == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/freelancerprofile
         [HttpPost]
-        public IActionResult CreateFreelancerProfile([FromBody] FreelancerProfile profile)
+        public async Task<IActionResult> CreateFreelancerProfile([FromBody] FreelancerProfile profile)
         {
             try
             {
@@ -74,12 +69,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Profile data is required.");
                 }
 
-                profile.Validate();
-
-                var sql = $"INSERT INTO FreelancerProfiles (UserId, Skills, HourlyRate, PortfolioLink, Location, LastDelivery, MemberSince) " +
-                          $"VALUES ({profile.UserId}, '{profile.Skills}', {profile.HourlyRate}, '{profile.PortfolioLink}', '{profile.Location}', '{profile.LastDelivery}', '{profile.MemberSince}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _freelancerProfileService.CreateFreelancerProfileAsync(profile);
 
                 if (!isCreated)
                 {
@@ -96,7 +86,7 @@ namespace HelloWorld.Controllers
 
         // PUT api/freelancerprofile/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateFreelancerProfile(int id, [FromBody] FreelancerProfile profile)
+        public async Task<IActionResult> UpdateFreelancerProfile(int id, [FromBody] FreelancerProfile profile)
         {
             try
             {
@@ -105,20 +95,14 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid freelancer profile data.");
                 }
 
-                profile.Validate();
-
-                var sql = $"UPDATE FreelancerProfiles SET UserId = {profile.UserId}, Skills = '{profile.Skills}', HourlyRate = {profile.HourlyRate}, " +
-                          $"PortfolioLink = '{profile.PortfolioLink}', Location = '{profile.Location}', LastDelivery = '{profile.LastDelivery}', " +
-                          $"MemberSince = '{profile.MemberSince}' WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _freelancerProfileService.UpdateFreelancerProfileAsync(id, profile);
 
                 if (!isUpdated)
                 {
                     return StatusCode(500, "Failed to update freelancer profile.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -128,20 +112,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/freelancerprofile/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteFreelancerProfile(int id)
+        public async Task<IActionResult> DeleteFreelancerProfile(int id)
         {
             try
             {
-                var sql = $"DELETE FROM FreelancerProfiles WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _freelancerProfileService.DeleteFreelancerProfileAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Freelancer profile with ID {id} not found.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {

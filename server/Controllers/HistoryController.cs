@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class HistoryController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IHistoryService _historyService;
 
-        public HistoryController(DataDapper dataDapper)
+        public HistoryController(IHistoryService historyService)
         {
-            _dataDapper = dataDapper;
+            _historyService = historyService;
         }
 
         // GET api/history
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM History";
-
-                var histories = await Task.Run(() => _dataDapper.LoadData<History>(sql));
+                var histories = await _historyService.GetHistoryAsync();
 
                 if (histories == null || !histories.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM History WHERE Id = {id}";
-
-                var history = await Task.Run(() => _dataDapper.LoadDataSingle<History>(sql));
+                var history = await _historyService.GetHistoryByIdAsync(id);
 
                 if (history == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/history
         [HttpPost]
-        public IActionResult CreateHistory([FromBody] History history)
+        public async Task<IActionResult> CreateHistory([FromBody] History history)
         {
             try
             {
@@ -81,10 +76,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO History (UserId, Action, Timestamp) " +
-                          $"VALUES ({history.UserId}, '{history.Action}', '{history.Timestamp}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _historyService.CreateHistoryAsync(history);
 
                 if (!isCreated)
                 {
@@ -101,20 +93,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/history/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteHistory(int id)
+        public async Task<IActionResult> DeleteHistory(int id)
         {
             try
             {
-                var sql = $"DELETE FROM History WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _historyService.DeleteHistoryAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"History record with ID {id} not found.");
                 }
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {

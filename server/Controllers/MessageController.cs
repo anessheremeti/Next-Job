@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IMessageService _messageService;
 
-        public MessageController(DataDapper dataDapper)
+        public MessageController(IMessageService messageService)
         {
-            _dataDapper = dataDapper;
+            _messageService = messageService;
         }
 
         // GET api/message
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Message";
-
-                var messages = await Task.Run(() => _dataDapper.LoadData<Message>(sql));
+                var messages = await _messageService.GetMessagesAsync();
 
                 if (messages == null || !messages.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Message WHERE Id = {id}";
-
-                var message = await Task.Run(() => _dataDapper.LoadDataSingle<Message>(sql));
+                var message = await _messageService.GetMessageByIdAsync(id);
 
                 if (message == null)
                 {
@@ -69,9 +64,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Message WHERE SenderId = {senderId}";
-
-                var messages = await Task.Run(() => _dataDapper.LoadData<Message>(sql));
+                var messages = await _messageService.GetMessagesBySenderAsync(senderId);
 
                 if (messages == null || !messages.Any())
                 {
@@ -92,9 +85,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Message WHERE ReceiverId = {receiverId}";
-
-                var messages = await Task.Run(() => _dataDapper.LoadData<Message>(sql));
+                var messages = await _messageService.GetMessagesByReceiverAsync(receiverId);
 
                 if (messages == null || !messages.Any())
                 {
@@ -111,7 +102,7 @@ namespace HelloWorld.Controllers
 
         // POST api/message
         [HttpPost]
-        public IActionResult CreateMessage([FromBody] Message message)
+        public async Task<IActionResult> CreateMessage([FromBody] Message message)
         {
             try
             {
@@ -127,10 +118,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO Message (SenderId, ReceiverId, MessageContent, DateTime) " +
-                          $"VALUES ({message.SenderId}, {message.ReceiverId}, '{message.MessageContent}', '{message.DateTime}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _messageService.CreateMessageAsync(message);
 
                 if (!isCreated)
                 {
@@ -147,20 +135,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/message/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteMessage(int id)
+        public async Task<IActionResult> DeleteMessage(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Message WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _messageService.DeleteMessageAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Message with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {

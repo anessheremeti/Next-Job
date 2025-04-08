@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IReviewService _reviewService;
 
-        public ReviewController(DataDapper dataDapper)
+        public ReviewController(IReviewService reviewService)
         {
-            _dataDapper = dataDapper;
+            _reviewService = reviewService;
         }
 
         // GET api/review
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Review";
-
-                var reviews = await Task.Run(() => _dataDapper.LoadData<Review>(sql));
+                var reviews = await _reviewService.GetReviewsAsync();
 
                 if (reviews == null || !reviews.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Review WHERE Id = {id}";
-
-                var review = await Task.Run(() => _dataDapper.LoadDataSingle<Review>(sql));
+                var review = await _reviewService.GetReviewByIdAsync(id);
 
                 if (review == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/review
         [HttpPost]
-        public IActionResult CreateReview([FromBody] Review review)
+        public async Task<IActionResult> CreateReview([FromBody] Review review)
         {
             try
             {
@@ -81,10 +76,7 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
                 }
 
-                var sql = $"INSERT INTO Review (ReviewerId, ReviewedUserId, Rating, Comment, CreatedAt) " +
-                          $"VALUES ({review.ReviewerId}, {review.ReviewedUserId}, {review.Rating}, '{review.Comment}', '{review.CreatedAt}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _reviewService.CreateReviewAsync(review);
 
                 if (!isCreated)
                 {
@@ -101,13 +93,11 @@ namespace HelloWorld.Controllers
 
         // DELETE api/review/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteReview(int id)
+        public async Task<IActionResult> DeleteReview(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Review WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _reviewService.DeleteReviewAsync(id);
 
                 if (!isDeleted)
                 {
@@ -123,3 +113,4 @@ namespace HelloWorld.Controllers
         }
     }
 }
+

@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using HelloWorld.Data;
-using System.Collections.Generic;
-using System.Linq;
+using HelloWorld.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
@@ -10,11 +9,11 @@ namespace HelloWorld.Controllers
     [ApiController]
     public class ContractController : ControllerBase
     {
-        private readonly DataDapper _dataDapper;
+        private readonly IContractService _contractService;
 
-        public ContractController(DataDapper dataDapper)
+        public ContractController(IContractService contractService)
         {
-            _dataDapper = dataDapper;
+            _contractService = contractService;
         }
 
         // GET api/contract
@@ -23,9 +22,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = "SELECT * FROM Contracts";
-
-                var contracts = await Task.Run(() => _dataDapper.LoadData<Contract>(sql));
+                var contracts = await _contractService.GetContractsAsync();
 
                 if (contracts == null || !contracts.Any())
                 {
@@ -46,9 +43,7 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                var sql = $"SELECT * FROM Contracts WHERE Id = {id}";
-
-                var contract = await Task.Run(() => _dataDapper.LoadDataSingle<Contract>(sql));
+                var contract = await _contractService.GetContractByIdAsync(id);
 
                 if (contract == null)
                 {
@@ -65,7 +60,7 @@ namespace HelloWorld.Controllers
 
         // POST api/contract
         [HttpPost]
-        public IActionResult CreateContract([FromBody] Contract contract)
+        public async Task<IActionResult> CreateContract([FromBody] Contract contract)
         {
             try
             {
@@ -74,16 +69,7 @@ namespace HelloWorld.Controllers
                     return BadRequest("Contract data is required.");
                 }
 
-                string validationMessage;
-                if (!contract.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
-
-                var sql = $"INSERT INTO Contracts (FreelancerId, ClientId, JobId, StartDate, EndDate, Status) " +
-                          $"VALUES ({contract.FreelancerId}, {contract.ClientId}, {contract.JobId}, '{contract.StartDate}', '{contract.EndDate}', '{contract.Status}')";
-
-                bool isCreated = _dataDapper.ExecuteSql(sql);
+                var isCreated = await _contractService.CreateContractAsync(contract);
 
                 if (!isCreated)
                 {
@@ -100,7 +86,7 @@ namespace HelloWorld.Controllers
 
         // PUT api/contract/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateContract(int id, [FromBody] Contract contract)
+        public async Task<IActionResult> UpdateContract(int id, [FromBody] Contract contract)
         {
             try
             {
@@ -109,23 +95,14 @@ namespace HelloWorld.Controllers
                     return BadRequest("Invalid contract data.");
                 }
 
-                string validationMessage;
-                if (!contract.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
-
-                var sql = $"UPDATE Contracts SET FreelancerId = {contract.FreelancerId}, ClientId = {contract.ClientId}, JobId = {contract.JobId}, " +
-                          $"StartDate = '{contract.StartDate}', EndDate = '{contract.EndDate}', Status = '{contract.Status}' WHERE Id = {id}";
-
-                bool isUpdated = _dataDapper.ExecuteSql(sql);
+                var isUpdated = await _contractService.UpdateContractAsync(id, contract);
 
                 if (!isUpdated)
                 {
                     return StatusCode(500, "Failed to update contract.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -135,20 +112,18 @@ namespace HelloWorld.Controllers
 
         // DELETE api/contract/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteContract(int id)
+        public async Task<IActionResult> DeleteContract(int id)
         {
             try
             {
-                var sql = $"DELETE FROM Contracts WHERE Id = {id}";
-
-                bool isDeleted = _dataDapper.ExecuteSql(sql);
+                var isDeleted = await _contractService.DeleteContractAsync(id);
 
                 if (!isDeleted)
                 {
                     return NotFound($"Contract with ID {id} not found.");
                 }
 
-                return NoContent();  
+                return NoContent();
             }
             catch (Exception ex)
             {
