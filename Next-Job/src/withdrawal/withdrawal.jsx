@@ -1,10 +1,15 @@
-import tablewithdrawal from "./tablewithdrawal/tablewithdrawal.jsx";
-import listwithdrawal from "./listwithdrawal/listwithdrawal.jsx";
+import Tablewithdrawal from "./tablewithdrawal/Tablewithdrawal.jsx";
+import Foter from "./Foter/Foter.jsx";
+import Heder from "./Heder/Heder.jsx";
 
-function withdrawal(){
+function Withdrawal(){
     return(
-        <tablewithdrawal/>
+        <>
+        <Heder/>
+        <Tablewithdrawal/>
+        <Foter/>
+        </>
     );
 }
-export default withdrawal;
+export default Withdrawal;
 

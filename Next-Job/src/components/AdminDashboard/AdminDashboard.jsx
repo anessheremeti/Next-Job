@@ -1,14 +1,12 @@
-import logo from "../../src/assets/Logo 1.png";
-import jobs from "../../src/assets/Symbol (4).png";
-import dashboard from "../../src/assets/Symbol (8).png";
-import messages from '../../src/assets/Symbol (7).png';
-import companies from '../../src/assets/Symbol (6).png';
 
-import Aside from '../Aside/Aside';
-import InsightCard from "../InsightCard/InsightCard";
-import DummyData from '../InsightCardDummyData/InisghtCardDummyData';
-import ActivityList from '../ActivityList/ActivityList';
-import WithDrawList from '../WithDrawList/WithDrawList';
+
+import logo from "../../assets/Logo 1.png";          
+
+
+import DummyData from "../InsightCardDummyData/InisghtCardDummyData";
+import InsightCard from "../InsightCard/InsightCard";  
+import WithDrawList from "../WithDrawList/WithDrawList";  
+import ActivityList from "../ActivityList/ActivityList";
 
 const AdminDashboard = () => {
   return (

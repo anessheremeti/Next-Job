@@ -1,7 +1,7 @@
-import clock from './../../src/assets/Symbol (1).png';
-import views from '../../src/assets/Vector (1).png';
-import application from '../../src/assets/Symbol (2).png';
-import bookmarked from '../../src/assets/Symbol (9).png';
+import clock from "../../assets/Symbol (1).png";
+import views from "../../assets/Vector (1).png";
+import application from "../../assets/Symbol (2).png";
+import bookmarked from "../../assets/Symbol (9).png";
 
 const InsightCardDummyData = [
   {

@@ -1,14 +1,16 @@
-import { useState } from 'react'
 import './App.css'
-import AdminDashboard from './AdminDashboard/AdminDashboard'
+import AdminDashboard from './components/AdminDashboard/AdminDashboard'
+import LandingPage from './components/LandingPage/landingpage'
+
+import Withdrawal from "../src/withdrawal/Withdrawal.jsx";
 
 function App() {
 
   return (
     <>
-    <AdminDashboard />
-      </>
+        <Withdrawal />
+    </>
   )
 }
 
-export default App
+export default App;
