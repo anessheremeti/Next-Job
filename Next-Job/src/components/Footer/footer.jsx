@@ -34,9 +34,11 @@ function Footer() {
             <p className='text-[#111827]  font-poppins'>
                 © 2025 Copyright  | Powered by <span className='text-[#216F4C]'>FocusedStudio</span>
             </p>
-            <button className='border bg-transparent hover:bg-transparent border-[#216F4C] hover:text-[#ffffff]hover:border hover:border-[#216F4C] hover:bg-[#216F4C] px-5 py-3 rounded-full text-[#216F4C]font-poppins font-semibold'>
+           <a href="#">
+           <button className='border bg-transparent hover:bg-transparent border-[#216F4C] hover:text-[#ffffff]hover:border hover:border-[#216F4C] hover:bg-[#216F4C] px-5 py-3 rounded-full text-[#216F4C]font-poppins font-semibold'>
                     Back To Top
             </button>
+           </a>
         </div>
     </div>
   )
