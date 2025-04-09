@@ -41,6 +41,25 @@ namespace HelloWorld.Services
             }
         }
 
+        // public async Task<bool> CreateUserAsync(User user)
+        // {
+        //     try
+        //     {
+        //         if (user == null)
+        //         {
+        //             throw new ArgumentException("User data is required.");
+        //         }
+
+        //         var sql = "INSERT INTO User (Username, Email, PasswordHash, CreatedAt) " +
+        //                   "VALUES (@Username, @Email, @PasswordHash, @CreatedAt)";
+
+        //         return await _dataDapper.ExecuteSqlAsync(sql, user);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         throw new Exception($"Error while creating user: {ex.Message}", ex);
+        //     }
+        // }
         public async Task<bool> CreateUserAsync(User user)
         {
             try
@@ -50,15 +69,29 @@ namespace HelloWorld.Services
                     throw new ArgumentException("User data is required.");
                 }
 
-                var sql = "INSERT INTO User (Username, Email, PasswordHash, CreatedAt) " +
-                          "VALUES (@Username, @Email, @PasswordHash, @CreatedAt)";
+                var sql = @"INSERT INTO Users (user_type, full_name, company_name, email, password_hash, created_at)
+                    VALUES (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
 
-                return await _dataDapper.ExecuteSqlAsync(sql, user);
+                var parameters = new
+                {
+                    UserType = user.UserType,
+                    FullName = user.FullName,
+                    CompanyName = user.CompanyName,
+                    Email = user.Email,
+                    PasswordHash = user.PasswordHash,
+                    CreatedAt = user.CreatedAt
+                };
+
+                var result = await _dataDapper.ExecuteSqlAsync(sql, parameters);
+
+                return result;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error while creating user: {ex.Message}", ex);
             }
         }
+
+
     }
 }

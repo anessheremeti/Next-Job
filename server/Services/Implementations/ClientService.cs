@@ -18,7 +18,7 @@ public class ClientService : IClientService
     {
         try
         {
-            var sql = "SELECT * FROM ClientProfiles";
+            var sql = "SELECT * FROM ClientProfile";
             return await LoadDataFromDatabase<ClientProfile>(sql);
         }
         catch (Exception ex)
@@ -31,7 +31,7 @@ public class ClientService : IClientService
     {
         try
         {
-            var sql = "SELECT * FROM ClientProfiles WHERE Id = @Id";
+            var sql = "SELECT * FROM ClientProfile WHERE Id = @Id";
             var parameters = new { Id = id };
             var clientProfile = await LoadDataSingleFromDatabase<ClientProfile>(sql, parameters);
 
@@ -54,15 +54,36 @@ public class ClientService : IClientService
         try
         {
             ValidateClientProfile(clientProfile);
-            var sql = @"INSERT INTO ClientProfiles (UserId, Image, Skills, JobSuccess, TotalJobs, TotalHours, InQueueService, Location, LastDelivery, MemberSince, Education, Gender, EnglishLevel)
-                        VALUES (@UserId, @Image, @Skills, @JobSuccess, @TotalJobs, @TotalHours, @InQueueService, @Location, @LastDelivery, @MemberSince, @Education, @Gender, @EnglishLevel)";
-            return await _dataDapper.ExecuteSqlAsync(sql, clientProfile);
+
+            var sql = @"INSERT INTO ClientProfile 
+            (user_id, image, skills, job_success, total_jobs, total_hours, in_queue_service, location, last_delivery, member_since, education, gender, english_level)
+            VALUES 
+            (@UserId, @Image, @Skills, @JobSuccess, @TotalJobs, @TotalHours, @InQueueService, @Location, @LastDelivery, @MemberSince, @Education, @Gender, @EnglishLevel)";
+
+
+            return await _dataDapper.ExecuteSqlAsync(sql, new
+            {
+                UserId = clientProfile.UserId,
+                Image = clientProfile.Image,
+                Skills = clientProfile.Skills,
+                JobSuccess = clientProfile.JobSuccess,
+                TotalJobs = clientProfile.TotalJobs,
+                TotalHours = clientProfile.TotalHours,
+                InQueueService = clientProfile.InQueueService,
+                Location = clientProfile.Location,
+                LastDelivery = clientProfile.LastDelivery,
+                MemberSince = clientProfile.MemberSince,
+                Education = clientProfile.Education,
+                Gender = clientProfile.Gender,
+                EnglishLevel = clientProfile.EnglishLevel
+            });
         }
         catch (Exception ex)
         {
             throw new Exception($"Error while creating client profile: {ex.Message}", ex);
         }
     }
+
 
     public async Task<bool> UpdateClientProfileAsync(int id, ClientProfile clientProfile)
     {
@@ -73,11 +94,12 @@ public class ClientService : IClientService
                 throw new ArgumentException("Invalid client profile data.");
             }
 
-            var sql = @"UPDATE ClientProfiles 
-                        SET UserId = @UserId, Image = @Image, Skills = @Skills, JobSuccess = @JobSuccess, TotalJobs = @TotalJobs, TotalHours = @TotalHours, 
-                            InQueueService = @InQueueService, Location = @Location, LastDelivery = @LastDelivery, MemberSince = @MemberSince, 
-                            Education = @Education, Gender = @Gender, EnglishLevel = @EnglishLevel 
-                        WHERE Id = @Id";
+            var sql = @"UPDATE ClientProfile 
+            SET UserId = @UserId, Image = @Image, Skills = @Skills, JobSuccess = @JobSuccess, TotalJobs = @TotalJobs, TotalHours = @TotalHours, 
+                InQueueService = @InQueueService, Location = @Location, LastDelivery = @LastDelivery, MemberSince = @MemberSince, 
+                Education = @Education, Gender = @Gender, EnglishLevel = @EnglishLevel 
+            WHERE Id = @Id";
+
             clientProfile.Id = id;
             return await _dataDapper.ExecuteSqlAsync(sql, clientProfile);
         }
@@ -91,7 +113,7 @@ public class ClientService : IClientService
     {
         try
         {
-            var sql = "DELETE FROM ClientProfiles WHERE Id = @Id";
+            var sql = "DELETE FROM ClientProfile WHERE Id = @Id";
             var parameters = new { Id = id };
             return await _dataDapper.ExecuteSqlAsync(sql, parameters);
         }
@@ -101,13 +123,11 @@ public class ClientService : IClientService
         }
     }
 
-    // Metodë për të ngarkuar të dhëna nga databaza
     private async Task<IEnumerable<T>> LoadDataFromDatabase<T>(string sql, object? parameters = null)
     {
         return await _dataDapper.LoadDataAsync<T>(sql, parameters);
     }
 
-    // Metodë për të ngarkuar një të dhënë të vetme nga databaza
     private async Task<T?> LoadDataSingleFromDatabase<T>(string sql, object parameters)
     {
         return await _dataDapper.LoadDataSingleAsync<T>(sql, parameters);

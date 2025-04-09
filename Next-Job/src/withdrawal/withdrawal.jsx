@@ -5,9 +5,9 @@ import Heder from "./Heder/Heder.jsx";
 function Withdrawal(){
     return(
         <>
-        <Heder></Heder>
+        <Heder/>
         <Tablewithdrawal/>
-        <Foter></Foter>
+        <Foter/>
         </>
     );
 }
