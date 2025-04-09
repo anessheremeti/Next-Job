@@ -6,7 +6,7 @@ import DummyData from '../InsightCardDummyData/InisghtCardDummyData'
 import messages from '../../src/assets/Symbol (7).png'
 import companies from '../../src/assets/Symbol (6).png'
 
-import ActivityList from '../ActivityList/ActivityList';
+import ActivityList from '../../ActivityList/ActivityList';
 import WithDrawList from '../WithDrawList/WithDrawList';
 
 const AdminDashboard = () => {

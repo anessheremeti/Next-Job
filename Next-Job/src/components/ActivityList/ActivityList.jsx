@@ -1,5 +1,5 @@
 import cross from '../../src/assets/Background.png';
-import ActivityItem from '../ActivityItem/ActivityItem';
+import ActivityItem from '../components/ActivityItem/ActivityItem';
 import trash from '../../src/assets/Icon (3).png';
 const ActivityList = () => {
     return (
