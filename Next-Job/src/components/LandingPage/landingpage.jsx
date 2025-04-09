@@ -4,7 +4,9 @@ import Navbar from '../Navbar/navbar'
 
 function landingpage() {
   return (
-    <Navbar/>
+    <>
+        <Navbar/>
+    </>
   )
 }
 
