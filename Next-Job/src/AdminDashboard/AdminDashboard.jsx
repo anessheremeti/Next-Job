@@ -33,7 +33,6 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          {/* Insight cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {DummyData.map((item, index) => (
               <InsightCard
@@ -46,8 +45,6 @@ const AdminDashboard = () => {
               />
             ))}
           </div>
-
-          {/* Activities and Withdrawals */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-6">
             <div className="activities p-4 flex flex-col gap-4">
               <ActivityList />
