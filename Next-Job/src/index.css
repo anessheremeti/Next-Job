@@ -6,3 +6,26 @@
     font-family:"Poppins";
     src: url(/Next-Job/src/assets/fonts/Poppins/Poppins-Medium.ttf);
 }
+
+@font-face {
+    font-family: "Monument-Regular";
+    src: url("./assets/fonts/Monument-Extended/MonumentExtended-Regular.otf") format("opentype");
+}
+  
+@font-face {
+    font-family: "Monument-Ultrabold";
+    src: url("./assets/fonts/Monument-Extended/MonumentExtended-Ultrabold.otf") format("opentype");
+}
+@font-face {
+    font-family: "ClashDisplay-Light";
+    src: url("./assets/fonts/ClashDisplay/ClashDisplay-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: "ClashDisplay-Regular";
+    src: url("./assets/fonts/ClashDisplay/ClashDisplay-Regular.otf") format("opentype");
+}
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito/NunitoSans-VariableFont_YTLC\,opsz\,wdth\,wght.ttf") format("opentype");
+}    
+  

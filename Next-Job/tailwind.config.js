@@ -6,9 +6,15 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily:{
-        poppins:['Poppins','sans-serif']
-      }
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+        monument: ['Monument-Regular'],
+        monumentBold: ['Monument-Ultrabold'],
+        clashLight: ['ClashDisplay-Light'],
+        clashDisplay: ['ClashDisplay-Regular'],
+        nunito:['Nunito']
+      },
+      
     },
   },
   plugins: [],

@@ -11,7 +11,7 @@ function Navbar() {
     };
   
     return (
-      <nav className='flex justify-between items-center pt-4 m-auto p-20'>
+      <nav className='flex justify-between items-center pt-4 m-auto p-20 mt-5'>
         <img src={logo} alt="logo" />
   
         <ul className='hidden xl:flex justify-center items-center gap-4 border rounded-full'>
@@ -38,13 +38,13 @@ function Navbar() {
           {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
         </div>
   
-        <div className={`${nav ? 'left-0' : '-left-full'} fixed top-0 w-[60%] h-full border-r border-r-[#216F4C] bg-[rgba(33,111,76,0.14)] ease-in-out duration-500 xl:hidden`}>
+        <div className={`${nav ? 'left-0' : '-left-full'} fixed top-0 w-[60%] h-full border-r border-r-[#216F4C] bg-[rgba(33,111,76)] ease-in-out duration-500 xl:hidden`}>
           <ul className='pt-24'>
-            <li className='border-b border-b-[#216F4C] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold'>Find Talent</a></li>
-            <li className='border-b border-b-[#216F4C] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold'>Companies</a></li>
-            <li className='border-b border-b-[#216F4C] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold'>Find Work</a></li>
-            <li className='border-b border-b-[#216F4C] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold'>Log in</a></li>
-            <li className='border-b border-b-[#216F4C] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold'>Register</a></li>
+            <li className='border-b border-b-[#ffffff] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold text-[#ffffff]'>Find Talent</a></li>
+            <li className='border-b border-b-[#ffffff] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold text-[#ffffff]'>Companies</a></li>
+            <li className='border-b border-b-[#ffffff] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold text-[#ffffff]'>Find Work</a></li>
+            <li className='border-b border-b-[#ffffff] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold text-[#ffffff]'>Log in</a></li>
+            <li className='border-b border-b-[#ffffff] m-4 p-4'><a href="#" className='uppercase font-poppins font-bold text-[#ffffff]'>Register</a></li>
           </ul>
         </div>
       </nav>

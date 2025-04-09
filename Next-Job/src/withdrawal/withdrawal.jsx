@@ -1,14 +1,14 @@
 import Tablewithdrawal from "./tablewithdrawal/Tablewithdrawal.jsx";
-import Foter from "./Foter/Foter.jsx";
-import Heder from "./Heder/Heder.jsx";
+import Footer from "../components/Footer/footer.jsx";
+import Navbar from "../components/Navbar/navbar.jsx"
 
 function Withdrawal(){
     return(
-        <>
-        <Heder/>
+        <div className="">
+        <Navbar/>
         <Tablewithdrawal/>
-        <Foter/>
-        </>
+        <Footer/>
+        </div>
     );
 }
 export default Withdrawal;
