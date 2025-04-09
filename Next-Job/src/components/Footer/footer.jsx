@@ -31,7 +31,7 @@ function Footer() {
             </div>
         </div>
         <div className='md:flex-row flex-col flex gap-10  border-t-2 border-t-[#D1E0FF] mt-10  justify-between items-center pt-7 '>
-            <p className='text-[#111827]  font-poppins'>
+            <p className='text-[#111827]  font-poppins text-center'>
                 © 2025 Copyright  | Powered by <span className='text-[#216F4C]'>FocusedStudio</span>
             </p>
             <button className='border bg-transparent hover:bg-transparent border-[#216F4C] hover:text-[#ffffff]hover:border hover:border-[#216F4C] hover:bg-[#216F4C] px-5 py-3 rounded-full text-[#216F4C]font-poppins font-semibold'>
