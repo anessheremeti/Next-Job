@@ -28,4 +28,10 @@
     font-family: "Nunito";
     src: url("./assets/fonts/Nunito/NunitoSans-VariableFont_YTLC\,opsz\,wdth\,wght.ttf") format("opentype");
 }    
-  
+@layer components {
+    .custom-search-input::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+      display: none;
+    }
+}
