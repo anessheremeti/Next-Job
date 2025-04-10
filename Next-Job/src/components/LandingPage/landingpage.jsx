@@ -29,14 +29,14 @@ function landingpage() {
               <h1 className='flex flex-col text-center text-5xl font-monument mt-5'><span>We <span className='text-[#216F4C]'>connect</span> people to </span><span>bring ideas to <span className='text-[#216F4C]'>life</span></span> </h1>
               <p className='flex flex-col text-center text-[#111827] font-poppins'>Discover top talent or find jobs with AI-powered <span>tools that put you in control.</span></p>
               <form action="" className='w-[35%]'>
-                <div className='flex border border-[#216F4C] rounded-md w-full px-4 py-2'>
+                <div className='flex border border-[#216F4C] rounded-md w-full px-4 py-2 gap-10'>
                   <input className='custom-search-input bg-transparent text-[#51545E] font-poppins w-full  placeholder-[#51545E] focus:outline-none appearance-none [::-webkit-search-cancel-button]:appearance-none'  type="search" placeholder='Search for any service | Find your Job | Find Companies'/>
                   <div className="search-btn cursor-pointer bg-[#216F4C] rounded-md p-3">
-                    <img className='' src={search} alt="search" />
+                    <img className=' flex-1' src={search} alt="search" />
                   </div>
                 </div>
               </form>
-              <div className="popular-services flex justify-center gap-5">
+              <div className="popular-services flex justify-center gap-5 flex-wrap">
                   <button className='bg-[#216F4C] text-[#ffffff] font-poppins px-4 py-2 rounded-full hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C]'>Web Development</button>
                   <button className='bg-[#216F4C] text-[#ffffff] font-poppins px-4 py-2 rounded-full hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C]'>Web Design</button>
                   <button className='bg-[#216F4C] text-[#ffffff] font-poppins px-4 py-2 rounded-full hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C]'>Video Editors</button>
@@ -51,17 +51,17 @@ function landingpage() {
             <img src={crown} alt="" />
             <p className='text-[#216F4C]'>Most Popular</p>
           </div>
-          <h1 className='text-6xl  font-poppins'>Our <span className='text-[#216F4C]'>Most</span> Popular <span className='text-[#216F4C]'>Talents</span></h1>
+          <h1 className='text-6xl  font-poppins text-center'>Our <span className='text-[#216F4C]'>Most</span> Popular <span className='text-[#216F4C]'>Talents</span></h1>
         </div>
         <div className='mt-20 flex flex-col gap-10'>
-          <div className='flex justify-center items-center gap-10'>
+          <div className='flex justify-center items-center gap-10 flex-wrap'>
           
               <Card/>
               <Card/>
               <Card/>
             
           </div>
-          <div className='flex justify-center items-center gap-10'>
+          <div className='flex justify-center items-center gap-10 flex-wrap'>
               <Card/>
               <Card/>
               <Card/>
