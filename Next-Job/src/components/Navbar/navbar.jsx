@@ -14,7 +14,7 @@ function Navbar() {
       <nav className='flex justify-between items-center pt-4 m-auto p-20 mt-5'>
         <img src={logo} alt="logo" />
   
-        <ul className='hidden xl:flex justify-center items-center gap-4 border rounded-full'>
+        <ul className='hidden xl:flex justify-center items-center gap-4 border border-[#216F4C42] rounded-full'>
           <div className="li-ctn flex justify-center items-center gap-3 bg-[rgba(33,111,76,0.14)] py-2 px-4 rounded-full cursor-pointer ">
             <img src={dot} alt="dot" />
             <li><a href="#" className='current-list text-[#216F4C] font-poppins'>Find Talent</a></li>
