@@ -10,6 +10,8 @@ import buildings from "../../assets/buildings.png";
 import heart from "../../assets/heart.png";
 import job from "../../assets/job.png";
 import chat from "../../assets/chat.png";
+import Faq from '../../components/FAQ/faq.jsx'
+import faqimg from '../../assets/faq.png'
 
 
 //Komponentat
@@ -127,6 +129,16 @@ function landingpage() {
           </div>
           <h1 className='text-6xl  font-poppins flex flex-col items-center justify-center'>Frquently Ask <span className='text-[#216F4C]'>Questions</span></h1>
         </div> 
+        <div className='flex justify-center gap-10 mt-10'>
+          <div className='flex flex-col gap-5'>
+              <img src={faqimg} alt="faq" />
+              <h3 className='text-[#216F4C] text-3xl font-poppins'>Do you need help?</h3>
+              <button className='self-start bg-[#216F4C] py-2 px-7 rounded-full font-poppins text-white font-semibold hover:border hover:border-[#216F4C] hover:text-[#216F4C] hover:bg-transparent'>Contact Now</button>
+          </div>
+          <div className=''>
+            <Faq/>
+          </div>
+        </div>
         <Footer/>
     </>
   )

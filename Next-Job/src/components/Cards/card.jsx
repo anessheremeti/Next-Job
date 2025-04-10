@@ -3,7 +3,6 @@ import cardTwo from "../../assets/card-2.png";
 import profilePhoto from "../../assets/profil-photo.png";
 import star from "../../assets/star.png";
 
-
 function Card() {
   return (
     
