@@ -18,7 +18,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Companies";
+                var sql = "SELECT * FROM Company";
                 return await _dataDapper.LoadDataAsync<Company>(sql);
             }
             catch (Exception ex)
@@ -26,12 +26,13 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while retrieving companies: {ex.Message}", ex);
             }
         }
-
+        
+        //Ktu e marrmi me id company
         public async Task<Company?> GetCompanyByIdAsync(int id)
         {
             try
             {
-                var sql = "SELECT * FROM Companies WHERE Id = @Id";
+                var sql = "SELECT * FROM Company WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.LoadDataSingleAsync<Company>(sql, parameters);
             }
@@ -41,6 +42,7 @@ namespace HelloWorld.Services
             }
         }
 
+      
         public async Task<bool> CreateCompanyAsync(Company company)
         {
             try
@@ -50,8 +52,9 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Company data is required.");
                 }
 
-                var sql = @"INSERT INTO Companies (OwnerId, Name, Description, Website, CreatedAt) 
-                            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+                var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
+                VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
@@ -69,7 +72,7 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Invalid company data.");
                 }
 
-                var sql = @"UPDATE Companies 
+                var sql = @"UPDATE Company 
                             SET OwnerId = @OwnerId, Name = @Name, Description = @Description, Website = @Website, CreatedAt = @CreatedAt 
                             WHERE Id = @Id";
                 company.Id = id;
@@ -85,7 +88,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Companies WHERE Id = @Id";
+                var sql = "DELETE FROM Company WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
