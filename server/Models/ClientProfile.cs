@@ -26,7 +26,7 @@ public class ClientProfile
     }
 
 
-
+    
     public bool isValid()
     {
         var validGenders = new[] { "male", "female" };  
