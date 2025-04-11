@@ -2,21 +2,20 @@
 
 import logo from "../../assets/Logo 1.png";          
 
-
+import Aside from '../Aside/Aside';
 import DummyData from "../InsightCardDummyData/InisghtCardDummyData";
 import InsightCard from "../InsightCard/InsightCard";  
 import WithDrawList from "../WithDrawList/WithDrawList";  
 import ActivityList from "../ActivityList/ActivityList";
-
+import Footer from '../Footer/footer'
 const AdminDashboard = () => {
   return (
     <div className="container mx-auto px-3">
-      {/* Header */}
       <header className="flex items-center py-5">
         <img className="w-32 sm:w-36 object-contain" src={logo} alt="Logo" />
       </header>
 
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row ">
         <aside className="w-full md:w-1/4 lg:w-1/5">
           <Aside />
 
@@ -53,6 +52,7 @@ const AdminDashboard = () => {
           </div>
         </main>
       </div>
+      
     </div>
   );
 };
