@@ -14,16 +14,12 @@ import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx
 function App() {
 
   return (
-    <>
-<<<<<<< HEAD
+    <>q
         {/* <FindJobCompanies/> */}
-=======
-    <CompanyDashboard />
-       {  /*<FindJobCompanies/> */}
->>>>>>> e5bd762f448ca180050d598af6764d87c3035d09
         {/* <FindTalent/> */}
         <LandingPage/>
         {/* <FindWork/> */}
+        {/* <CompanyDashboard/> */}
     </>
   )
 }
