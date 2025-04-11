@@ -7,7 +7,7 @@ function Footer() {
         <div className='footer-ctn flex md:flex-row flex-col justify-between items-center gap-20'>
             <div className='flex flex-col gap-5'>
                 <img src={logo} className='w-[60%]' alt="logo"/>
-                <p className='flex flex-col text-[#111827]  font-poppins'>NextJob offers seamless and secure platform solutions designed <span>for freelancers, enabling you to easily connect with clients, showcase </span>your skills, and scale your business with confidence.</p>
+                <p className='flex flex-col  text-[#111827]  font-poppins'>NextJob offers seamless and secure platform solutions designed <span>for freelancers, enabling you to easily connect with clients, showcase </span>your skills, and scale your business with confidence.</p>
             </div>
             <div className="pages flex justify-center gap-20 ">
                 <div className="main-pages">

@@ -10,8 +10,9 @@ function App() {
 
   return (
     <>
-      <UsersDashboard />
+      {/* <UsersDashboard /> */}
         {/* <Faq/> */}
+        <LandingPage/>
     </>
   )
 }
