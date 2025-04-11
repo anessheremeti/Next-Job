@@ -1,8 +1,17 @@
 import React from 'react'
+
+//Komponentat
 import Navbar from '../Navbar/navbar'
 import Footer from '../Footer/footer'
-import search from '../../assets/search.png'
+import Card from "../../components/Cards/card"
+import Companies from '../../components/Cards/companies.jsx';
+import Faq from '../../components/FAQ/faq.jsx'
+
+//Css
 import './landigpage.css'
+
+//Imazhet
+import search from '../../assets/search.png'
 import crown from '../../assets/king-crown.png';
 import logo from "../../assets/Logo 1.png";
 import arrayRight from "../../assets/array-right.png";
@@ -10,13 +19,8 @@ import buildings from "../../assets/buildings.png";
 import heart from "../../assets/heart.png";
 import job from "../../assets/job.png";
 import chat from "../../assets/chat.png";
-import Faq from '../../components/FAQ/faq.jsx'
 import faqimg from '../../assets/faq.png'
 
-
-//Komponentat
-import Card from "../../components/Cards/card"
-import Companies from '../../components/Cards/companies.jsx';
 
 
 
@@ -54,7 +58,7 @@ function landingpage() {
           <h1 className='text-6xl  font-poppins'>Our <span className='text-[#216F4C]'>Most</span> Popular <span className='text-[#216F4C]'>Talents</span></h1>
         </div>
         <div className='mt-20 flex flex-col gap-10'>
-          <div className='flex justify-center items-center gap-10'>
+          <div className='flex justify-center items-center gap-10 flex-wrap'>
           
               <Card/>
               <Card/>
@@ -108,7 +112,7 @@ function landingpage() {
 
               </div>
           </div>
-          <div className='flex flex-col gap-10'>
+          <div className='flex flex-col gap-10 flex-wrap'>
             <Companies/>
             <Companies/>
             <Companies/>
