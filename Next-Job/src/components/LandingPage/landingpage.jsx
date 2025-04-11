@@ -6,12 +6,11 @@ import Footer from '../Footer/footer'
 import Card from "../../components/Cards/card"
 import Companies from '../../components/Cards/companies.jsx';
 import Faq from '../../components/FAQ/faq.jsx'
-
+import SearchBar from '../../components/SearchBar/SearchBar.jsx'
 //Css
 import './landigpage.css'
 
 //Imazhet
-import search from '../../assets/search.png'
 import crown from '../../assets/king-crown.png';
 import logo from "../../assets/Logo 1.png";
 import arrayRight from "../../assets/array-right.png";
@@ -32,20 +31,7 @@ function landingpage() {
           <div className="connect-ctn flex flex-col justify-center items-center gap-7">
               <h1 className='flex flex-col text-center text-3xl lg:text-5xl font-monument mt-5'><span>We <span className='text-[#216F4C]'>connect</span> people to </span><span>bring ideas to <span className='text-[#216F4C]'>life</span></span> </h1>
               <p className='flex flex-col text-center text-[#111827] font-poppins'>Discover top talent or find jobs with AI-powered <span>tools that put you in control.</span></p>
-              <form action="" className='w-[70%] sm:w-[80%] md:w-[60%] lg:w-[35%]'>
-                <div className='flex items-center border border-[#216F4C] rounded-md w-full px-2 sm:px-4 py-1 sm:py-2 gap-2 sm:gap-4'>
-                  <input 
-                    className='custom-search-input bg-transparent text-[#51545E] font-poppins w-full placeholder-[#51545E] focus:outline-none appearance-none text-sm sm:text-base [::-webkit-search-cancel-button]:appearance-none'  
-                    type="search" 
-                    placeholder='Search for any service | Find your Job | Find Companies'
-                  />
-                  <div className="search-btn cursor-pointer bg-[#216F4C] rounded-md p-2 sm:p-3 flex justify-center items-center min-w-[36px] min-h-[36px]">
-                    <img className='w-4 h-4 sm:w-5 sm:h-5' src={search} alt="search" />
-                  </div>
-                </div>
-              </form>
-
-
+              <SearchBar/>
               <div className=" popular-services flex justify-center gap-5 flex-wrap">
                   <button className='bg-[#216F4C] text-[#ffffff] font-poppins px-4 py-2 rounded-full hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C]'>Web Development</button>
                   <button className='bg-[#216F4C] text-[#ffffff] font-poppins px-4 py-2 rounded-full hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C]'>Web Design</button>
@@ -63,24 +49,20 @@ function landingpage() {
           </div>
           <h1 className='text-6xl  font-poppins text-center'>Our <span className='text-[#216F4C]'>Most</span> Popular <span className='text-[#216F4C]'>Talents</span></h1>
         </div>
-        <div className='mt-20 flex flex-col gap-10 mx-10'>
-          <div className='flex justify-center items-center gap-10 flex-wrap'>
-          
-              <Card/>
-              <Card/>
-              <Card/>
-            
-          </div>
-          <div className='flex justify-center items-center gap-10 flex-wrap'>
-              <Card/>
-              <Card/>
-              <Card/>
-          </div>
+        <div className='mt-20 flex flex-col gap-10 mx-10'><div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10'>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+          <Card/>
+        </div>
+
           <div className="flex justify-center items-center self-center bg-[#216F4C] w-50 p-2 gap-3 text-white font-poppins rounded-full cursor-pointer">
                 <p>SHOW ALL</p>
                 <img src={arrayRight} alt="array-right" />
           </div>
-          </div>
+        </div>
         <div className='bg-[#216F4C36] mx-5 rounded-3xl flex flex-col justify-center items-center p-10 mt-20'>
             <img src={logo} alt="logo" />
             <h1 className='flex flex-col justify-center items-start text-center text-3xl lg:text-5xl font-monument mt-10'>
@@ -117,7 +99,6 @@ function landingpage() {
 
         </div>
       </div>
-
           <div className='flex flex-col gap-10 flex-wrap mx-10'>
             <Companies/>
             <Companies/>
