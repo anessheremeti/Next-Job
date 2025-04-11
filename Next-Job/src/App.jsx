@@ -15,9 +15,9 @@ function App() {
 
   return (
     <>
-        <FindJobCompanies/>
+        {/* <FindJobCompanies/> */}
         {/* <FindTalent/> */}
-        {/* <LandingPage/> */}
+        <LandingPage/>
         {/* <FindWork/> */}
     </>
   )

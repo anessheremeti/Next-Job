@@ -49,14 +49,15 @@ function landingpage() {
           </div>
           <h1 className='text-6xl  font-poppins text-center'>Our <span className='text-[#216F4C]'>Most</span> Popular <span className='text-[#216F4C]'>Talents</span></h1>
         </div>
-        <div className='mt-20 flex flex-col gap-10 mx-10'><div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10'>
-          <Card/>
-          <Card/>
-          <Card/>
-          <Card/>
-          <Card/>
-          <Card/>
-        </div>
+        <div className='mt-20 flex flex-col gap-10 mx-10'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 lg:mx-56'>
+            <Card/>
+            <Card/>
+            <Card/>
+            <Card/>
+            <Card/>
+            <Card/>
+          </div>
 
           <div className="flex justify-center items-center self-center bg-[#216F4C] w-50 p-2 gap-3 text-white font-poppins rounded-full cursor-pointer">
                 <p>SHOW ALL</p>
