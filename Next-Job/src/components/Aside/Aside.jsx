@@ -1,11 +1,11 @@
-import dashboard from "../../src/assets/Symbol (8).png";
-import messages from '../../src/assets/Symbol (7).png'
-import jobs from "../../src/assets/Symbol (4).png";
-import companies from '../../src/assets/Symbol (6).png';
+import dashboard from "../../assets/Symbol (8).png";
+import messages from '../../assets/Symbol (7).png'
+import jobs from "../../assets/Symbol (4).png";
+import companies from '../../assets/Symbol (6).png';
 
 const Aside = () =>{
     return (
-        <div className="left_container flex-shrink-0 w-full md:w-64 flex flex-col gap-4">
+        <div className="left_container flex-shrink-0 w-full md:w-48 flex flex-col gap-4">
                   
                   
                   <div>
