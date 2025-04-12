@@ -36,6 +36,8 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        
+        
 
         // GET api/company/{id}
         [HttpGet("{id}")]

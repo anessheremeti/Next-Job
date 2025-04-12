@@ -34,7 +34,7 @@ function Navbar() {
           <button className='bg-[rgba(33,111,76,1)] text-white rounded-full px-7 py-2 hover:bg-[#ffffff] hover:text-[#216F4C] hover:border hover:border-[#216F4C] transition duration-300 font-poppins'>Register</button>
         </div>
   
-        <div onClick={handleNav} className='cursor-pointer xl:hidden'>
+        <div onClick={handleNav} className='cursor-pointer xl:hidden ps-5'>
           {nav ? <AiOutlineClose size={30} /> : <AiOutlineMenu size={30} />}
         </div>
   
