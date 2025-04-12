@@ -162,7 +162,7 @@ function PortfolioWithPrice() {
 </div>
 
 
-  <button className="border border-green-500 text-green-600 hover:bg-green-50 font-medium py-2 px-4 rounded w-full hover:text-green-800 font-medium py-2 px-4 rounded w-full">
+  <button className="border border-green-500 text-green-600 hover:bg-green-50 font-medium py-2 px-4 rounded w-full hover:text-green-800 ">
     Contact Me
   </button>
 </div>
