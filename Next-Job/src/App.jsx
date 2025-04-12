@@ -14,6 +14,7 @@ import FindJobCompanies from './components/FindJobCompanies/FindJobCompanies.jsx
 import FindWork from './components/FindWork/FindWork.jsx';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx';
 import Workpage from "./components/WorkPage/WorkPage.jsx";
+import MyJobs from './components/MyJobs/MyJobs.jsx';
 
 function App() {
 
@@ -22,7 +23,8 @@ function App() {
       
         {/* <Faq/> */}
         {/*<PortfolioWithPrice/>*/}
-        <Workpage/>
+        {/*<Workpage/>*/}
+        <MyJobs/>
 
    
         {/* <FindJobCompanies/> */}
