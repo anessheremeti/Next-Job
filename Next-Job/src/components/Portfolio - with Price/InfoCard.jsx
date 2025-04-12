@@ -1,12 +1,12 @@
 import React from "react";
 
-function InfoCard({  title, subtitle }) {
+function InfoCard({ Icon, title, subtitle }) {
   return (
-    <div className="flex items-center gap-3 p-4 bg-white shadow-md rounded-lg">
+    <div className="flex items-center gap-3 p-4 ">
       {/* Ikona */}
-     <div className="">
-
-     </div>
+      <div className="p-2 bg-[#FBF7ED] rounded-full text-green-700">
+       <img  src={Icon} alt="" />
+      </div>
 
       {/* Teksti */}
       <div>
