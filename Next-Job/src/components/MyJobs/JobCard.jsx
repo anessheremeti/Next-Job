@@ -14,7 +14,7 @@ export function JobCard({ title, description, tags, salary, deadline, price, onC
               {tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 mb-2 rounded-full"
+                  className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 mb-2 rounded-full cursor-pointer"
                 >
                   {tag}
                 </span>

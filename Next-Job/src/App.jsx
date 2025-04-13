@@ -20,17 +20,20 @@ function App() {
 
   return (
     <>
-      
-        {/* <Faq/> */}
+        {/* Ensar */}
         {/*<PortfolioWithPrice/>*/}
-        {/*<Workpage/>*/}
+        {/* <Workpage/> */}
         <MyJobs/>
 
    
+
+        {/* Blend */}
+        {/* <LandingPage/> */}
         {/* <FindJobCompanies/> */}
         {/* <FindTalent/> */}
-  
         {/* <FindWork/> */}
+  
+
         {/* <CompanyDashboard/> */}
         {/* <Withdrawal/> */}
         {/* <AdminDashboard/> */}
