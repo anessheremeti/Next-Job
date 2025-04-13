@@ -2,6 +2,7 @@ using HelloWorld.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HelloWorld.Services
 {
@@ -43,6 +44,9 @@ namespace HelloWorld.Services
 
         public async Task<bool> CreateFreelancerProfileAsync(FreelancerProfile profile)
         {
+
+            Console.WriteLine($"Inserting profile for UserId: {profile.UserId}, HourlyRate: {profile.HourlyRate}");
+
             try
             {
                 if (profile == null)
@@ -54,11 +58,19 @@ namespace HelloWorld.Services
                             VALUES (@UserId, @Skills, @HourlyRate, @PortfolioLink, @Location, @LastDelivery, @MemberSince)";
                 return await _dataDapper.ExecuteSqlAsync(sql, profile);
             }
-            catch (Exception ex)
+           catch (Exception ex)
             {
+                Console.WriteLine($"Insert failed: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
                 throw new Exception($"Error while creating freelancer profile: {ex.Message}", ex);
             }
+
         }
+        
+        
 
         public async Task<bool> UpdateFreelancerProfileAsync(int id, FreelancerProfile profile)
         {
