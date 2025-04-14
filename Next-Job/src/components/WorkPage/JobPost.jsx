@@ -17,9 +17,9 @@ export default function JobPost() {
         <div className="flex flex-col md:items-end space-y-2 gap-3">
           {/* Tags and button */}
           <div className="flex flex-wrap items-center  justify-end gap-2">
-            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full">YouTube</span>
-            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full">Design</span>
-            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full">Thumbnails</span>
+            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full cursor-pointer">YouTube</span>
+            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full cursor-pointer">Design</span>
+            <span className="bg-gray-100 text-gray-700 text-xs font-medium px-4 py-2 mb-2  rounded-full cursor-pointer">Thumbnails</span>
             <div className="pl-5">
             <button className="flex flex-row gap-2 bg-[#216F4C] text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-[#37b37b] transition">
               Apply Now <img className="w-[14px] h-[15px] text-white" src={Arrayright} alt="" />

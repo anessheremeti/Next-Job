@@ -16,23 +16,28 @@ import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
 import ClientStart from './components/Client - Start/ClientStart.jsx';
+import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 
 function App() {
 
   return (
     <>
-      
-        {/* <Faq/> */}
+        {/* Ensar */}
         {/*<PortfolioWithPrice/>*/}
         {/*<Workpage/>*/}
         {/*<MyJobs/>*/}
-        <ClientStart/>
+        {/*<ClientStart/>*/} 
+        <CompanyDetails/>
 
    
+
+        {/* Blend */}
+        {/* <LandingPage/> */}
         {/* <FindJobCompanies/> */}
         {/* <FindTalent/> */}
-  
         {/* <FindWork/> */}
+  
+
         {/* <CompanyDashboard/> */}
         {/* <Withdrawal/> */}
         {/* <AdminDashboard/> */}
