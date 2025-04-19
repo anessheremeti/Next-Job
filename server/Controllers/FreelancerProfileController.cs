@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Data.SqlClient;
 
 namespace HelloWorld.Controllers
 {
@@ -83,6 +85,8 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        
+
 
         // PUT api/freelancerprofile/{id}
         [HttpPut("{id}")]

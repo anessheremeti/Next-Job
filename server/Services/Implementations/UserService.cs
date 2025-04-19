@@ -18,7 +18,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM User";
+                var sql = "SELECT * FROM Users";
                 return await _dataDapper.LoadDataAsync<User>(sql);
             }
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM User WHERE Id = @Id";
+                var sql = "SELECT * FROM Users WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.LoadDataSingleAsync<User>(sql, parameters);
             }
@@ -40,26 +40,6 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while retrieving user with ID {id}: {ex.Message}", ex);
             }
         }
-
-        // public async Task<bool> CreateUserAsync(User user)
-        // {
-        //     try
-        //     {
-        //         if (user == null)
-        //         {
-        //             throw new ArgumentException("User data is required.");
-        //         }
-
-        //         var sql = "INSERT INTO User (Username, Email, PasswordHash, CreatedAt) " +
-        //                   "VALUES (@Username, @Email, @PasswordHash, @CreatedAt)";
-
-        //         return await _dataDapper.ExecuteSqlAsync(sql, user);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         throw new Exception($"Error while creating user: {ex.Message}", ex);
-        //     }
-        // }
         public async Task<bool> CreateUserAsync(User user)
         {
             try
