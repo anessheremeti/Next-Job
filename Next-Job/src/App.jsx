@@ -15,6 +15,8 @@ import FindWork from './components/FindWork/FindWork.jsx';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx';
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
+import SignUp from './components/SignUp-In/SignUp.jsx'
+import SignIn from './components/SignUp-In/SignIn.jsx';
 
 function App() {
 
@@ -23,7 +25,7 @@ function App() {
         {/* Ensar */}
         {/*<PortfolioWithPrice/>*/}
         {/* <Workpage/> */}
-        <MyJobs/>
+        {/* <MyJobs/> */}
 
    
 
@@ -32,6 +34,9 @@ function App() {
         {/* <FindJobCompanies/> */}
         {/* <FindTalent/> */}
         {/* <FindWork/> */}
+        {/* <SignService/> */}
+        {/* <SignUp/> */}
+        <SignIn/>
   
 
         {/* <CompanyDashboard/> */}
