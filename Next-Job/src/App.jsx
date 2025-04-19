@@ -10,14 +10,15 @@ import FindTalent from './components/FindTalent/FindTalent.jsx'
 import FindJobCompanies from './components/FindJobCompanies/FindJobCompanies.jsx';
 import FindWork from './components/FindWork/FindWork.jsx';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx';
-
+import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx';
 function App() {
 
   return (
-    <>q
+    <>
         {/* <FindJobCompanies/> */}
         {/* <FindTalent/> */}
-        <LandingPage/>
+        { /*<LandingPage/> */ }
+         <WithDrawalDashboard />
         {/* <FindWork/> */}
         {/* <CompanyDashboard/> */}
     </>
