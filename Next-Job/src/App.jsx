@@ -7,7 +7,7 @@ import Companies from './components/Cards/companies.jsx';
 import Faq from '../src/components/FAQ/faq.jsx'
 
 import PortfolioWithPrice from "../src/components/Portfolio - with Price/PortfolioWithPrice.jsx";
-
+import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
 import UsersDashboard from './components/UsersDashboard/UserDashboard.jsx'
 import FindTalent from './components/FindTalent/FindTalent.jsx'
 import FindJobCompanies from './components/FindJobCompanies/FindJobCompanies.jsx';
