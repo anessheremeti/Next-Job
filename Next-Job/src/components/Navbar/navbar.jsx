@@ -1,6 +1,8 @@
 import React,{useState} from 'react'
 import logo from "../../assets/Logo 1.png";
 import dot from "../../assets/dot.png";
+import { Link } from "react-router";
+
 import { AiOutlineClose,AiOutlineMenu} from "react-icons/ai";
 
 function Navbar() {
@@ -17,15 +19,17 @@ function Navbar() {
         <ul className='hidden xl:flex justify-center items-center gap-4 border border-[#216F4C42] rounded-full'>
           <div className="li-ctn flex justify-center items-center gap-3 bg-[rgba(33,111,76,0.14)] py-2 px-4 rounded-full cursor-pointer ">
             <img src={dot} alt="dot" />
-            <li><a href="#" className='current-list text-[#216F4C] font-poppins'>Find Talent</a></li>
+            <Link to="/find-talent"><li  className='current-list text-[#216F4C] font-poppins'>Find Talent</li></Link>
+            
           </div>
           <div className="li-ctn flex justify-center items-center gap-3 py-2 px-4 cursor-pointer hover:bg-[rgba(33,111,76,0.14)] hover:rounded-full text-[#111827] hover:text-[#216F4C]  ">
             <img src={dot} alt="dot" />
-            <li><a href="#" className='font-poppins  '>Companies</a></li>
+            
+            <Link to="/find-job-companies"><li  className=' font-poppins'>Companies</li></Link>
           </div>
           <div className="li-ctn flex justify-center items-center gap-3 py-2 px-4 cursor-pointer hover:bg-[rgba(33,111,76,0.14)] hover:rounded-full text-[#111827] hover:text-[#216F4C]  ">
             <img src={dot} alt="dot" />
-            <li><a href="#" className='font-poppins  '>Find Work</a></li>
+            <Link to="/find-work"><li  className=' font-poppins'>Find Work</li></Link>
           </div>
         </ul>
   
