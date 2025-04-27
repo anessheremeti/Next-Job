@@ -41,6 +41,7 @@ function App() {
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
         <Route path="/withdrawal" element={<Withdrawal />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/users-dashboard" element={<UsersDashboard />} />
       </Routes>
     </>
   );
