@@ -21,6 +21,7 @@ import SignUp from './components/SignUp-In/SignUp.jsx'
 import SignIn from './components/SignUp-In/SignIn.jsx';
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
+import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
 
 function App() {
 
@@ -70,6 +71,8 @@ function App() {
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
         <Route path="/withdrawal" element={<Withdrawal />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/users-dashboard" element={<UsersDashboard />} />
+        <Route path="/withdrawal-dashboard" element={<WithDrawalDashboard />} />
       </Routes>
     </>
   );
