@@ -8,7 +8,7 @@ namespace HelloWorld.Services
         Task<IEnumerable<Payment>> GetPaymentsAsync();
         Task<Payment?> GetPaymentByIdAsync(int id);
         Task<bool> CreatePaymentAsync(Payment payment);
-        Task<bool> UpdatePaymentStatusAsync(int id, string status);
+        Task<bool> UpdatePaymentStatusAsync(int id, int paymentStatusId);
         Task<bool> DeletePaymentAsync(int id);
     }
 }

@@ -8,11 +8,13 @@ public class Payment
 
     public decimal Amount { get; set; }
 
-    public DateTime PaymentDate { get; set; } = DateTime.Now;
+    public DateTime? PaymentDate { get; set; } = DateTime.Now;
 
-    public string? Status { get; set; }
+    public int PaymentStatusId { get; set; }  // foreign key
 
+    // Optional properties (related entities)
     public virtual Contract? Contract { get; set; }
+    public virtual PaymentStatus? PaymentStatus { get; set; }
 
     public bool IsValid(out string validationMessage)
     {
@@ -28,10 +30,9 @@ public class Payment
             validationMessage += "Amount must be greater than 0.\n";
         }
 
-        var validStatuses = new[] { "Pending", "Completed", "Failed" };
-        if (string.IsNullOrEmpty(Status) || Array.IndexOf(validStatuses, Status) == -1)
+        if (PaymentStatusId <= 0)
         {
-            validationMessage += "Status must be one of the following: Pending, Completed, Failed.\n";
+            validationMessage += "A valid PaymentStatusId is required.\n";
         }
 
         return string.IsNullOrEmpty(validationMessage);

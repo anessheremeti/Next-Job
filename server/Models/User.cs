@@ -4,37 +4,44 @@ using System;
 public class User
 {
     public int Id { get; set; }
-    public string? UserType { get; set; }
+
+    public int UserTypeId { get; set; }  
+
     public string? FullName { get; set; }
+
     public string? CompanyName { get; set; }
-    public string? Email { get; set; }
-    public string? PasswordHash { get; set; }
-    public DateTime CreatedAt { get; set; }
 
-    public User()
-    {
-        CreatedAt = DateTime.Now;
-    }
+    public string Email { get; set; } = string.Empty;
 
-    public bool IsValid()
+    public string PasswordHash { get; set; } = string.Empty;
+
+    public DateTime? CreatedAt { get; set; } = DateTime.Now;
+
+    public virtual UserType? UserType { get; set; } 
+
+    public bool IsValid(out string validationMessage)
     {
-        if (UserType == "client" || UserType == "freelancer")
-        {
-            return !string.IsNullOrEmpty(FullName);
-        }
-        else if (UserType == "company")
-        {
-            return !string.IsNullOrEmpty(CompanyName);
-        }
-        return false;
+        validationMessage = string.Empty;
+
+        if (UserTypeId <= 0)
+            validationMessage += "UserTypeId is required.\n";
+
+        if (string.IsNullOrWhiteSpace(Email))
+            validationMessage += "Email is required.\n";
+
+        if (string.IsNullOrWhiteSpace(PasswordHash))
+            validationMessage += "Password is required.\n";
+
+        if (string.IsNullOrWhiteSpace(FullName) && string.IsNullOrWhiteSpace(CompanyName))
+            validationMessage += "FullName or CompanyName is required.\n";
+
+        return string.IsNullOrEmpty(validationMessage);
     }
 
     public void SetPassword(string plainPassword)
     {
         if (string.IsNullOrEmpty(plainPassword))
-        {
             throw new ArgumentException("Password cannot be empty");
-        }
 
         PasswordHash = BCrypt.Net.BCrypt.HashPassword(plainPassword);
     }
@@ -42,11 +49,8 @@ public class User
     public bool VerifyPassword(string plainPassword)
     {
         if (string.IsNullOrEmpty(plainPassword) || string.IsNullOrEmpty(PasswordHash))
-        {
             return false;
-        }
 
         return BCrypt.Net.BCrypt.Verify(plainPassword, PasswordHash);
     }
 }
-    

@@ -19,7 +19,7 @@ namespace HelloWorld.Controllers
             _clientService = clientService;
         }
 
-        // GET api/clientprofile
+        // GET: api/clientprofile
         [HttpGet]
         public async Task<IActionResult> GetClientProfiles()
         {
@@ -40,7 +40,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/clientprofile/{id}
+        // GET: api/clientprofile/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClientProfileById(int id)
         {
@@ -61,13 +61,13 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/clientprofile
+        // POST: api/clientprofile
         [HttpPost]
         public async Task<IActionResult> CreateClientProfile([FromBody] ClientProfile clientProfile)
         {
             try
             {
-                if (clientProfile == null || !clientProfile.isValid())
+                if (clientProfile == null || !clientProfile.IsValid())
                 {
                     return BadRequest("Invalid client profile data.");
                 }
@@ -87,13 +87,13 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // PUT api/clientprofile/{id}
+        // PUT: api/clientprofile/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClientProfile(int id, [FromBody] ClientProfile clientProfile)
         {
             try
             {
-                if (clientProfile == null || id != clientProfile.Id || !clientProfile.isValid())
+                if (clientProfile == null || id != clientProfile.Id || !clientProfile.IsValid())
                 {
                     return BadRequest("Invalid client profile data.");
                 }
@@ -113,7 +113,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/clientprofile/{id}
+        // DELETE: api/clientprofile/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClientProfile(int id)
         {
@@ -135,4 +135,3 @@ namespace HelloWorld.Controllers
         }
     }
 }
-

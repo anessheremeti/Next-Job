@@ -26,6 +26,11 @@ namespace HelloWorld.Data
             IDbConnection dbConnection = new SqlConnection(_connectionString);
             return dbConnection.Query<T>(sql);
         }
+        public IEnumerable<T> LoadData<T>(string sql, object parameters)
+        {
+             IDbConnection dbConnection = new SqlConnection(_connectionString);
+            return dbConnection.Query<T>(sql, parameters);
+        }
 
         //Kjo osht metoda QuerySingle e Dapper
         public T LoadDataSingle<T>(string sql)
@@ -72,7 +77,7 @@ namespace HelloWorld.Data
                 return false;
             }
         }
-        public bool ExecuteSqlOpen(string sql, object parameters)
+      public bool ExecuteSqlOpen(string sql, object parameters)
         {
             try
             {
@@ -83,11 +88,15 @@ namespace HelloWorld.Data
                     return result > 0;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                Console.WriteLine($"[Dapper Error] SQL Insert Failed: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw; 
             }
         }
+
+
 
 
         public T? LoadDataSingle<T>(string sql, object? parameters = null)
