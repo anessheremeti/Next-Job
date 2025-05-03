@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 
 namespace HelloWorld.Controllers
 {
@@ -25,8 +26,8 @@ namespace HelloWorld.Controllers
         [HttpPost("signup")]
         public IActionResult SignUp([FromBody] RegisterRequest request)
         {
-            if (request == null)
-                return BadRequest("Invalid user data.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var user = new User
             {
@@ -79,14 +80,14 @@ namespace HelloWorld.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest login)
         {
-            if (login == null || string.IsNullOrEmpty(login.Email) || string.IsNullOrEmpty(login.Password))
-                return BadRequest("Invalid login data.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var user = _dataDapper.LoadDataSingle<User>(
                 @"SELECT id, user_type_id AS UserTypeId, full_name AS FullName, 
-                        company_name AS CompanyName, email, password_hash AS PasswordHash, 
-                        created_at AS CreatedAt 
-                FROM Users WHERE email = @Email", new { login.Email });
+                         company_name AS CompanyName, email, password_hash AS PasswordHash, 
+                         created_at AS CreatedAt 
+                  FROM Users WHERE email = @Email", new { login.Email });
 
             if (user == null || !user.VerifyPassword(login.Password))
                 return Unauthorized("Invalid credentials.");
@@ -98,8 +99,8 @@ namespace HelloWorld.Controllers
         [HttpPost("reset-confirm")]
         public IActionResult ConfirmResetPassword([FromBody] ConfirmResetRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Token) || string.IsNullOrWhiteSpace(request.NewPassword))
-                return BadRequest("Token and new password are required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var email = _dataDapper.LoadDataSingle<string>(
                 "SELECT email FROM PasswordResetTokens WHERE token = @Token AND expiration > GETDATE()",
@@ -132,8 +133,8 @@ namespace HelloWorld.Controllers
 
             var user = _dataDapper.LoadDataSingle<User>(
                 @"SELECT id, user_type_id AS UserTypeId, full_name AS FullName,
-                        company_name AS CompanyName, email, created_at AS CreatedAt
-                FROM Users WHERE id = @Id", new { Id = userId });
+                         company_name AS CompanyName, email, created_at AS CreatedAt
+                  FROM Users WHERE id = @Id", new { Id = userId });
 
             if (user == null)
                 return NotFound("User not found.");
@@ -161,6 +162,12 @@ namespace HelloWorld.Controllers
             {
                 return StatusCode(500, $"Database connection failed: {ex.Message}");
             }
+        }
+
+        [HttpGet("ping")]
+        public IActionResult Ping()
+        {
+            return Ok("AuthController po funksionon");
         }
 
         private string GenerateJwtToken(User user)
@@ -192,13 +199,5 @@ namespace HelloWorld.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        [HttpGet("ping")]
-        public IActionResult Ping()
-        {
-            return Ok("AuthController po funksionon");
-        }
-
     }
-
 }
