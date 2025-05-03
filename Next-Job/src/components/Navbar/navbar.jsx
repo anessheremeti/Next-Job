@@ -2,7 +2,8 @@ import React,{useState} from 'react'
 import logo from "../../assets/Logo 1.png";
 import dot from "../../assets/dot.png";
 import { Link } from "react-router";
-
+import SignUp from '../SignUp-In/SignUp.jsx';
+import SignIn from '../SignUp-In/SignIn.jsx';
 import { AiOutlineClose,AiOutlineMenu} from "react-icons/ai";
 
 function Navbar() {
@@ -34,8 +35,16 @@ function Navbar() {
         </ul>
   
         <div className="hidden xl:flex nav-buttons justify-center items-center gap-4">
-          <button className='rounded-full px-7 py-2 border border-[#216F4C] text-[#216F4C] hover:bg-[rgba(33,111,76,1)] hover:text-white transition duration-300 font-poppins'>Log in</button>
-          <button className='bg-[rgba(33,111,76,1)] text-white rounded-full px-7 py-2 hover:bg-[#ffffff] hover:text-[#216F4C] hover:border hover:border-[#216F4C] transition duration-300 font-poppins'>Register</button>
+          <Link to="/signin">
+            <button className='rounded-full px-7 py-2 border border-[#216F4C] text-[#216F4C] hover:bg-[rgba(33,111,76,1)] hover:text-white transition duration-300 font-poppins'>
+              Log in
+            </button>
+          </Link>
+          <Link to="/signup">
+            <button className='bg-[rgba(33,111,76,1)] text-white rounded-full px-7 py-2 hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C] transition duration-300 font-poppins'>
+              Register
+            </button>
+          </Link>
         </div>
   
         <div onClick={handleNav} className='cursor-pointer xl:hidden ps-5'>
