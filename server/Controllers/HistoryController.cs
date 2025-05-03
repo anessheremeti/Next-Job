@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System;
-using System.Linq;
 
 namespace HelloWorld.Controllers
 {
@@ -18,7 +16,7 @@ namespace HelloWorld.Controllers
             _historyService = historyService;
         }
 
-        // GET: api/history
+        // GET api/history
         [HttpGet]
         public async Task<IActionResult> GetHistory()
         {
@@ -27,7 +25,9 @@ namespace HelloWorld.Controllers
                 var histories = await _historyService.GetHistoryAsync();
 
                 if (histories == null || !histories.Any())
+                {
                     return NotFound("No history records found.");
+                }
 
                 return Ok(histories);
             }
@@ -37,7 +37,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET: api/history/{id}
+        // GET api/history/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetHistoryById(int id)
         {
@@ -46,7 +46,9 @@ namespace HelloWorld.Controllers
                 var history = await _historyService.GetHistoryByIdAsync(id);
 
                 if (history == null)
+                {
                     return NotFound($"History record with ID {id} not found.");
+                }
 
                 return Ok(history);
             }
@@ -56,22 +58,30 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST: api/history
+        // POST api/history
         [HttpPost]
         public async Task<IActionResult> CreateHistory([FromBody] History history)
         {
             try
             {
                 if (history == null)
+                {
                     return BadRequest("History data is required.");
+                }
 
-                if (!history.IsValid(out string validationMessage))
-                    return BadRequest($"Validation failed: {validationMessage}");
+                // Validate history data
+                string validationMessage;
+                if (!history.IsValid(out validationMessage))
+                {
+                    return BadRequest(validationMessage);
+                }
 
                 var isCreated = await _historyService.CreateHistoryAsync(history);
 
                 if (!isCreated)
+                {
                     return StatusCode(500, "Failed to create history record.");
+                }
 
                 return CreatedAtAction(nameof(GetHistoryById), new { id = history.Id }, history);
             }
@@ -81,7 +91,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE: api/history/{id}
+        // DELETE api/history/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHistory(int id)
         {
@@ -90,7 +100,9 @@ namespace HelloWorld.Controllers
                 var isDeleted = await _historyService.DeleteHistoryAsync(id);
 
                 if (!isDeleted)
+                {
                     return NotFound($"History record with ID {id} not found.");
+                }
 
                 return NoContent();
             }

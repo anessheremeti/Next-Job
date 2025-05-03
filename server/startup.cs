@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using HelloWorld.Data;
-using HelloWorld.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HelloWorld.Services;
 
 public class Startup
 {
@@ -23,35 +23,9 @@ public class Startup
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "NextJob API", Version = "v1" });
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\nExample: \"Bearer eyJhbGciOiJIUzI1NiIs...\""
-            });
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "User API", Version = "v1" });
         });
 
-        // Register services and DataDapper
         services.AddScoped<DataDapper>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IApplicationService, ApplicationService>();
@@ -65,31 +39,21 @@ public class Startup
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IReviewService, ReviewService>();
-        services.AddScoped<IBudgetTypeService, BudgetTypeService>();
-        services.AddScoped<IContractStatusService, ContractStatusService>();
-        services.AddScoped<IEnglishLevelService, EnglishLevelService>();
-        services.AddScoped<IExperienceLevelService, ExperienceLevelService>();
-        services.AddScoped<IGenderService, GenderService>();
-        services.AddScoped<IJobTypeService, JobTypeService>();
-        services.AddScoped<IPaymentStatusService, PaymentStatusService>();
-        services.AddScoped<IUserTypeService, UserTypeService>();
 
-        // JWT Configuration
         var jwtKey = Configuration["Jwt:Key"];
-        if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
+        if (string.IsNullOrEmpty(jwtKey))
         {
-            throw new ArgumentException("JWT Key must be at least 32 characters long.");
+            throw new ArgumentException("JWT Key is missing from configuration.");
         }
 
-        services.AddAuthentication("JwtBearer")
-            .AddJwtBearer("JwtBearer", options =>
+        services.AddAuthentication()
+            .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidAudience = Configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
@@ -97,7 +61,8 @@ public class Startup
             });
 
         services.AddAuthorization();
-        services.AddControllers(); 
+
+        services.AddControllers();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -108,7 +73,7 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "NextJob API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User API v1");
                 c.RoutePrefix = string.Empty;
             });
         }
@@ -120,12 +85,12 @@ public class Startup
 
         app.UseRouting();
 
-        app.UseAuthentication(); 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllers(); 
+            endpoints.MapControllers();
         });
     }
 }

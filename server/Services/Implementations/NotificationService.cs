@@ -18,7 +18,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Notifications";
+                var sql = "SELECT * FROM Notification";
                 return await _dataDapper.LoadDataAsync<Notification>(sql);
             }
             catch (Exception ex)
@@ -31,8 +31,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Notifications WHERE id = @Id";
-                return await _dataDapper.LoadDataSingleAsync<Notification>(sql, new { Id = id });
+                var sql = "SELECT * FROM Notification WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dataDapper.LoadDataSingleAsync<Notification>(sql, parameters);
             }
             catch (Exception ex)
             {
@@ -44,8 +45,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Notifications WHERE user_id = @UserId";
-                return await _dataDapper.LoadDataAsync<Notification>(sql, new { UserId = userId });
+                var sql = "SELECT * FROM Notification WHERE UserId = @UserId";
+                var parameters = new { UserId = userId };
+                return await _dataDapper.LoadDataAsync<Notification>(sql, parameters);
             }
             catch (Exception ex)
             {
@@ -57,17 +59,14 @@ namespace HelloWorld.Services
         {
             try
             {
-                string validationMessage;
-                if (!notification.IsValid(out validationMessage))
+                if (notification == null)
                 {
-                    throw new ArgumentException($"Invalid notification data: {validationMessage}");
+                    throw new ArgumentException("Notification data is required.");
                 }
 
-
-                var sql = @"
-                    INSERT INTO Notifications (user_id, message, is_read, created_at)
-                    VALUES (@UserId, @Message, @IsRead, @CreatedAt)";
-
+                var sql = "INSERT INTO Notification (UserId, Message, IsRead, CreatedAt) " +
+                          "VALUES (@UserId, @Message, @IsRead, @CreatedAt)";
+                
                 return await _dataDapper.ExecuteSqlAsync(sql, notification);
             }
             catch (Exception ex)
@@ -80,8 +79,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "UPDATE Notifications SET is_read = 1 WHERE id = @Id";
-                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+                var sql = "UPDATE Notification SET IsRead = 1 WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)
             {
@@ -93,8 +93,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Notifications WHERE id = @Id";
-                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+                var sql = "DELETE FROM Notification WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)
             {

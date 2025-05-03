@@ -31,8 +31,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM History WHERE id = @Id";
-                return await _dataDapper.LoadDataSingleAsync<History>(sql, new { Id = id });
+                var sql = "SELECT * FROM History WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dataDapper.LoadDataSingleAsync<History>(sql, parameters);
             }
             catch (Exception ex)
             {
@@ -44,15 +45,13 @@ namespace HelloWorld.Services
         {
             try
             {
-                string validationMessage = string.Empty;
-                if (history == null || !history.IsValid(out validationMessage))
+                if (history == null)
                 {
-                    throw new ArgumentException($"Invalid history data: {validationMessage}");
+                    throw new ArgumentException("History data is required.");
                 }
 
-                var sql = @"INSERT INTO History (user_id, action, timestamp) 
+                var sql = @"INSERT INTO History (UserId, Action, Timestamp) 
                             VALUES (@UserId, @Action, @Timestamp)";
-
                 return await _dataDapper.ExecuteSqlAsync(sql, history);
             }
             catch (Exception ex)
@@ -65,8 +64,9 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM History WHERE id = @Id";
-                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+                var sql = "DELETE FROM History WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)
             {

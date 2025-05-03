@@ -26,7 +26,8 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while retrieving companies: {ex.Message}", ex);
             }
         }
-
+        
+        //Ktu e marrmi me id company
         public async Task<Company?> GetCompanyByIdAsync(int id)
         {
             try
@@ -41,18 +42,18 @@ namespace HelloWorld.Services
             }
         }
 
+      
         public async Task<bool> CreateCompanyAsync(Company company)
         {
             try
             {
-                string validationMessage = string.Empty; 
-                if (company == null || !company.IsValid(out validationMessage))
+                if (company == null)
                 {
-                    throw new ArgumentException($"Invalid company data: {validationMessage}");
+                    throw new ArgumentException("Company data is required.");
                 }
 
                 var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
-                            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+                VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
@@ -62,26 +63,19 @@ namespace HelloWorld.Services
             }
         }
 
-
         public async Task<bool> UpdateCompanyAsync(int id, Company company)
         {
             try
             {
-                string validationMessage = string.Empty;
-                if (company == null || id != company.Id || !company.IsValid(out validationMessage))
+                if (company == null || id != company.Id)
                 {
-                    throw new ArgumentException($"Invalid company data: {validationMessage}");
+                    throw new ArgumentException("Invalid company data.");
                 }
 
-
                 var sql = @"UPDATE Company 
-                            SET OwnerId = @OwnerId, 
-                                Name = @Name, 
-                                Description = @Description, 
-                                Website = @Website, 
-                                CreatedAt = @CreatedAt 
+                            SET OwnerId = @OwnerId, Name = @Name, Description = @Description, Website = @Website, CreatedAt = @CreatedAt 
                             WHERE Id = @Id";
-
+                company.Id = id;
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)

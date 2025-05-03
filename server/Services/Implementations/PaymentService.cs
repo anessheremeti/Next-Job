@@ -18,7 +18,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Payments";
+                var sql = "SELECT * FROM Payment";
                 return await _dataDapper.LoadDataAsync<Payment>(sql);
             }
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Payments WHERE Id = @Id";
+                var sql = "SELECT * FROM Payment WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.LoadDataSingleAsync<Payment>(sql, parameters);
             }
@@ -50,15 +50,9 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Payment data is required.");
                 }
 
-                string validationMessage;
-                if (!payment.IsValid(out validationMessage))
-                {
-                    throw new ArgumentException($"Invalid payment data: {validationMessage}");
-                }
-
-                var sql = @"INSERT INTO Payments (Contract_Id, Amount, Payment_Date, Payment_Status_Id) 
-                            VALUES (@ContractId, @Amount, @PaymentDate, @PaymentStatusId)";
-
+                var sql = "INSERT INTO Payment (ContractId, Amount, PaymentDate, Status) " +
+                          "VALUES (@ContractId, @Amount, @PaymentDate, @Status)";
+                
                 return await _dataDapper.ExecuteSqlAsync(sql, payment);
             }
             catch (Exception ex)
@@ -67,23 +61,23 @@ namespace HelloWorld.Services
             }
         }
 
-        public async Task<bool> UpdatePaymentStatusAsync(int id, int paymentStatusId)
+        public async Task<bool> UpdatePaymentStatusAsync(int id, string status)
         {
             try
             {
-                if (paymentStatusId <= 0)
+                var validStatuses = new[] { "Pending", "Completed", "Failed" };
+                if (!Array.Exists(validStatuses, s => s.Equals(status, StringComparison.OrdinalIgnoreCase)))
                 {
-                    throw new ArgumentException("Invalid PaymentStatusId.");
+                    throw new ArgumentException("Invalid status.");
                 }
 
-                var sql = @"UPDATE Payments SET Payment_Status_Id = @PaymentStatusId WHERE Id = @Id";
-                var parameters = new { PaymentStatusId = paymentStatusId, Id = id };
-
+                var sql = "UPDATE Payment SET Status = @Status WHERE Id = @Id";
+                var parameters = new { Status = status, Id = id };
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while updating payment status: {ex.Message}", ex);
+                throw new Exception($"Error while updating payment status for ID {id}: {ex.Message}", ex);
             }
         }
 
@@ -91,9 +85,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Payments WHERE Id = @Id";
+                var sql = "DELETE FROM Payment WHERE Id = @Id";
                 var parameters = new { Id = id };
-
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)

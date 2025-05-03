@@ -22,38 +22,14 @@ import SignIn from './components/SignUp-In/SignIn.jsx';
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
-
+import Chat from './components/Chat/Chat.jsx';
 function App() {
 
   return (
     <>
       <Routes>
-        {/* Ensar */}
-        {/*<PortfolioWithPrice/>*/}
-{/* <<<<<<< HEAD
-        {/* <Workpage/> */}
-        {/* <MyJobs/> */}
-        {/*<Workpage/>*/}
-        {/*<MyJobs/>*/}
-        {/*<ClientStart/>*/} 
-
-   
-
-        {/* Blend */}
-        {/* <LandingPage/> */}
-        {/* <FindJobCompanies/> */}
-        {/* <FindTalent/> */}
-        { /*<LandingPage/> */ }
-         {/* <WithDrawalDashboard /> */}
-        {/* <FindWork/> */}
-        {/* <SignService/> */}
-        {/* <SignUp/> */}
-        {/* <SignIn/> */}
   
 
-        {/* <CompanyDashboard/> */}
-        {/* <Withdrawal/> */}
-        {/* <AdminDashboard/> */}
 
         <Route index element={<LandingPage />} />
         <Route path="/portfolio-with-price" element={<PortfolioWithPrice />} />
@@ -61,6 +37,7 @@ function App() {
         <Route path="/my-jobs" element={<MyJobs />} />
         <Route path="/client-start" element={<ClientStart />} />
         <Route path="/company-details" element={<CompanyDetails />} />
+        <Route path="/chat" element={<Chat />} />
         
         {/* Blend */}
         <Route path="/find-job-companies" element={<FindJobCompanies />} />
