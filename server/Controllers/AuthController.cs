@@ -4,15 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using HelloWorld.Data;
-<<<<<<< HEAD
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-=======
->>>>>>> d9cac020040ad9e00d122fea83f2e88bb79c1f02
+using HelloWorld.Data;
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -23,221 +18,39 @@ public class AuthController : ControllerBase
 
     public AuthController(DataDapper dataDapper, IConfiguration configuration)
     {
-<<<<<<< HEAD
-        private readonly DataDapper _dataDapper;
-        private readonly IConfiguration _configuration;
-
-        public AuthController(DataDapper dataDapper, IConfiguration configuration)
-        {
-            _dataDapper = dataDapper;
-            _configuration = configuration;
-        }
-
-        [HttpPost("signup")]
-        public IActionResult SignUp([FromBody] RegisterRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var user = new User
-            {
-                UserTypeId = request.UserTypeId,
-                FullName = request.FullName,
-                CompanyName = request.CompanyName,
-                Email = request.Email
-            };
-
-            user.SetPassword(request.Password);
-
-            if (!user.IsValid(out string validationMessage))
-                return BadRequest($"Invalid user data: {validationMessage}");
-
-            var existingUser = _dataDapper.LoadDataSingle<User>(
-                "SELECT * FROM Users WHERE email = @Email", new { request.Email });
-
-            if (existingUser != null)
-                return BadRequest("Email already in use.");
-
-            var sql = @"INSERT INTO Users 
-                        (user_type_id, full_name, company_name, email, password_hash, created_at)
-                        VALUES 
-                        (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
-
-            var insertParams = new
-            {
-                user.UserTypeId,
-                user.FullName,
-                user.CompanyName,
-                user.Email,
-                user.PasswordHash,
-                user.CreatedAt
-            };
-
-            try
-            {
-                bool isCreated = _dataDapper.ExecuteSqlOpen(sql, insertParams);
-                if (!isCreated)
-                    return StatusCode(500, "User not inserted, no rows affected.");
-
-                return Ok("User registered successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Exception: {ex.Message}");
-            }
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest login)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var user = _dataDapper.LoadDataSingle<User>(
-                @"SELECT id, user_type_id AS UserTypeId, full_name AS FullName, 
-                         company_name AS CompanyName, email, password_hash AS PasswordHash, 
-                         created_at AS CreatedAt 
-                  FROM Users WHERE email = @Email", new { login.Email });
-
-            if (user == null || !user.VerifyPassword(login.Password))
-                return Unauthorized("Invalid credentials.");
-
-            var token = GenerateJwtToken(user);
-            return Ok(new { Token = token });
-        }
-
-        [HttpPost("reset-confirm")]
-        public IActionResult ConfirmResetPassword([FromBody] ConfirmResetRequest request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var email = _dataDapper.LoadDataSingle<string>(
-                "SELECT email FROM PasswordResetTokens WHERE token = @Token AND expiration > GETDATE()",
-                new { request.Token });
-
-            if (string.IsNullOrEmpty(email))
-                return BadRequest("Invalid or expired token.");
-
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-
-            bool updated = _dataDapper.ExecuteSqlOpen(
-                "UPDATE Users SET password_hash = @PasswordHash WHERE email = @Email",
-                new { PasswordHash = hashedPassword, Email = email });
-
-            if (!updated)
-                return StatusCode(500, "Failed to reset password.");
-
-            _dataDapper.ExecuteSqlOpen("DELETE FROM PasswordResetTokens WHERE token = @Token", new { request.Token });
-
-            return Ok("Password has been reset successfully.");
-        }
-
-        [HttpGet("me")]
-        [Authorize]
-        public IActionResult GetCurrentUser()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-                return Unauthorized("User ID not found or invalid in token.");
-
-            var user = _dataDapper.LoadDataSingle<User>(
-                @"SELECT id, user_type_id AS UserTypeId, full_name AS FullName,
-                         company_name AS CompanyName, email, created_at AS CreatedAt
-                  FROM Users WHERE id = @Id", new { Id = userId });
-
-            if (user == null)
-                return NotFound("User not found.");
-
-            return Ok(new
-            {
-                user.Id,
-                user.FullName,
-                user.CompanyName,
-                user.Email,
-                user.UserTypeId,
-                user.CreatedAt
-            });
-        }
-
-        [HttpGet("test-db")]
-        public IActionResult TestDbConnection()
-        {
-            try
-            {
-                var result = _dataDapper.LoadDataSingle<int>("SELECT 1", new { });
-                return Ok("Database connection is working.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Database connection failed: {ex.Message}");
-            }
-        }
-
-        [HttpGet("ping")]
-        public IActionResult Ping()
-        {
-            return Ok("AuthController po funksionon");
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var secretKey = _configuration["Jwt:Key"];
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-
-            if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 32)
-                throw new ArgumentException("JWT Secret Key is missing or too short.");
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Email ?? "unknown"),
-                new Claim(ClaimTypes.Role, user.UserType?.UserTypeName ?? "user")
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-    }
-=======
         _dataDapper = dataDapper;
         _configuration = configuration;
     }
 
-    // POST api/auth/signup
     [HttpPost("signup")]
-    public IActionResult SignUp([FromBody] User user)
+    public IActionResult SignUp([FromBody] RegisterRequest request)
     {
-        if (user == null || !user.IsValid())
-            return BadRequest("Invalid user data.");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        var checkEmailSql = "SELECT * FROM Users WHERE Email = @Email";
-        var parameters = new { user.Email };
-        var existingUser = _dataDapper.LoadDataSingle<User>(checkEmailSql, parameters);
+        var user = new User
+        {
+            UserType = request.UserType,
+            FullName = request.FullName,
+            CompanyName = request.CompanyName,
+            Email = request.Email
+        };
+
+        user.SetPassword(request.Password);
+
+        if (!user.IsValid(out string validationMessage))
+            return BadRequest($"Invalid user data: {validationMessage}");
+
+        var existingUser = _dataDapper.LoadDataSingle<User>(
+            "SELECT * FROM Users WHERE email = @Email", new { request.Email });
 
         if (existingUser != null)
             return BadRequest("Email already in use.");
 
-        if (string.IsNullOrEmpty(user.PasswordHash))
-        {
-            return BadRequest("Password cannot be empty.");
-        }
-
-        user.SetPassword(user.PasswordHash);
-
-        var sql = @"INSERT INTO Users (UserType, FullName, CompanyName, Email, PasswordHash)
-                    VALUES (@UserType, @FullName, @CompanyName, @Email, @PasswordHash)";
+        var sql = @"INSERT INTO Users 
+                    (user_type, full_name, company_name, email, password_hash, created_at)
+                    VALUES 
+                    (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
 
         var insertParams = new
         {
@@ -245,57 +58,103 @@ public class AuthController : ControllerBase
             user.FullName,
             user.CompanyName,
             user.Email,
-            user.PasswordHash
+            user.PasswordHash,
+            user.CreatedAt
         };
 
-        bool isCreated = _dataDapper.ExecuteSqlOpen(sql, insertParams);
+        try
+        {
+            bool isCreated = _dataDapper.ExecuteSqlOpen(sql, insertParams);
+            if (!isCreated)
+                return StatusCode(500, "User not inserted, no rows affected.");
 
-        if (!isCreated)
-            return StatusCode(500, "Failed to register user.");
-
-        return Ok("User registered successfully.");
+            return Ok("User registered successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Exception: {ex.Message}");
+        }
     }
 
-    // POST api/auth/login
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest login)
     {
-        if (login == null)
-            return BadRequest("Invalid login data.");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        var sql = "SELECT * FROM Users WHERE Email = @Email";
-        var parameters = new { login.Email };
+        var user = _dataDapper.LoadDataSingle<User>(
+            @"SELECT id, user_type AS UserType, full_name AS FullName, 
+                     company_name AS CompanyName, email, password_hash AS PasswordHash, 
+                     created_at AS CreatedAt 
+              FROM Users WHERE email = @Email", new { login.Email });
 
-        var user = _dataDapper.LoadDataSingle<User>(sql, parameters);
-
-        if (user == null)
-        {
-            return Unauthorized("User not found.");
-        }
-
-        if (string.IsNullOrEmpty(login.Password))
-        {
-            return Unauthorized("Password cannot be empty.");
-        }
-
-        if (!user.VerifyPassword(login.Password))
-        {
-            return Unauthorized("Invalid password.");
-        }
+        if (user == null || !user.VerifyPassword(login.Password))
+            return Unauthorized("Invalid credentials.");
 
         var token = GenerateJwtToken(user);
-
         return Ok(new { Token = token });
     }
 
+    [HttpPost("reset-confirm")]
+    public IActionResult ConfirmResetPassword([FromBody] ConfirmResetRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var email = _dataDapper.LoadDataSingle<string>(
+            "SELECT email FROM PasswordResetTokens WHERE token = @Token AND expiration > GETDATE()",
+            new { request.Token });
+
+        if (string.IsNullOrEmpty(email))
+            return BadRequest("Invalid or expired token.");
+
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+        bool updated = _dataDapper.ExecuteSqlOpen(
+            "UPDATE Users SET password_hash = @PasswordHash WHERE email = @Email",
+            new { PasswordHash = hashedPassword, Email = email });
+
+        if (!updated)
+            return StatusCode(500, "Failed to reset password.");
+
+        _dataDapper.ExecuteSqlOpen("DELETE FROM PasswordResetTokens WHERE token = @Token", new { request.Token });
+
+        return Ok("Password has been reset successfully.");
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult GetCurrentUser()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            return Unauthorized("User ID not found or invalid in token.");
+
+        var user = _dataDapper.LoadDataSingle<User>(
+            @"SELECT id, user_type AS UserType, full_name AS FullName,
+                     company_name AS CompanyName, email, created_at AS CreatedAt
+              FROM Users WHERE id = @Id", new { Id = userId });
+
+        if (user == null)
+            return NotFound("User not found.");
+
+        return Ok(new
+        {
+            user.Id,
+            user.FullName,
+            user.CompanyName,
+            user.Email,
+            user.UserType,
+            user.CreatedAt
+        });
+    }
 
     [HttpGet("test-db")]
     public IActionResult TestDbConnection()
     {
         try
         {
-            var sql = "SELECT 1";
-            var result = _dataDapper.LoadDataSingle<int>(sql, new { });
+            var result = _dataDapper.LoadDataSingle<int>("SELECT 1", new { });
             return Ok("Database connection is working.");
         }
         catch (Exception ex)
@@ -303,22 +162,26 @@ public class AuthController : ControllerBase
             return StatusCode(500, $"Database connection failed: {ex.Message}");
         }
     }
-    
+
+    [HttpGet("ping")]
+    public IActionResult Ping()
+    {
+        return Ok("AuthController po funksionon");
+    }
+
     private string GenerateJwtToken(User user)
     {
         var secretKey = _configuration["Jwt:Key"];
         var issuer = _configuration["Jwt:Issuer"];
         var audience = _configuration["Jwt:Audience"];
 
-        if (string.IsNullOrEmpty(secretKey))
-        {
-            throw new ArgumentException("JWT Secret Key is missing in the configuration.");
-        }
+        if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 32)
+            throw new ArgumentException("JWT Secret Key is missing or too short.");
 
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Email ?? "default@domain.com"),
+            new Claim(ClaimTypes.Name, user.Email ?? "unknown"),
             new Claim(ClaimTypes.Role, user.UserType ?? "user")
         };
 
@@ -329,11 +192,10 @@ public class AuthController : ControllerBase
             issuer: issuer,
             audience: audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddHours(1),
             signingCredentials: creds
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
->>>>>>> d9cac020040ad9e00d122fea83f2e88bb79c1f02
 }

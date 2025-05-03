@@ -15,19 +15,40 @@ public class User
     {
         CreatedAt = DateTime.Now;
     }
-
-    public bool IsValid()
+    public bool IsValid(out string message)
     {
+        if (string.IsNullOrEmpty(UserType))
+        {
+            message = "User type is required.";
+            return false;
+        }
+
         if (UserType == "client" || UserType == "freelancer")
         {
-            return !string.IsNullOrEmpty(FullName);
+            if (string.IsNullOrEmpty(FullName))
+            {
+                message = "Full name is required for this user type.";
+                return false;
+            }
         }
         else if (UserType == "company")
         {
-            return !string.IsNullOrEmpty(CompanyName);
+            if (string.IsNullOrEmpty(CompanyName))
+            {
+                message = "Company name is required for company users.";
+                return false;
+            }
         }
-        return false;
+        else
+        {
+            message = "Invalid user type.";
+            return false;
+        }
+
+        message = string.Empty;
+        return true;
     }
+
 
     public void SetPassword(string plainPassword)
     {
