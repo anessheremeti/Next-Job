@@ -16,6 +16,9 @@ import FindWork from './components/FindWork/FindWork.jsx';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx';
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
+
+import SignUp from './components/SignUp-In/SignUp.jsx'
+import SignIn from './components/SignUp-In/SignIn.jsx';
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
@@ -25,7 +28,9 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Ensar */}
+  
+
+
         <Route index element={<LandingPage />} />
         <Route path="/portfolio-with-price" element={<PortfolioWithPrice />} />
         <Route path="/workpage" element={<Workpage />} />
