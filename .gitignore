@@ -3,9 +3,9 @@ obj/
 *.dll
 *.exe
 *.pdb
-*.deps.json
-*.runtimeconfig.json
+*.cache
 *.suo
 *.user
-*.cache
-*.log
+*.sln.docstates
+*.runtimeconfig.json
+*.deps.json
