@@ -152,3 +152,4 @@ C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\refint\server.dll
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.pdb
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.genruntimeconfig.cache
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\ref\server.dll
+C:\Users\engje\OneDrive\Bureau\next-job\server\bin\Debug\net9.0\websocket-sharp.dll

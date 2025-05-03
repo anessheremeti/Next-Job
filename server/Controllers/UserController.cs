@@ -64,9 +64,14 @@ namespace HelloWorld.Controllers
         {
             try
             {
-                if (user == null || !user.IsValid())
+                if (user == null)
                 {
-                    return BadRequest("Invalid user data.");
+                    return BadRequest("User object is null.");
+                }
+
+                if (!user.IsValid(out string validationMessage))
+                {
+                    return BadRequest(new { message = validationMessage });
                 }
 
                 var isCreated = await _userService.CreateUserAsync(user);
