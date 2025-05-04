@@ -1,13 +1,12 @@
+using HelloWorld.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HelloWorld.Services
+public interface IJobInfoService
 {
-    public interface IJobInfoService
-    {
-        Task<IEnumerable<JobInfo>> GetJobsAsync();
-        Task<JobInfo?> GetJobByIdAsync(int id);
-        Task<bool> CreateJobAsync(JobInfo job);
-        Task<bool> DeleteJobAsync(int id);
-    }
+    Task<IEnumerable<JobInfo>> GetAllAsync();
+    Task<JobInfo?> GetByIdAsync(int id);
+    Task<bool> CreateAsync(JobInfoCreateRequest request);
+    Task<bool> UpdateAsync(int id, JobInfoCreateRequest request);
+    Task<bool> DeleteAsync(int id);
 }

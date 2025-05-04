@@ -1,9 +1,12 @@
+using HelloWorld.Models;
+
 public class User
 {
     public int Id { get; set; }
 
-    public int UserTypeId { get; set; } // për përdorim me DB
-    public string? UserType { get; set; } // për përdorim në token ose view
+    public int UserTypeId { get; set; }
+
+    public UserType? UserType { get; set; }
 
     public string? FullName { get; set; }
     public string? CompanyName { get; set; }
@@ -18,13 +21,13 @@ public class User
 
     public bool IsValid(out string message)
     {
-        if (string.IsNullOrEmpty(FullName) && string.IsNullOrEmpty(CompanyName))
+        if (string.IsNullOrWhiteSpace(FullName) && string.IsNullOrWhiteSpace(CompanyName))
         {
             message = "Full name or company name is required.";
             return false;
         }
 
-        if (string.IsNullOrEmpty(Email))
+        if (string.IsNullOrWhiteSpace(Email))
         {
             message = "Email is required.";
             return false;
@@ -36,7 +39,7 @@ public class User
 
     public void SetPassword(string plainPassword)
     {
-        if (string.IsNullOrEmpty(plainPassword))
+        if (string.IsNullOrWhiteSpace(plainPassword))
         {
             throw new ArgumentException("Password cannot be empty");
         }
@@ -46,11 +49,8 @@ public class User
 
     public bool VerifyPassword(string plainPassword)
     {
-        if (string.IsNullOrEmpty(plainPassword) || string.IsNullOrEmpty(PasswordHash))
-        {
-            return false;
-        }
-
-        return BCrypt.Net.BCrypt.Verify(plainPassword, PasswordHash);
+        return !string.IsNullOrWhiteSpace(plainPassword) &&
+               !string.IsNullOrWhiteSpace(PasswordHash) &&
+               BCrypt.Net.BCrypt.Verify(plainPassword, PasswordHash);
     }
 }

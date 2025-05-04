@@ -7,7 +7,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using HelloWorld.Data;
-
+using HelloWorld.Models;
+using System;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -28,9 +29,20 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        if (string.IsNullOrWhiteSpace(request.UserType))
+            return BadRequest("User type is required.");
+
+        // Merr ID-në për UserType nga emri (client, freelancer, company)
+        var userTypeId = _dataDapper.LoadDataSingle<int>(
+            "SELECT UserTypeID FROM UserType WHERE LOWER(UserTypeName) = LOWER(@UserTypeName)",
+            new { UserTypeName = request.UserType });
+
+        if (userTypeId == 0)
+            return BadRequest("Invalid user type.");
+
         var user = new User
         {
-            UserType = request.UserType,
+            UserTypeId = userTypeId,
             FullName = request.FullName,
             CompanyName = request.CompanyName,
             Email = request.Email
@@ -48,13 +60,13 @@ public class AuthController : ControllerBase
             return BadRequest("Email already in use.");
 
         var sql = @"INSERT INTO Users 
-                    (user_type, full_name, company_name, email, password_hash, created_at)
+                    (user_type_id, full_name, company_name, email, password_hash, created_at)
                     VALUES 
-                    (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+                    (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
 
         var insertParams = new
         {
-            user.UserType,
+            user.UserTypeId,
             user.FullName,
             user.CompanyName,
             user.Email,
@@ -83,10 +95,12 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
 
         var user = _dataDapper.LoadDataSingle<User>(
-            @"SELECT id, user_type AS UserType, full_name AS FullName, 
-                     company_name AS CompanyName, email, password_hash AS PasswordHash, 
-                     created_at AS CreatedAt 
-              FROM Users WHERE email = @Email", new { login.Email });
+            @"SELECT u.id, u.user_type_id AS UserTypeId, ut.UserTypeID, ut.UserTypeName,
+                     u.full_name AS FullName, u.company_name AS CompanyName, 
+                     u.email, u.password_hash AS PasswordHash, u.created_at AS CreatedAt
+              FROM Users u
+              JOIN UserType ut ON u.user_type_id = ut.UserTypeID
+              WHERE u.email = @Email", new { login.Email });
 
         if (user == null || !user.VerifyPassword(login.Password))
             return Unauthorized("Invalid credentials.");
@@ -131,9 +145,12 @@ public class AuthController : ControllerBase
             return Unauthorized("User ID not found or invalid in token.");
 
         var user = _dataDapper.LoadDataSingle<User>(
-            @"SELECT id, user_type AS UserType, full_name AS FullName,
-                     company_name AS CompanyName, email, created_at AS CreatedAt
-              FROM Users WHERE id = @Id", new { Id = userId });
+            @"SELECT u.id, u.user_type_id AS UserTypeId, ut.UserTypeID, ut.UserTypeName,
+                     u.full_name AS FullName, u.company_name AS CompanyName, 
+                     u.email, u.created_at AS CreatedAt
+              FROM Users u
+              JOIN UserType ut ON u.user_type_id = ut.UserTypeID
+              WHERE u.id = @Id", new { Id = userId });
 
         if (user == null)
             return NotFound("User not found.");
@@ -182,7 +199,7 @@ public class AuthController : ControllerBase
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Email ?? "unknown"),
-            new Claim(ClaimTypes.Role, user.UserType ?? "user")
+            new Claim(ClaimTypes.Role, user.UserType?.UserTypeName ?? "user")
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));

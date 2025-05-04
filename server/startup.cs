@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using HelloWorld.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HelloWorld.Data;
 using HelloWorld.Services;
+using System;
 
 public class Startup
 {
@@ -21,9 +22,61 @@ public class Startup
     {
         services.AddSingleton<IConfiguration>(Configuration);
 
+        var jwtKey = Configuration["Jwt:Key"];
+        var jwtIssuer = Configuration["Jwt:Issuer"];
+        var jwtAudience = Configuration["Jwt:Audience"];
+
+        if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
+            throw new ArgumentException("JWT Key must be at least 32 characters long.");
+
+        if (string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience))
+            throw new ArgumentException("Jwt:Issuer or Jwt:Audience is missing in configuration.");
+
+        services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                };
+            });
+
+        services.AddAuthorization();
+
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "User API", Version = "v1" });
+
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Description = "Enter 'Bearer' [space] and then your valid token in the text box below.\r\n\r\nExample: \"Bearer eyJhbGciOi...\"",
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    jwtSecurityScheme,
+                    Array.Empty<string>()
+                }
+            });
         });
 
         services.AddScoped<DataDapper>();
@@ -39,28 +92,13 @@ public class Startup
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IReviewService, ReviewService>();
-
-        var jwtKey = Configuration["Jwt:Key"];
-        if (string.IsNullOrEmpty(jwtKey))
-        {
-            throw new ArgumentException("JWT Key is missing from configuration.");
-        }
-
-        services.AddAuthentication()
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-                };
-            });
-
-        services.AddAuthorization();
+        services.AddScoped<IBudgetTypeService, BudgetTypeService>();
+        services.AddScoped<IEnglishLevelService, EnglishLevelService>();
+        services.AddScoped<IExperienceLevelService, ExperienceLevelService>();
+        services.AddScoped<IGenderService, GenderService>();
+        services.AddScoped<IJobTypeService, JobTypeService>();
+        services.AddScoped<IPaymentStatusService, PaymentStatusService>();
+        services.AddScoped<IUserTypeService, UserTypeService>();
 
         services.AddControllers();
     }
@@ -70,11 +108,12 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "User API v1");
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = "swagger"; 
             });
         }
         else
@@ -83,9 +122,10 @@ public class Startup
             app.UseHsts();
         }
 
+        app.UseHttpsRedirection();
         app.UseRouting();
 
-        app.UseAuthentication();
+        app.UseAuthentication(); 
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>

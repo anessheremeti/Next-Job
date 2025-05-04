@@ -16,18 +16,14 @@ namespace HelloWorld.Controllers
             _userService = userService;
         }
 
-        // GET api/user
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
             try
             {
                 var users = await _userService.GetUsersAsync();
-
                 if (users == null || !users.Any())
-                {
                     return NotFound("No users found.");
-                }
 
                 return Ok(users);
             }
@@ -37,18 +33,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/user/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             try
             {
                 var user = await _userService.GetUserByIdAsync(id);
-
                 if (user == null)
-                {
                     return NotFound($"User with ID {id} not found.");
-                }
 
                 return Ok(user);
             }
@@ -58,28 +50,26 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/user
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
             try
             {
-                if (user == null)
-                {
-                    return BadRequest("User object is null.");
-                }
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                if (!user.IsValid(out string validationMessage))
+                var user = new User
                 {
-                    return BadRequest(new { message = validationMessage });
-                }
+                    UserTypeId = request.UserTypeId,
+                    FullName = request.FullName,
+                    CompanyName = request.CompanyName,
+                    Email = request.Email
+                };
 
-                var isCreated = await _userService.CreateUserAsync(user);
+                bool isCreated = await _userService.CreateUserAsync(user, request.Password);
 
                 if (!isCreated)
-                {
                     return StatusCode(500, "Failed to create user.");
-                }
 
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
             }
@@ -88,5 +78,6 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }

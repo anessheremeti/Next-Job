@@ -1,115 +1,63 @@
-using Microsoft.AspNetCore.Mvc;
+using HelloWorld.Models;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
-namespace HelloWorld.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class JobInfoController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class JobInfoController : ControllerBase
+    private readonly IJobInfoService _jobInfoService;
+
+    public JobInfoController(IJobInfoService jobInfoService)
     {
-        private readonly IJobInfoService _jobInfoService;
+        _jobInfoService = jobInfoService;
+    }
 
-        public JobInfoController(IJobInfoService jobInfoService)
-        {
-            _jobInfoService = jobInfoService;
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var jobs = await _jobInfoService.GetAllAsync();
+        return Ok(jobs);
+    }
 
-        // GET api/jobinfo
-        [HttpGet]
-        public async Task<IActionResult> GetJobs()
-        {
-            try
-            {
-                var jobs = await _jobInfoService.GetJobsAsync();
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var job = await _jobInfoService.GetByIdAsync(id);
+        if (job == null) return NotFound("Job not found.");
+        return Ok(job);
+    }
 
-                if (jobs == null || !jobs.Any())
-                {
-                    return NotFound("No jobs found.");
-                }
+    [HttpPost]
+    public async Task<IActionResult> CreateJob([FromBody] JobInfoCreateRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(jobs);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        var success = await _jobInfoService.CreateAsync(request);
+        if (!success) return StatusCode(500, "Failed to create job.");
 
-        // GET api/jobinfo/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetJobById(int id)
-        {
-            try
-            {
-                var job = await _jobInfoService.GetJobByIdAsync(id);
+        return Ok("Job created successfully.");
+    }
 
-                if (job == null)
-                {
-                    return NotFound($"Job with ID {id} not found.");
-                }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] JobInfoCreateRequest request)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                return Ok(job);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        var success = await _jobInfoService.UpdateAsync(id, request);
+        if (!success) return StatusCode(500, "Failed to update job.");
 
-        // POST api/jobinfo
-        [HttpPost]
-        public async Task<IActionResult> CreateJob([FromBody] JobInfo job)
-        {
-            try
-            {
-                if (job == null)
-                {
-                    return BadRequest("Job data is required.");
-                }
+        return Ok("Job updated successfully.");
+    }
 
-                // Validate job data
-                string validationMessage;
-                if (!job.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var success = await _jobInfoService.DeleteAsync(id);
+        if (!success) return StatusCode(500, "Failed to delete job.");
 
-                var isCreated = await _jobInfoService.CreateJobAsync(job);
-
-                if (!isCreated)
-                {
-                    return StatusCode(500, "Failed to create job.");
-                }
-
-                return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, job);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        // DELETE api/jobinfo/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteJob(int id)
-        {
-            try
-            {
-                var isDeleted = await _jobInfoService.DeleteJobAsync(id);
-
-                if (!isDeleted)
-                {
-                    return NotFound($"Job with ID {id} not found.");
-                }
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        return Ok("Job deleted successfully.");
     }
 }
+    
