@@ -49,18 +49,18 @@ namespace HelloWorld.Services
                     throw new ArgumentException("User data is required.");
                 }
 
-                var sql = @"INSERT INTO Users (user_type, full_name, company_name, email, password_hash, created_at)
-                    VALUES (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+                var sql = @"INSERT INTO Users (user_type_id, full_name, company_name, email, password_hash, created_at)
+            VALUES (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
 
-                var parameters = new
-                {
-                    UserType = user.UserType,
-                    FullName = user.FullName,
-                    CompanyName = user.CompanyName,
-                    Email = user.Email,
-                    PasswordHash = user.PasswordHash,
-                    CreatedAt = user.CreatedAt
-                };
+            var parameters = new
+            {
+                UserTypeId = user.UserTypeId,
+                FullName = user.FullName,
+                CompanyName = user.CompanyName,
+                Email = user.Email,
+                PasswordHash = user.PasswordHash,
+                CreatedAt = user.CreatedAt
+            };
 
                 var result = await _dataDapper.ExecuteSqlAsync(sql, parameters);
 

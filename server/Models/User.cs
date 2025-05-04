@@ -1,10 +1,10 @@
-using BCrypt.Net;
-using System;
-
 public class User
 {
     public int Id { get; set; }
-    public string? UserType { get; set; }
+
+    public int UserTypeId { get; set; } // për përdorim me DB
+    public string? UserType { get; set; } // për përdorim në token ose view
+
     public string? FullName { get; set; }
     public string? CompanyName { get; set; }
     public string? Email { get; set; }
@@ -15,40 +15,24 @@ public class User
     {
         CreatedAt = DateTime.Now;
     }
+
     public bool IsValid(out string message)
     {
-        if (string.IsNullOrEmpty(UserType))
+        if (string.IsNullOrEmpty(FullName) && string.IsNullOrEmpty(CompanyName))
         {
-            message = "User type is required.";
+            message = "Full name or company name is required.";
             return false;
         }
 
-        if (UserType == "client" || UserType == "freelancer")
+        if (string.IsNullOrEmpty(Email))
         {
-            if (string.IsNullOrEmpty(FullName))
-            {
-                message = "Full name is required for this user type.";
-                return false;
-            }
-        }
-        else if (UserType == "company")
-        {
-            if (string.IsNullOrEmpty(CompanyName))
-            {
-                message = "Company name is required for company users.";
-                return false;
-            }
-        }
-        else
-        {
-            message = "Invalid user type.";
+            message = "Email is required.";
             return false;
         }
 
         message = string.Empty;
         return true;
     }
-
 
     public void SetPassword(string plainPassword)
     {
@@ -70,4 +54,3 @@ public class User
         return BCrypt.Net.BCrypt.Verify(plainPassword, PasswordHash);
     }
 }
-    
