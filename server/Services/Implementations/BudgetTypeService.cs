@@ -1,5 +1,6 @@
 using HelloWorld.Data;
 using HelloWorld.Models;
+using System;
 using System.Collections.Generic;
 
 namespace HelloWorld.Services
@@ -15,32 +16,56 @@ namespace HelloWorld.Services
 
         public IEnumerable<BudgetType> GetAllBudgetTypes()
         {
-            string sql = "SELECT BudgetTypeID, BudgetTypeName FROM BudgetType";
+            string sql = "SELECT OldBudgetTypeID AS BudgetTypeID, BudgetTypeName FROM BudgetType";
             return _dataDapper.LoadData<BudgetType>(sql);
         }
 
         public BudgetType? GetBudgetTypeById(int id)
         {
-            string sql = "SELECT BudgetTypeID, BudgetTypeName FROM BudgetType WHERE BudgetTypeID = @Id";
+            string sql = "SELECT OldBudgetTypeID AS BudgetTypeID, BudgetTypeName FROM BudgetType WHERE OldBudgetTypeID = @Id";
             return _dataDapper.LoadDataSingle<BudgetType>(sql, new { Id = id });
         }
 
         public bool AddBudgetType(BudgetType budgetType)
         {
-            string sql = "INSERT INTO BudgetType (BudgetTypeName) VALUES (@BudgetTypeName)";
-            return _dataDapper.ExecuteSqlOpen(sql, budgetType);
+            try
+            {
+                string sql = "INSERT INTO BudgetType (BudgetTypeName) VALUES (@BudgetTypeName)";
+                return _dataDapper.ExecuteSqlOpen(sql, budgetType);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(" INSERT ERROR: " + ex.Message);
+                throw;
+            }
         }
 
         public bool UpdateBudgetType(BudgetType budgetType)
         {
-            string sql = "UPDATE BudgetType SET BudgetTypeName = @BudgetTypeName WHERE BudgetTypeID = @BudgetTypeID";
-            return _dataDapper.ExecuteSqlOpen(sql, budgetType);
+            try
+            {
+                string sql = "UPDATE BudgetType SET BudgetTypeName = @BudgetTypeName WHERE OldBudgetTypeID = @BudgetTypeID";
+                return _dataDapper.ExecuteSqlOpen(sql, budgetType);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("UPDATE ERROR: " + ex.Message);
+                throw;
+            }
         }
 
         public bool DeleteBudgetType(int id)
         {
-            string sql = "DELETE FROM BudgetType WHERE BudgetTypeID = @Id";
-            return _dataDapper.ExecuteSqlOpen(sql, new { Id = id });
+            try
+            {
+                string sql = "DELETE FROM BudgetType WHERE OldBudgetTypeID = @Id";
+                return _dataDapper.ExecuteSqlOpen(sql, new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(" DELETE ERROR: " + ex.Message);
+                throw;
+            }
         }
     }
 }
