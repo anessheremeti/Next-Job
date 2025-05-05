@@ -37,7 +37,6 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/application/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetApplicationById(int id)
         {
@@ -57,19 +56,24 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        // POST api/application
+        
         [HttpPost]
-        public async Task<IActionResult> CreateApplication([FromBody] Application application)
+        public async Task<IActionResult> CreateApplication([FromBody] ApplicationCreateDto dto)
         {
             try
             {
-                if (application == null || application.JobId == 0 || application.FreelancerId == 0)
+                var application = new Application
                 {
-                    return BadRequest("Invalid application data.");
-                }
+                    JobId = dto.JobId,
+                    FreelancerId = dto.FreelancerId,
+                    CoverLetter = dto.CoverLetter,
+                    DateApplied = dto.DateApplied
+                };
 
-                bool isCreated = await _applicationService.CreateApplicationAsync(application);
+                if (!application.IsValid(out var message))
+                    return BadRequest(message);
+
+                var isCreated = await _applicationService.CreateApplicationAsync(application);
 
                 if (!isCreated)
                 {
