@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Models;
 using HelloWorld.Services;
+using System.Collections.Generic;
 
 namespace HelloWorld.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ContractStatusController : ControllerBase
     {
         private readonly IContractStatusService _contractStatusService;
@@ -16,55 +17,55 @@ namespace HelloWorld.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult<IEnumerable<ContractStatus>> GetAll()
         {
             var statuses = _contractStatusService.GetAllStatuses();
             return Ok(statuses);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public ActionResult<ContractStatus> GetById(int id)
         {
             var status = _contractStatusService.GetStatusById(id);
             if (status == null)
-                return NotFound("Contract status not found.");
+                return NotFound($"Contract status with ID {id} not found.");
             return Ok(status);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ContractStatus status)
+        public ActionResult Create([FromBody] ContractStatus status)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (status == null || string.IsNullOrWhiteSpace(status.StatusName))
+                return BadRequest("StatusName is required.");
 
-            var success = _contractStatusService.AddStatus(status);
-            if (!success)
+            var created = _contractStatusService.AddStatus(status);
+            if (!created)
                 return StatusCode(500, "Failed to create contract status.");
 
-            return Ok("Contract status created successfully.");
+            return CreatedAtAction(nameof(GetById), new { id = status.ContractStatusID }, status);
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] ContractStatus status)
+        [HttpPut("{id}")]
+        public ActionResult Update(int id, [FromBody] ContractStatus status)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (status == null || id != status.ContractStatusID)
+                return BadRequest("ID mismatch or invalid data.");
 
-            var success = _contractStatusService.UpdateStatus(status);
-            if (!success)
-                return NotFound("Contract status not found or not updated.");
+            var updated = _contractStatusService.UpdateStatus(status);
+            if (!updated)
+                return StatusCode(500, "Failed to update contract status.");
 
-            return Ok("Contract status updated successfully.");
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int id)
         {
-            var success = _contractStatusService.DeleteStatus(id);
-            if (!success)
-                return NotFound("Contract status not found or not deleted.");
+            var deleted = _contractStatusService.DeleteStatus(id);
+            if (!deleted)
+                return NotFound($"Contract status with ID {id} not found.");
 
-            return Ok("Contract status deleted successfully.");
+            return NoContent();
         }
     }
 }

@@ -47,21 +47,19 @@ namespace HelloWorld.Services
         {
             try
             {
-                if (company == null)
-                {
-                    throw new ArgumentException("Company data is required.");
-                }
-
-                var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
-                VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+                string sql = @"INSERT INTO Company (owner_id, name, description, website, created_at)
+                            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while creating company: {ex.Message}", ex);
+                Console.WriteLine(" Error inserting company: " + ex.Message);
+                throw; 
             }
+            
         }
+
 
         public async Task<bool> UpdateCompanyAsync(int id, Company company)
         {
@@ -97,5 +95,6 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while deleting company with ID {id}: {ex.Message}", ex);
             }
         }
+        
     }
 }

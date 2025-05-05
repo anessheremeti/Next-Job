@@ -1,41 +1,32 @@
-using System;
-
 public class ClientProfile
 {
     public int Id { get; set; }
-    // Foreign key per users 
     public int UserId { get; set; }
-    public string? Image { get; set; }
-    public string? Skills { get; set; }
-    public decimal JobSuccess { get; set; }
+    public string Image { get; set; } = string.Empty;
+    public string Skills { get; set; } = string.Empty;
+    public int JobSuccess { get; set; }
     public int TotalJobs { get; set; }
     public int TotalHours { get; set; }
     public int InQueueService { get; set; }
-    public string? Location { get; set; }
+    public string Location { get; set; } = string.Empty;
     public DateTime LastDelivery { get; set; }
     public DateTime MemberSince { get; set; }
-    public string? Education { get; set; }
-    public string? Gender { get; set; }
-    public string? EnglishLevel { get; set; }
+    public string Education { get; set; } = string.Empty;
+    public int GenderId { get; set; }
+    public int EnglishLevelId { get; set; }
 
-
-    public ClientProfile()
-    {
-        MemberSince = DateTime.Now;
-        LastDelivery = DateTime.Now;
-    }
-
-
-    
     public bool isValid()
     {
-        var validGenders = new[] { "male", "female" };  
-        var validEnglishLevels = new[] { "beginner", "intermediate", "advanced", "fluent" };
-
-        bool isGenderValid = validGenders.Contains(Gender?.ToLower()); 
-        bool isEnglishLevelValid = validEnglishLevels.Contains(EnglishLevel?.ToLower());
-
-        return isGenderValid && isEnglishLevelValid; 
+        return UserId > 0 &&
+               !string.IsNullOrWhiteSpace(Image) &&
+               !string.IsNullOrWhiteSpace(Skills) &&
+               JobSuccess >= 0 &&
+               TotalJobs >= 0 &&
+               TotalHours >= 0 &&
+               InQueueService >= 0 &&
+               !string.IsNullOrWhiteSpace(Location) &&
+               !string.IsNullOrWhiteSpace(Education) &&
+               GenderId > 0 &&
+               EnglishLevelId > 0;
     }
-    
 }

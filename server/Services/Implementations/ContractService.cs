@@ -1,4 +1,5 @@
 using HelloWorld.Data;
+using HelloWorld.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -41,18 +42,18 @@ namespace HelloWorld.Services
             }
         }
 
-        public async Task<bool> CreateContractAsync(Contract contract)
+        public async Task<bool> CreateContractAsync(ContractCreateDto dto)
         {
             try
             {
-                if (contract == null)
+                if (dto == null)
                 {
                     throw new ArgumentException("Contract data is required.");
                 }
 
-                var sql = @"INSERT INTO Contracts (FreelancerId, ClientId, JobId, StartDate, EndDate, Status) 
-                            VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @Status)";
-                return await _dataDapper.ExecuteSqlAsync(sql, contract);
+                var sql = @"INSERT INTO Contracts (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
+                            VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
+                return await _dataDapper.ExecuteSqlAsync(sql, dto);
             }
             catch (Exception ex)
             {
@@ -70,9 +71,9 @@ namespace HelloWorld.Services
                 }
 
                 var sql = @"UPDATE Contracts 
-                            SET FreelancerId = @FreelancerId, ClientId = @ClientId, JobId = @JobId, StartDate = @StartDate, 
-                                EndDate = @EndDate, Status = @Status 
-                            WHERE Id = @Id";
+                            SET freelancer_id = @FreelancerId, client_id = @ClientId, job_id = @JobId, start_date = @StartDate, 
+                                end_date = @EndDate, contract_status_id = @ContractStatusId 
+                            WHERE id = @Id";
                 contract.Id = id;
                 return await _dataDapper.ExecuteSqlAsync(sql, contract);
             }
@@ -86,7 +87,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Contracts WHERE Id = @Id";
+                var sql = "DELETE FROM Contracts WHERE id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
@@ -94,6 +95,11 @@ namespace HelloWorld.Services
             {
                 throw new Exception($"Error while deleting contract with ID {id}: {ex.Message}", ex);
             }
+        }
+
+        public Task<bool> CreateContractAsync(Contract contract)
+        {
+            throw new NotImplementedException();
         }
     }
 }
