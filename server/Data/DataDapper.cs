@@ -64,14 +64,21 @@ namespace HelloWorld.Data
                 {
                     await dbConnection.OpenAsync();
                     var result = await dbConnection.ExecuteAsync(sql, parameters);
+                    Console.WriteLine($"[Dapper] Rows affected: {result}");
                     return result > 0;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"[Dapper ERROR] {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"[Inner] {ex.InnerException.Message}");
+                }
                 return false;
             }
         }
+
         public bool ExecuteSqlOpen(string sql, object parameters)
         {
             try

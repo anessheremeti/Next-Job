@@ -85,6 +85,9 @@ builder.Services.AddScoped<IGenderService, GenderService>();
 builder.Services.AddScoped<IJobTypeService, JobTypeService>();
 builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
 builder.Services.AddScoped<IUserTypeService, UserTypeService>();
+builder.Services.AddScoped<IContractStatusService, ContractStatusService>();
+
+
 
 builder.Services.AddControllers();
 

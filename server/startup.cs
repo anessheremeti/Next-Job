@@ -99,6 +99,7 @@ public class Startup
         services.AddScoped<IJobTypeService, JobTypeService>();
         services.AddScoped<IPaymentStatusService, PaymentStatusService>();
         services.AddScoped<IUserTypeService, UserTypeService>();
+        services.AddScoped<IContractStatusService, ContractStatusService>();
 
         services.AddControllers();
     }

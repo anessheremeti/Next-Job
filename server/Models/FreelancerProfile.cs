@@ -1,56 +1,55 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class FreelancerProfile
 {
+    [Key]
     public int Id { get; set; }
 
-    public int UserId { get; set; } 
+    [Required]
+    [ForeignKey("User")]
+    public int? UserId { get; set; }
 
+    [MaxLength(500)]
     public string? Skills { get; set; }
 
-    public decimal HourlyRate { get; set; } 
-    public string? PortfolioLink { get; set; } 
+    [Range(0.01, double.MaxValue, ErrorMessage = "Hourly rate must be a positive number.")]
+    public decimal HourlyRate { get; set; }
 
+    [Url]
+    [MaxLength(255)]
+    public string? PortfolioLink { get; set; }
+
+    [MaxLength(255)]
     public string? Location { get; set; }
 
-    public DateTime LastDelivery { get; set; } 
+    [Required]
+    public DateTime LastDelivery { get; set; }
 
-    public DateTime MemberSince { get; set; } 
+    [Required]
+    public DateTime MemberSince { get; set; }
 
     public virtual User? User { get; set; }
 
     public void Validate()
     {
-        try
-        {
-            if (UserId == 0)
-                throw new ValidationException("UserId is required.");
+        if (UserId <= 0)
+            throw new ValidationException("UserId is required and must be greater than 0.");
 
-            if (HourlyRate <= 0)
-                throw new ValidationException("Hourly rate must be a positive number.");
+        if (HourlyRate <= 0)
+            throw new ValidationException("Hourly rate must be a positive number.");
 
-            if (PortfolioLink != null && !Uri.IsWellFormedUriString(PortfolioLink, UriKind.Absolute))
-                throw new ValidationException("Portfolio link must be a valid URL.");
+        if (PortfolioLink != null && !Uri.IsWellFormedUriString(PortfolioLink, UriKind.Absolute))
+            throw new ValidationException("Portfolio link must be a valid URL.");
 
-            if (LastDelivery == default(DateTime))
-                throw new ValidationException("Last delivery date is required.");
-            if (MemberSince == default(DateTime))
-                throw new ValidationException("Member since date is required.");
+        if (LastDelivery == default)
+            throw new ValidationException("Last delivery date is required.");
 
-            if (Skills != null && Skills.Length > 500)
-                throw new ValidationException("Skills should not exceed 500 characters.");
+        if (MemberSince == default)
+            throw new ValidationException("Member since date is required.");
 
-            Console.WriteLine("Validation successful.");
-        }
-        catch (ValidationException ex)
-        {
-            Console.WriteLine($"Validation error: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-        }
+        if (Skills != null && Skills.Length > 500)
+            throw new ValidationException("Skills should not exceed 500 characters.");
     }
 }
-

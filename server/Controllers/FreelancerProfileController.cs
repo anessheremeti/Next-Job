@@ -61,32 +61,43 @@ namespace HelloWorld.Controllers
         }
 
         // POST api/freelancerprofile
-        [HttpPost]
-        public async Task<IActionResult> CreateFreelancerProfile([FromBody] FreelancerProfile profile)
+       [HttpPost]
+        public async Task<IActionResult> CreateFreelancerProfile([FromBody] CreateFreelancerProfileDto dto)
         {
             try
             {
-                if (profile == null)
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var profile = new FreelancerProfile
                 {
-                    return BadRequest("Profile data is required.");
-                }
+                    UserId = dto.UserId,
+                    Skills = dto.Skills,
+                    HourlyRate = dto.HourlyRate,
+                    PortfolioLink = dto.PortfolioLink,
+                    Location = dto.Location,
+                    LastDelivery = dto.LastDelivery,
+                    MemberSince = dto.MemberSince
+                };
+
+                profile.Validate();
 
                 var isCreated = await _freelancerProfileService.CreateFreelancerProfileAsync(profile);
 
                 if (!isCreated)
-                {
                     return StatusCode(500, "Failed to create freelancer profile.");
-                }
 
                 return CreatedAtAction(nameof(GetFreelancerProfileById), new { id = profile.Id }, profile);
+            }
+            catch (ValidationException ve)
+            {
+                return BadRequest(ve.Message);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
-
 
         // PUT api/freelancerprofile/{id}
         [HttpPut("{id}")]
@@ -127,7 +138,7 @@ namespace HelloWorld.Controllers
                     return NotFound($"Freelancer profile with ID {id} not found.");
                 }
 
-                return NoContent();
+                return NoContent(); 
             }
             catch (Exception ex)
             {
