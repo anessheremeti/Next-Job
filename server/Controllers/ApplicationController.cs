@@ -38,7 +38,10 @@ namespace HelloWorld.Controllers
             }
         }
 
+<<<<<<< HEAD
         // GET: api/application/{id}
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         [HttpGet("{id}")]
         public async Task<IActionResult> GetApplicationById(int id)
         {
@@ -58,6 +61,7 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+<<<<<<< HEAD
 
         // GET: api/application/freelancer/{freelancerId}
         [HttpGet("freelancer/{freelancerId}")]
@@ -81,11 +85,15 @@ namespace HelloWorld.Controllers
         }
 
         // POST: api/application
+=======
+        
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         [HttpPost]
-        public async Task<IActionResult> CreateApplication([FromBody] Application application)
+        public async Task<IActionResult> CreateApplication([FromBody] ApplicationCreateDto dto)
         {
             try
             {
+<<<<<<< HEAD
                 if (application == null)
                 {
                     return BadRequest("Application cannot be null.");
@@ -95,8 +103,20 @@ namespace HelloWorld.Controllers
                 {
                     return BadRequest(validationMessage);
                 }
+=======
+                var application = new Application
+                {
+                    JobId = dto.JobId,
+                    FreelancerId = dto.FreelancerId,
+                    CoverLetter = dto.CoverLetter,
+                    DateApplied = dto.DateApplied
+                };
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
 
-                bool isCreated = await _applicationService.CreateApplicationAsync(application);
+                if (!application.IsValid(out var message))
+                    return BadRequest(message);
+
+                var isCreated = await _applicationService.CreateApplicationAsync(application);
 
                 if (!isCreated)
                 {

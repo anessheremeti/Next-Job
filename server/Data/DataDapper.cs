@@ -26,11 +26,14 @@ namespace HelloWorld.Data
             IDbConnection dbConnection = new SqlConnection(_connectionString);
             return dbConnection.Query<T>(sql);
         }
+<<<<<<< HEAD
         public IEnumerable<T> LoadData<T>(string sql, object parameters)
         {
              IDbConnection dbConnection = new SqlConnection(_connectionString);
             return dbConnection.Query<T>(sql, parameters);
         }
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
 
         //Kjo osht metoda QuerySingle e Dapper
         public T LoadDataSingle<T>(string sql)
@@ -69,6 +72,7 @@ namespace HelloWorld.Data
                 {
                     await dbConnection.OpenAsync();
                     var result = await dbConnection.ExecuteAsync(sql, parameters);
+<<<<<<< HEAD
                     return result > 0;
                 }
             }
@@ -78,6 +82,24 @@ namespace HelloWorld.Data
             }
         }
       public bool ExecuteSqlOpen(string sql, object parameters)
+=======
+                    Console.WriteLine($"[Dapper] Rows affected: {result}");
+                    return result > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Dapper ERROR] {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"[Inner] {ex.InnerException.Message}");
+                }
+                return false;
+            }
+        }
+
+        public bool ExecuteSqlOpen(string sql, object parameters)
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         {
             try
             {
@@ -88,17 +110,26 @@ namespace HelloWorld.Data
                     return result > 0;
                 }
             }
+<<<<<<< HEAD
             catch (Exception ex)
             {
                 Console.WriteLine($"[Dapper Error] SQL Insert Failed: {ex.Message}");
                 Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 throw; 
+=======
+            catch (Exception)
+            {
+                return false;
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
         }
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         public T? LoadDataSingle<T>(string sql, object? parameters = null)
         {
             try

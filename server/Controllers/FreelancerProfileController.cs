@@ -56,6 +56,7 @@ namespace HelloWorld.Controllers
             }
         }
 
+<<<<<<< HEAD
         // POST: api/freelancerprofile
         [HttpPost]
         public async Task<IActionResult> CreateFreelancerProfile([FromBody] FreelancerProfile profile)
@@ -68,6 +69,29 @@ namespace HelloWorld.Controllers
                 string validationMessage = string.Empty;
                 if (!profile.IsValid(out validationMessage))
                     return BadRequest($"Validation failed: {validationMessage}");
+=======
+        // POST api/freelancerprofile
+       [HttpPost]
+        public async Task<IActionResult> CreateFreelancerProfile([FromBody] CreateFreelancerProfileDto dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var profile = new FreelancerProfile
+                {
+                    UserId = dto.UserId,
+                    Skills = dto.Skills,
+                    HourlyRate = dto.HourlyRate,
+                    PortfolioLink = dto.PortfolioLink,
+                    Location = dto.Location,
+                    LastDelivery = dto.LastDelivery,
+                    MemberSince = dto.MemberSince
+                };
+
+                profile.Validate();
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
 
                 var isCreated = await _freelancerProfileService.CreateFreelancerProfileAsync(profile);
 
@@ -76,13 +100,21 @@ namespace HelloWorld.Controllers
 
                 return CreatedAtAction(nameof(GetFreelancerProfileById), new { id = profile.Id }, profile);
             }
+            catch (ValidationException ve)
+            {
+                return BadRequest(ve.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
+<<<<<<< HEAD
         // PUT: api/freelancerprofile/{id}
+=======
+        // PUT api/freelancerprofile/{id}
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFreelancerProfile(int id, [FromBody] FreelancerProfile profile)
         {
@@ -119,7 +151,7 @@ namespace HelloWorld.Controllers
                 if (!isDeleted)
                     return NotFound($"Freelancer profile with ID {id} not found.");
 
-                return NoContent();
+                return NoContent(); 
             }
             catch (Exception ex)
             {

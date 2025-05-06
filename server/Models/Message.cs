@@ -3,6 +3,7 @@ using System;
 public class Message
 {
     public int Id { get; set; }
+<<<<<<< HEAD
 
     public int? SenderId { get; set; }
 
@@ -15,6 +16,18 @@ public class Message
     public virtual User? Sender { get; set; }
 
     public virtual User? Receiver { get; set; }
+=======
+
+    public int? SenderId { get; set; }  
+    public int? ReceiverId { get; set; }  
+
+    public string MessageContent { get; set; } = string.Empty;
+
+    public DateTime? DateTime { get; set; } 
+
+    public User? Sender { get; set; }
+    public User? Receiver { get; set; }
+>>>>>>> 3097074f4bd1c3b7fbde8311ae194bae723ca109
 
     public bool IsValid(out string validationMessage)
     {

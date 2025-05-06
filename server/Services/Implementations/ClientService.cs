@@ -15,36 +15,14 @@ public class ClientService : IClientService
 
     public async Task<IEnumerable<ClientProfile>> GetClientProfilesAsync()
     {
-        try
-        {
-            var sql = "SELECT * FROM ClientProfile";
-            return await LoadDataFromDatabase<ClientProfile>(sql);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error while retrieving client profiles: {ex.Message}", ex);
-        }
+        var sql = "SELECT * FROM ClientProfile";
+        return await _dataDapper.LoadDataAsync<ClientProfile>(sql);
     }
 
     public async Task<ClientProfile?> GetClientProfileByIdAsync(int id)
     {
-        try
-        {
-            var sql = "SELECT * FROM ClientProfile WHERE Id = @Id";
-            var parameters = new { Id = id };
-            var clientProfile = await LoadDataSingleFromDatabase<ClientProfile>(sql, parameters);
-
-            if (clientProfile == null)
-            {
-                throw new Exception($"Client profile with ID {id} not found.");
-            }
-
-            return clientProfile;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error while retrieving client profile with ID {id}: {ex.Message}", ex);
-        }
+        var sql = "SELECT * FROM ClientProfile WHERE Id = @Id";
+        return await _dataDapper.LoadDataSingleAsync<ClientProfile>(sql, new { Id = id });
     }
 
     public async Task<bool> CreateClientProfileAsync(ClientProfile clientProfile)
@@ -118,26 +96,8 @@ public class ClientService : IClientService
 
     public async Task<bool> DeleteClientProfileAsync(int id)
     {
-        try
-        {
-            var sql = "DELETE FROM ClientProfile WHERE Id = @Id";
-            var parameters = new { Id = id };
-            return await _dataDapper.ExecuteSqlAsync(sql, parameters);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error while deleting client profile with ID {id}: {ex.Message}", ex);
-        }
-    }
-
-    private async Task<IEnumerable<T>> LoadDataFromDatabase<T>(string sql, object? parameters = null)
-    {
-        return await _dataDapper.LoadDataAsync<T>(sql, parameters);
-    }
-
-    private async Task<T?> LoadDataSingleFromDatabase<T>(string sql, object parameters)
-    {
-        return await _dataDapper.LoadDataSingleAsync<T>(sql, parameters);
+        var sql = "DELETE FROM ClientProfile WHERE id = @Id";
+        return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
     }
 
     private void ValidateClientProfile(ClientProfile clientProfile)

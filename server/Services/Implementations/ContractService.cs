@@ -1,4 +1,5 @@
 using HelloWorld.Data;
+using HelloWorld.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
@@ -41,16 +42,21 @@ namespace HelloWorld.Services
             }
         }
 
-        public async Task<bool> CreateContractAsync(Contract contract)
+        public async Task<bool> CreateContractAsync(ContractCreateDto dto)
         {
             try
             {
+<<<<<<< HEAD
                 string validationMessage = string.Empty;
                 if (contract == null || !contract.IsValid(out validationMessage))
+=======
+                if (dto == null)
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
                 {
                     throw new ArgumentException($"Invalid contract data. {validationMessage}");
                 }
 
+<<<<<<< HEAD
                 var sql = @"INSERT INTO Contracts 
                             (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
                             VALUES 
@@ -65,6 +71,11 @@ namespace HelloWorld.Services
                     contract.EndDate,
                     contract.ContractStatusId
                 });
+=======
+                var sql = @"INSERT INTO Contracts (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
+                            VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
+                return await _dataDapper.ExecuteSqlAsync(sql, dto);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
             catch (Exception ex)
             {
@@ -82,6 +93,7 @@ namespace HelloWorld.Services
                     throw new ArgumentException($"Invalid contract data. {validationMessage}");
                 }
 
+<<<<<<< HEAD
                 var sql = @"UPDATE Contracts SET 
                             freelancer_id = @FreelancerId, 
                             client_id = @ClientId, 
@@ -101,6 +113,14 @@ namespace HelloWorld.Services
                     contract.ContractStatusId,
                     Id = id
                 });
+=======
+                var sql = @"UPDATE Contracts 
+                            SET freelancer_id = @FreelancerId, client_id = @ClientId, job_id = @JobId, start_date = @StartDate, 
+                                end_date = @EndDate, contract_status_id = @ContractStatusId 
+                            WHERE id = @Id";
+                contract.Id = id;
+                return await _dataDapper.ExecuteSqlAsync(sql, contract);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
             catch (Exception ex)
             {
@@ -112,7 +132,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Contracts WHERE Id = @Id";
+                var sql = "DELETE FROM Contracts WHERE id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
@@ -120,6 +140,11 @@ namespace HelloWorld.Services
             {
                 throw new Exception($"Error while deleting contract with ID {id}: {ex.Message}", ex);
             }
+        }
+
+        public Task<bool> CreateContractAsync(Contract contract)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -17,7 +17,6 @@ namespace HelloWorld.Controllers
             _userService = userService;
         }
 
-        // GET api/user
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -35,7 +34,6 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/user/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
@@ -53,12 +51,12 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/user
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
             try
             {
+<<<<<<< HEAD
                 if (user == null)
                     return BadRequest("User data is required.");
 
@@ -66,6 +64,21 @@ namespace HelloWorld.Controllers
                     return BadRequest(validationMessage);
 
                 var isCreated = await _userService.CreateUserAsync(user);
+=======
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var user = new User
+                {
+                    UserTypeId = request.UserTypeId,
+                    FullName = request.FullName,
+                    CompanyName = request.CompanyName,
+                    Email = request.Email
+                };
+
+                bool isCreated = await _userService.CreateUserAsync(user, request.Password);
+
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
                 if (!isCreated)
                     return StatusCode(500, "Failed to create user.");
 
@@ -77,6 +90,7 @@ namespace HelloWorld.Controllers
             }
         }
 
+<<<<<<< HEAD
         // PUT api/user/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
@@ -118,5 +132,7 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
     }
 }

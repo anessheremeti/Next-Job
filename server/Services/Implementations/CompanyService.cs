@@ -45,6 +45,7 @@ namespace HelloWorld.Services
         {
             try
             {
+<<<<<<< HEAD
                 string validationMessage = string.Empty; 
                 if (company == null || !company.IsValid(out validationMessage))
                 {
@@ -52,14 +53,19 @@ namespace HelloWorld.Services
                 }
 
                 var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
+=======
+                string sql = @"INSERT INTO Company (owner_id, name, description, website, created_at)
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
                             VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while creating company: {ex.Message}", ex);
+                Console.WriteLine(" Error inserting company: " + ex.Message);
+                throw; 
             }
+            
         }
 
 
@@ -103,5 +109,6 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while deleting company with ID {id}: {ex.Message}", ex);
             }
         }
+        
     }
 }

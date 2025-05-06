@@ -796,6 +796,7 @@
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
         }
+<<<<<<< HEAD
       },
       "WebSocketSharp/1.0.3-rc9": {
         "type": "package",
@@ -805,6 +806,8 @@
         "runtime": {
           "lib/websocket-sharp.dll": {}
         }
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
       }
     }
   },
@@ -2203,6 +2206,7 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+<<<<<<< HEAD
     },
     "WebSocketSharp/1.0.3-rc9": {
       "sha512": "+HHS2VBt9cQNtfmdXY/XcKejYYABiSIXbKkeZwK03ccyQiLpYVcuMY2g+E2sNxuAWPgDAclRRBMRLAHr9gnx6Q==",
@@ -2216,6 +2220,8 @@
         "websocketsharp.1.0.3-rc9.nupkg.sha512",
         "websocketsharp.nuspec"
       ]
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
     }
   },
   "projectFileDependencyGroups": {
@@ -2225,36 +2231,33 @@
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 9.0.3",
       "Microsoft.AspNetCore.OpenApi >= 9.0.2",
       "Microsoft.Data.SqlClient >= 6.0.1",
+<<<<<<< HEAD
       "Swashbuckle.AspNetCore >= 8.1.0",
       "WebSocketSharp >= 1.0.3-rc9"
+=======
+      "Swashbuckle.AspNetCore >= 8.1.0"
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
     ]
   },
   "packageFolders": {
-    "C:\\Users\\HP\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\engje\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HP\\desktop\\Next-Job\\server\\server.csproj",
+      "projectUniqueName": "C:\\Users\\engje\\OneDrive\\Bureau\\next-job\\server\\server.csproj",
       "projectName": "server",
-      "projectPath": "C:\\Users\\HP\\desktop\\Next-Job\\server\\server.csproj",
-      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\HP\\desktop\\Next-Job\\server\\obj\\",
+      "projectPath": "C:\\Users\\engje\\OneDrive\\Bureau\\next-job\\server\\server.csproj",
+      "packagesPath": "C:\\Users\\engje\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\engje\\OneDrive\\Bureau\\next-job\\server\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\engje\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2302,10 +2305,13 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[8.1.0, )"
+<<<<<<< HEAD
           },
           "WebSocketSharp": {
             "target": "Package",
             "version": "[1.0.3-rc9, )"
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
           }
         },
         "imports": [
@@ -2327,9 +2333,10 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
+<<<<<<< HEAD
   },
   "logs": [
     {
@@ -2343,4 +2350,7 @@
       ]
     }
   ]
+=======
+  }
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
 }
