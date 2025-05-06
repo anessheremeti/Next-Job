@@ -1,11 +1,26 @@
-bin/
-obj/
+# Build folders
+server/bin/
+server/obj/
+
+# Output files
 *.dll
 *.exe
 *.pdb
-*.cache
-*.suo
+
+# User and IDE files
 *.user
+*.suo
+*.vs/
+*.vscode/
+
+# Project system
+*.csproj.user
+*.cache
+*.log
 *.sln.docstates
-*.runtimeconfig.json
+
+# Publish artifacts
 *.deps.json
+*.runtimeconfig.json
+*.nuget.props
+*.nuget.targets
