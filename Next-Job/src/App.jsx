@@ -38,6 +38,9 @@ function App() {
         <Route path="/client-start" element={<ClientStart />} />
         <Route path="/company-details" element={<CompanyDetails />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
+
         
         {/* Blend */}
         <Route path="/find-job-companies" element={<FindJobCompanies />} />
