@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace HelloWorld.Controllers
 {
@@ -16,7 +18,6 @@ namespace HelloWorld.Controllers
             _messageService = messageService;
         }
 
-        // GET api/message
         [HttpGet]
         public async Task<IActionResult> GetMessages()
         {
@@ -24,10 +25,8 @@ namespace HelloWorld.Controllers
             {
                 var messages = await _messageService.GetMessagesAsync();
 
-                if (messages == null || !messages.Any())
-                {
+                if (!messages.Any())
                     return NotFound("No messages found.");
-                }
 
                 return Ok(messages);
             }
@@ -37,18 +36,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/message/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMessageById(int id)
         {
             try
             {
                 var message = await _messageService.GetMessageByIdAsync(id);
-
                 if (message == null)
-                {
                     return NotFound($"Message with ID {id} not found.");
-                }
 
                 return Ok(message);
             }
@@ -58,18 +53,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/message/sender/{senderId}
         [HttpGet("sender/{senderId}")]
         public async Task<IActionResult> GetMessagesBySender(int senderId)
         {
             try
             {
                 var messages = await _messageService.GetMessagesBySenderAsync(senderId);
-
-                if (messages == null || !messages.Any())
-                {
+                if (!messages.Any())
                     return NotFound($"No messages found for sender ID {senderId}.");
-                }
 
                 return Ok(messages);
             }
@@ -79,18 +70,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/message/receiver/{receiverId}
         [HttpGet("receiver/{receiverId}")]
         public async Task<IActionResult> GetMessagesByReceiver(int receiverId)
         {
             try
             {
                 var messages = await _messageService.GetMessagesByReceiverAsync(receiverId);
-
-                if (messages == null || !messages.Any())
-                {
+                if (!messages.Any())
                     return NotFound($"No messages found for receiver ID {receiverId}.");
-                }
 
                 return Ok(messages);
             }
@@ -100,32 +87,22 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/message
         [HttpPost]
         public async Task<IActionResult> CreateMessage([FromBody] Message message)
         {
             try
             {
                 if (message == null)
-                {
                     return BadRequest("Message data is required.");
-                }
 
-                // Validate message data
-                string validationMessage;
-                if (!message.IsValid(out validationMessage))
-                {
+                if (!message.IsValid(out var validationMessage))
                     return BadRequest(validationMessage);
-                }
 
-                var isCreated = await _messageService.CreateMessageAsync(message);
-
-                if (!isCreated)
-                {
+                var created = await _messageService.CreateMessageAsync(message);
+                if (!created)
                     return StatusCode(500, "Failed to create message.");
-                }
 
-                return CreatedAtAction(nameof(GetMessageById), new { id = message.Id }, message);
+                return Ok("Message created successfully.");
             }
             catch (Exception ex)
             {
@@ -133,18 +110,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/message/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
             try
             {
-                var isDeleted = await _messageService.DeleteMessageAsync(id);
-
-                if (!isDeleted)
-                {
+                var deleted = await _messageService.DeleteMessageAsync(id);
+                if (!deleted)
                     return NotFound($"Message with ID {id} not found.");
-                }
 
                 return NoContent();
             }
