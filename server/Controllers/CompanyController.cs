@@ -16,7 +16,7 @@ namespace HelloWorld.Controllers
             _companyService = companyService;
         }
 
-        // GET api/company
+        // GET: api/company
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
@@ -36,10 +36,8 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
-        
 
-        // GET api/company/{id}
+        // GET: api/company/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompanyById(int id)
         {
@@ -60,15 +58,17 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/company
+        // POST: api/company
         [HttpPost]
         public async Task<IActionResult> CreateCompany([FromBody] Company company)
         {
             try
             {
-                if (company == null)
+                string validationMessage = string.Empty;
+
+                if (company == null || !company.IsValid(out validationMessage))
                 {
-                    return BadRequest("Company data is required.");
+                    return BadRequest($"Invalid company data: {validationMessage}");
                 }
 
                 var isCreated = await _companyService.CreateCompanyAsync(company);
@@ -86,15 +86,17 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // PUT api/company/{id}
+        // PUT: api/company/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCompany(int id, [FromBody] Company company)
         {
             try
             {
-                if (company == null || id != company.Id)
+                string validationMessage = string.Empty;
+
+                if (company == null || id != company.Id || !company.IsValid(out validationMessage))
                 {
-                    return BadRequest("Invalid company data.");
+                    return BadRequest($"Invalid company data: {validationMessage}");
                 }
 
                 var isUpdated = await _companyService.UpdateCompanyAsync(id, company);
@@ -112,7 +114,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/company/{id}
+        // DELETE: api/company/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {

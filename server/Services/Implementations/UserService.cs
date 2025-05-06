@@ -16,62 +16,57 @@ namespace HelloWorld.Services
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            try
-            {
-                var sql = "SELECT * FROM Users";
-                return await _dataDapper.LoadDataAsync<User>(sql);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving users: {ex.Message}", ex);
-            }
+            var sql = "SELECT * FROM Users";
+            return await _dataDapper.LoadDataAsync<User>(sql);
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            try
-            {
-                var sql = "SELECT * FROM Users WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<User>(sql, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving user with ID {id}: {ex.Message}", ex);
-            }
+            var sql = "SELECT * FROM Users WHERE Id = @Id";
+            return await _dataDapper.LoadDataSingleAsync<User>(sql, new { Id = id });
         }
+
         public async Task<bool> CreateUserAsync(User user)
         {
-            try
+            if (!user.IsValid(out string validationMessage))
             {
-                if (user == null)
-                {
-                    throw new ArgumentException("User data is required.");
-                }
-
-                var sql = @"INSERT INTO Users (user_type, full_name, company_name, email, password_hash, created_at)
-                    VALUES (@UserType, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
-
-                var parameters = new
-                {
-                    UserType = user.UserType,
-                    FullName = user.FullName,
-                    CompanyName = user.CompanyName,
-                    Email = user.Email,
-                    PasswordHash = user.PasswordHash,
-                    CreatedAt = user.CreatedAt
-                };
-
-                var result = await _dataDapper.ExecuteSqlAsync(sql, parameters);
-
-                return result;
+                throw new ArgumentException($"Invalid user data: {validationMessage}");
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while creating user: {ex.Message}", ex);
-            }
+
+            var sql = @"INSERT INTO Users (user_type_id, full_name, company_name, email, password_hash, created_at)
+                        VALUES (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, user);
         }
 
+        public async Task<bool> UpdateUserAsync(int id, User user)
+        {
+            if (id != user.Id)
+            {
+                throw new ArgumentException("Mismatched user ID.");
+            }
 
+            if (!user.IsValid(out string validationMessage))
+            {
+                throw new ArgumentException($"Invalid user data: {validationMessage}");
+            }
+
+            var sql = @"UPDATE Users SET 
+                            user_type_id = @UserTypeId,
+                            full_name = @FullName,
+                            company_name = @CompanyName,
+                            email = @Email,
+                            password_hash = @PasswordHash,
+                            created_at = @CreatedAt
+                        WHERE id = @Id";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, user);
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var sql = "DELETE FROM Users WHERE Id = @Id";
+            return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+        }
     }
 }

@@ -31,15 +31,52 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM JobInfo WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<JobInfo>(sql, parameters);
+                var sql = "SELECT * FROM JobInfo WHERE id = @Id";
+                return await _dataDapper.LoadDataSingleAsync<JobInfo>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error while retrieving job record with ID {id}: {ex.Message}", ex);
             }
         }
+
+        public async Task<bool> UpdateJobAsync(int id, JobInfo job)
+        {
+            try
+            {
+                if (job == null || id != job.Id)
+                {
+                    throw new ArgumentException("Invalid job data or mismatched ID.");
+                }
+
+                if (!job.IsValid(out string validationMessage))
+                {
+                    throw new ArgumentException($"Validation failed: {validationMessage}");
+                }
+
+                var sql = @"
+                    UPDATE JobInfo
+                    SET 
+                        job_title = @JobTitle,
+                        vacancies = @Vacancies,
+                        job_type_id = @JobTypeId,
+                        job_tag = @JobTag,
+                        job_category = @JobCategory,
+                        budget_type_id = @BudgetTypeId,
+                        budget = @Budget,
+                        experience_level_id = @ExperienceLevelId,
+                        deadline = @Deadline,
+                        job_description = @JobDescription
+                    WHERE id = @Id";
+
+                return await _dataDapper.ExecuteSqlAsync(sql, job);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while updating job record with ID {id}: {ex.Message}", ex);
+            }
+        }
+
 
         public async Task<bool> CreateJobAsync(JobInfo job)
         {
@@ -50,10 +87,20 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Job data is required.");
                 }
 
-                var sql = @"INSERT INTO JobInfo (JobTitle, Vacancies, JobTypes, JobTag, JobCategory, BudgetType, Budget, 
-                            ExperienceLevel, Deadline, JobDescription) 
-                            VALUES (@JobTitle, @Vacancies, @JobTypes, @JobTag, @JobCategory, @BudgetType, @Budget, 
-                            @ExperienceLevel, @Deadline, @JobDescription)";
+                if (!job.IsValid(out string validationMessage))
+                {
+                    throw new ArgumentException($"Validation failed: {validationMessage}");
+                }
+
+                var sql = @"
+                    INSERT INTO JobInfo (
+                        job_title, vacancies, job_type_id, job_tag, job_category,
+                        budget_type_id, budget, experience_level_id, deadline, job_description
+                    )
+                    VALUES (
+                        @JobTitle, @Vacancies, @JobTypeId, @JobTag, @JobCategory,
+                        @BudgetTypeId, @Budget, @ExperienceLevelId, @Deadline, @JobDescription
+                    )";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, job);
             }
@@ -67,9 +114,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM JobInfo WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var sql = "DELETE FROM JobInfo WHERE id = @Id";
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {

@@ -76,7 +76,7 @@
             },
             "WebSocketSharp": {
               "target": "Package",
-              "version": "[1.0.3-rc11, )"
+              "version": "[1.0.3-rc9, )"
             }
           },
           "imports": [

@@ -1,12 +1,14 @@
+using System;
+
 public class History
 {
     public int Id { get; set; }
-    
+
     public int UserId { get; set; }
-    
+
     public string? Action { get; set; }
-    
-    public DateTime Timestamp { get; set; } = DateTime.Now;
+
+    public DateTime? Timestamp { get; set; } = DateTime.Now;
 
     public virtual User? User { get; set; }
 

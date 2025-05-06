@@ -5,52 +5,44 @@ public class FreelancerProfile
 {
     public int Id { get; set; }
 
-    public int UserId { get; set; } 
+    public int? UserId { get; set; }
 
     public string? Skills { get; set; }
 
-    public decimal HourlyRate { get; set; } 
-    public string? PortfolioLink { get; set; } 
+    public decimal? HourlyRate { get; set; }
+
+    public string? PortfolioLink { get; set; }
 
     public string? Location { get; set; }
 
-    public DateTime LastDelivery { get; set; } 
+    public DateTime? LastDelivery { get; set; }
 
-    public DateTime MemberSince { get; set; } 
+    public DateTime? MemberSince { get; set; }
 
     public virtual User? User { get; set; }
 
-    public void Validate()
+    public bool IsValid(out string validationMessage)
     {
-        try
-        {
-            if (UserId == 0)
-                throw new ValidationException("UserId is required.");
+        validationMessage = string.Empty;
 
-            if (HourlyRate <= 0)
-                throw new ValidationException("Hourly rate must be a positive number.");
+        if (UserId == null || UserId <= 0)
+            validationMessage += "UserId is required.\n";
 
-            if (PortfolioLink != null && !Uri.IsWellFormedUriString(PortfolioLink, UriKind.Absolute))
-                throw new ValidationException("Portfolio link must be a valid URL.");
+        if (HourlyRate == null || HourlyRate <= 0)
+            validationMessage += "Hourly rate must be a positive number.\n";
 
-            if (LastDelivery == default(DateTime))
-                throw new ValidationException("Last delivery date is required.");
-            if (MemberSince == default(DateTime))
-                throw new ValidationException("Member since date is required.");
+        if (!string.IsNullOrEmpty(PortfolioLink) && !Uri.IsWellFormedUriString(PortfolioLink, UriKind.Absolute))
+            validationMessage += "Portfolio link must be a valid URL.\n";
 
-            if (Skills != null && Skills.Length > 500)
-                throw new ValidationException("Skills should not exceed 500 characters.");
+        if (LastDelivery == null)
+            validationMessage += "Last delivery date is required.\n";
 
-            Console.WriteLine("Validation successful.");
-        }
-        catch (ValidationException ex)
-        {
-            Console.WriteLine($"Validation error: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An unexpected error occurred: {ex.Message}");
-        }
+        if (MemberSince == null)
+            validationMessage += "Member since date is required.\n";
+
+        if (!string.IsNullOrEmpty(Skills) && Skills.Length > 500)
+            validationMessage += "Skills should not exceed 500 characters.\n";
+
+        return string.IsNullOrEmpty(validationMessage);
     }
 }
-

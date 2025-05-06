@@ -4,13 +4,13 @@ public class Application
 {
     public int Id { get; set; }
 
-    public int JobId { get; set; }
+    public int? JobId { get; set; }
 
-    public int FreelancerId { get; set; }
+    public int? FreelancerId { get; set; }
 
     public string? CoverLetter { get; set; }
 
-    public DateTime DateApplied { get; set; } = DateTime.Now;
+    public DateTime? DateApplied { get; set; } = DateTime.Now;
 
     public virtual JobInfo? Job { get; set; }
     public virtual User? Freelancer { get; set; }
@@ -19,12 +19,12 @@ public class Application
     {
         validationMessage = string.Empty;
 
-        if (JobId <= 0)
+        if (!JobId.HasValue || JobId <= 0)
         {
             validationMessage += "Job ID must be greater than 0.\n";
         }
 
-        if (FreelancerId <= 0)
+        if (!FreelancerId.HasValue || FreelancerId <= 0)
         {
             validationMessage += "Freelancer ID must be greater than 0.\n";
         }
@@ -40,4 +40,5 @@ public class Application
 
         return string.IsNullOrEmpty(validationMessage);
     }
+
 }

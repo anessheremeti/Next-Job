@@ -75,6 +75,14 @@ C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\refint\server.dl
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\server.pdb
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\server.genruntimeconfig.cache
 C:\Users\engje\OneDrive\Bureau\next-job\server\obj\Debug\net9.0\ref\server.dll
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.csproj.AssemblyReference.cache
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.AssemblyInfoInputs.cache
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.AssemblyInfo.cs
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.csproj.CoreCompileInputs.cache
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.sourcelink.json
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\appsettings.json
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\server.staticwebassets.endpoints.json
@@ -110,6 +118,7 @@ C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\System.Configuration.Config
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\System.Memory.Data.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\websocket-sharp.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\cs\Microsoft.Data.SqlClient.resources.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\de\Microsoft.Data.SqlClient.resources.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\es\Microsoft.Data.SqlClient.resources.dll
@@ -128,14 +137,6 @@ C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\runtimes\win\lib\net9.0\Mic
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\HP\desktop\Next-Job\server\bin\Debug\net9.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.csproj.AssemblyReference.cache
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.AssemblyInfoInputs.cache
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.AssemblyInfo.cs
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.csproj.CoreCompileInputs.cache
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\server.sourcelink.json
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\scopedcss\bundle\server.styles.css
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\HP\desktop\Next-Job\server\obj\Debug\net9.0\staticwebassets.development.json

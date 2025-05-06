@@ -18,12 +18,12 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Message";
+                var sql = "SELECT * FROM Messages";
                 return await _dataDapper.LoadDataAsync<Message>(sql);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while retrieving message records: {ex.Message}", ex);
+                throw new Exception($"Error while retrieving messages: {ex.Message}", ex);
             }
         }
 
@@ -31,13 +31,12 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Message WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<Message>(sql, parameters);
+                var sql = "SELECT * FROM Messages WHERE id = @Id";
+                return await _dataDapper.LoadDataSingleAsync<Message>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while retrieving message record with ID {id}: {ex.Message}", ex);
+                throw new Exception($"Error while retrieving message with ID {id}: {ex.Message}", ex);
             }
         }
 
@@ -45,9 +44,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Message WHERE SenderId = @SenderId";
-                var parameters = new { SenderId = senderId };
-                return await _dataDapper.LoadDataAsync<Message>(sql, parameters);
+                var sql = "SELECT * FROM Messages WHERE sender_id = @SenderId";
+                return await _dataDapper.LoadDataAsync<Message>(sql, new { SenderId = senderId });
             }
             catch (Exception ex)
             {
@@ -59,9 +57,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Message WHERE ReceiverId = @ReceiverId";
-                var parameters = new { ReceiverId = receiverId };
-                return await _dataDapper.LoadDataAsync<Message>(sql, parameters);
+                var sql = "SELECT * FROM Messages WHERE receiver_id = @ReceiverId";
+                return await _dataDapper.LoadDataAsync<Message>(sql, new { ReceiverId = receiverId });
             }
             catch (Exception ex)
             {
@@ -78,14 +75,20 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Message data is required.");
                 }
 
-                var sql = "INSERT INTO Message (SenderId, ReceiverId, MessageContent, DateTime) " +
-                          "VALUES (@SenderId, @ReceiverId, @MessageContent, @DateTime)";
+                if (!message.IsValid(out string validationMessage))
+                {
+                    throw new ArgumentException($"Validation failed: {validationMessage}");
+                }
+
+                var sql = @"
+                    INSERT INTO Messages (sender_id, receiver_id, message, date_time)
+                    VALUES (@SenderId, @ReceiverId, @MessageContent, @DateTime)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, message);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while creating message record: {ex.Message}", ex);
+                throw new Exception($"Error while creating message: {ex.Message}", ex);
             }
         }
 
@@ -93,13 +96,12 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Message WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var sql = "DELETE FROM Messages WHERE id = @Id";
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while deleting message record with ID {id}: {ex.Message}", ex);
+                throw new Exception($"Error while deleting message with ID {id}: {ex.Message}", ex);
             }
         }
     }
