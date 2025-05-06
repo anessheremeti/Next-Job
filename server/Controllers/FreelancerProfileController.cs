@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.SqlClient;
+using System;
+using System.Linq;
 
 namespace HelloWorld.Controllers
 {
@@ -18,7 +18,7 @@ namespace HelloWorld.Controllers
             _freelancerProfileService = freelancerProfileService;
         }
 
-        // GET api/freelancerprofile
+        // GET: api/freelancerprofile
         [HttpGet]
         public async Task<IActionResult> GetFreelancerProfiles()
         {
@@ -27,9 +27,7 @@ namespace HelloWorld.Controllers
                 var profiles = await _freelancerProfileService.GetFreelancerProfilesAsync();
 
                 if (profiles == null || !profiles.Any())
-                {
                     return NotFound("No freelancer profiles found.");
-                }
 
                 return Ok(profiles);
             }
@@ -39,7 +37,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/freelancerprofile/{id}
+        // GET: api/freelancerprofile/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFreelancerProfileById(int id)
         {
@@ -48,9 +46,7 @@ namespace HelloWorld.Controllers
                 var profile = await _freelancerProfileService.GetFreelancerProfileByIdAsync(id);
 
                 if (profile == null)
-                {
                     return NotFound($"Freelancer profile with ID {id} not found.");
-                }
 
                 return Ok(profile);
             }
@@ -60,51 +56,81 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/freelancerprofile
+<<<<<<< HEAD
+        // POST: api/freelancerprofile
         [HttpPost]
         public async Task<IActionResult> CreateFreelancerProfile([FromBody] FreelancerProfile profile)
         {
             try
             {
                 if (profile == null)
-                {
                     return BadRequest("Profile data is required.");
-                }
+
+                string validationMessage = string.Empty;
+                if (!profile.IsValid(out validationMessage))
+                    return BadRequest($"Validation failed: {validationMessage}");
+=======
+        // POST api/freelancerprofile
+       [HttpPost]
+        public async Task<IActionResult> CreateFreelancerProfile([FromBody] CreateFreelancerProfileDto dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var profile = new FreelancerProfile
+                {
+                    UserId = dto.UserId,
+                    Skills = dto.Skills,
+                    HourlyRate = dto.HourlyRate,
+                    PortfolioLink = dto.PortfolioLink,
+                    Location = dto.Location,
+                    LastDelivery = dto.LastDelivery,
+                    MemberSince = dto.MemberSince
+                };
+
+                profile.Validate();
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
 
                 var isCreated = await _freelancerProfileService.CreateFreelancerProfileAsync(profile);
 
                 if (!isCreated)
-                {
                     return StatusCode(500, "Failed to create freelancer profile.");
-                }
 
                 return CreatedAtAction(nameof(GetFreelancerProfileById), new { id = profile.Id }, profile);
+            }
+            catch (ValidationException ve)
+            {
+                return BadRequest(ve.Message);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
 
-
+<<<<<<< HEAD
+        // PUT: api/freelancerprofile/{id}
+=======
         // PUT api/freelancerprofile/{id}
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFreelancerProfile(int id, [FromBody] FreelancerProfile profile)
         {
             try
             {
                 if (profile == null || id != profile.Id)
-                {
                     return BadRequest("Invalid freelancer profile data.");
-                }
+
+                string validationMessage = string.Empty;
+                if (!profile.IsValid(out validationMessage))
+                    return BadRequest($"Validation failed: {validationMessage}");
 
                 var isUpdated = await _freelancerProfileService.UpdateFreelancerProfileAsync(id, profile);
 
                 if (!isUpdated)
-                {
                     return StatusCode(500, "Failed to update freelancer profile.");
-                }
 
                 return NoContent();
             }
@@ -114,7 +140,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/freelancerprofile/{id}
+        // DELETE: api/freelancerprofile/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFreelancerProfile(int id)
         {
@@ -123,11 +149,9 @@ namespace HelloWorld.Controllers
                 var isDeleted = await _freelancerProfileService.DeleteFreelancerProfileAsync(id);
 
                 if (!isDeleted)
-                {
                     return NotFound($"Freelancer profile with ID {id} not found.");
-                }
 
-                return NoContent();
+                return NoContent(); 
             }
             catch (Exception ex)
             {

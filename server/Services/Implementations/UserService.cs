@@ -26,7 +26,12 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
+<<<<<<< HEAD
+            var sql = "SELECT * FROM Users";
+            return await _dataDapper.LoadDataAsync<User>(sql);
+=======
             throw new Exception($"Error while retrieving users: {ex.Message}", ex);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         }
     }
 
@@ -34,6 +39,23 @@ public class UserService : IUserService
     {
         try
         {
+<<<<<<< HEAD
+            var sql = "SELECT * FROM Users WHERE Id = @Id";
+            return await _dataDapper.LoadDataSingleAsync<User>(sql, new { Id = id });
+        }
+
+        public async Task<bool> CreateUserAsync(User user)
+        {
+            if (!user.IsValid(out string validationMessage))
+            {
+                throw new ArgumentException($"Invalid user data: {validationMessage}");
+            }
+
+            var sql = @"INSERT INTO Users (user_type_id, full_name, company_name, email, password_hash, created_at)
+                        VALUES (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, user);
+=======
             var sql = @"SELECT u.id, u.user_type_id AS UserTypeId, u.full_name, u.company_name, 
                                u.email, u.password_hash, u.created_at,
                                ut.UserTypeName AS UserTypeName
@@ -46,9 +68,40 @@ public class UserService : IUserService
         catch (Exception ex)
         {
             throw new Exception($"Error while retrieving user with ID {id}: {ex.Message}", ex);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         }
     }
 
+<<<<<<< HEAD
+        public async Task<bool> UpdateUserAsync(int id, User user)
+        {
+            if (id != user.Id)
+            {
+                throw new ArgumentException("Mismatched user ID.");
+            }
+
+            if (!user.IsValid(out string validationMessage))
+            {
+                throw new ArgumentException($"Invalid user data: {validationMessage}");
+            }
+
+            var sql = @"UPDATE Users SET 
+                            user_type_id = @UserTypeId,
+                            full_name = @FullName,
+                            company_name = @CompanyName,
+                            email = @Email,
+                            password_hash = @PasswordHash,
+                            created_at = @CreatedAt
+                        WHERE id = @Id";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, user);
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var sql = "DELETE FROM Users WHERE Id = @Id";
+            return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+=======
     public async Task<bool> CreateUserAsync(User user, string plainPassword)
     {
         try
@@ -92,6 +145,7 @@ public class UserService : IUserService
         catch (Exception ex)
         {
             throw new Exception($"Error while creating user: {ex.Message}", ex);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         }
     }
 }

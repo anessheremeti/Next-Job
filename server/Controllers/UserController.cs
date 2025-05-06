@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 using System.Linq;
 
 namespace HelloWorld.Controllers
@@ -55,6 +56,15 @@ namespace HelloWorld.Controllers
         {
             try
             {
+<<<<<<< HEAD
+                if (user == null)
+                    return BadRequest("User data is required.");
+
+                if (!user.IsValid(out var validationMessage))
+                    return BadRequest(validationMessage);
+
+                var isCreated = await _userService.CreateUserAsync(user);
+=======
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -68,6 +78,7 @@ namespace HelloWorld.Controllers
 
                 bool isCreated = await _userService.CreateUserAsync(user, request.Password);
 
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
                 if (!isCreated)
                     return StatusCode(500, "Failed to create user.");
 
@@ -79,5 +90,49 @@ namespace HelloWorld.Controllers
             }
         }
 
+<<<<<<< HEAD
+        // PUT api/user/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        {
+            try
+            {
+                if (user == null || id != user.Id)
+                    return BadRequest("Invalid user data.");
+
+                if (!user.IsValid(out var validationMessage))
+                    return BadRequest(validationMessage);
+
+                var isUpdated = await _userService.UpdateUserAsync(id, user);
+                if (!isUpdated)
+                    return StatusCode(500, "Failed to update user.");
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // DELETE api/user/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var isDeleted = await _userService.DeleteUserAsync(id);
+                if (!isDeleted)
+                    return NotFound($"User with ID {id} not found.");
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+=======
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
     }
 }

@@ -20,97 +20,53 @@ namespace HelloWorld.Controllers
         [HttpGet]
         public async Task<IActionResult> GetReviews()
         {
-            try
-            {
-                var reviews = await _reviewService.GetReviewsAsync();
+            var reviews = await _reviewService.GetReviewsAsync();
 
-                if (reviews == null || !reviews.Any())
-                {
-                    return NotFound("No reviews found.");
-                }
+            if (reviews == null || !reviews.Any())
+                return NotFound("No reviews found.");
 
-                return Ok(reviews);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Ok(reviews);
         }
 
         // GET api/review/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetReviewById(int id)
         {
-            try
-            {
-                var review = await _reviewService.GetReviewByIdAsync(id);
+            var review = await _reviewService.GetReviewByIdAsync(id);
 
-                if (review == null)
-                {
-                    return NotFound($"Review with ID {id} not found.");
-                }
+            if (review == null)
+                return NotFound($"Review with ID {id} not found.");
 
-                return Ok(review);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Ok(review);
         }
 
         // POST api/review
         [HttpPost]
         public async Task<IActionResult> CreateReview([FromBody] Review review)
         {
-            try
-            {
-                if (review == null)
-                {
-                    return BadRequest("Review data is required.");
-                }
+            if (review == null)
+                return BadRequest("Review data is required.");
 
-                // Validate review data
-                string validationMessage;
-                if (!review.IsValid(out validationMessage))
-                {
-                    return BadRequest(validationMessage);
-                }
+            if (!review.IsValid(out string validationMessage))
+                return BadRequest(validationMessage);
 
-                var isCreated = await _reviewService.CreateReviewAsync(review);
+            var isCreated = await _reviewService.CreateReviewAsync(review);
+            if (!isCreated)
+                return StatusCode(500, "Failed to create review.");
 
-                if (!isCreated)
-                {
-                    return StatusCode(500, "Failed to create review.");
-                }
-
-                return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
         }
 
         // DELETE api/review/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReview(int id)
         {
-            try
-            {
-                var isDeleted = await _reviewService.DeleteReviewAsync(id);
+            var isDeleted = await _reviewService.DeleteReviewAsync(id);
 
-                if (!isDeleted)
-                {
-                    return NotFound($"Review with ID {id} not found.");
-                }
+            if (!isDeleted)
+                return NotFound($"Review with ID {id} not found.");
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return NoContent();
         }
     }
 }
-

@@ -67,5 +67,10 @@ namespace HelloWorld.Services
                 throw;
             }
         }
+
+        public Task<IEnumerable<BudgetType>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

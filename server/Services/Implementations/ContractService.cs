@@ -46,14 +46,36 @@ namespace HelloWorld.Services
         {
             try
             {
+<<<<<<< HEAD
+                string validationMessage = string.Empty;
+                if (contract == null || !contract.IsValid(out validationMessage))
+=======
                 if (dto == null)
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
                 {
-                    throw new ArgumentException("Contract data is required.");
+                    throw new ArgumentException($"Invalid contract data. {validationMessage}");
                 }
 
+<<<<<<< HEAD
+                var sql = @"INSERT INTO Contracts 
+                            (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
+                            VALUES 
+                            (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
+
+                return await _dataDapper.ExecuteSqlAsync(sql, new
+                {
+                    contract.FreelancerId,
+                    contract.ClientId,
+                    contract.JobId,
+                    contract.StartDate,
+                    contract.EndDate,
+                    contract.ContractStatusId
+                });
+=======
                 var sql = @"INSERT INTO Contracts (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
                             VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
                 return await _dataDapper.ExecuteSqlAsync(sql, dto);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
             catch (Exception ex)
             {
@@ -65,17 +87,40 @@ namespace HelloWorld.Services
         {
             try
             {
-                if (contract == null || id != contract.Id)
+                string validationMessage = string.Empty;
+                if (contract == null || id != contract.Id || !contract.IsValid(out validationMessage))
                 {
-                    throw new ArgumentException("Invalid contract data.");
+                    throw new ArgumentException($"Invalid contract data. {validationMessage}");
                 }
 
+<<<<<<< HEAD
+                var sql = @"UPDATE Contracts SET 
+                            freelancer_id = @FreelancerId, 
+                            client_id = @ClientId, 
+                            job_id = @JobId, 
+                            start_date = @StartDate, 
+                            end_date = @EndDate, 
+                            contract_status_id = @ContractStatusId 
+                            WHERE id = @Id";
+
+                return await _dataDapper.ExecuteSqlAsync(sql, new
+                {
+                    contract.FreelancerId,
+                    contract.ClientId,
+                    contract.JobId,
+                    contract.StartDate,
+                    contract.EndDate,
+                    contract.ContractStatusId,
+                    Id = id
+                });
+=======
                 var sql = @"UPDATE Contracts 
                             SET freelancer_id = @FreelancerId, client_id = @ClientId, job_id = @JobId, start_date = @StartDate, 
                                 end_date = @EndDate, contract_status_id = @ContractStatusId 
                             WHERE id = @Id";
                 contract.Id = id;
                 return await _dataDapper.ExecuteSqlAsync(sql, contract);
+>>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
             catch (Exception ex)
             {

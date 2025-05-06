@@ -1,9 +1,9 @@
 using HelloWorld.Data;
-using HelloWorld.Controllers;
-using HelloWorld.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
+using HelloWorld.Services;
+
 public class ClientService : IClientService
 {
     private readonly DataDapper _dataDapper;
@@ -27,53 +27,71 @@ public class ClientService : IClientService
 
     public async Task<bool> CreateClientProfileAsync(ClientProfile clientProfile)
     {
-        ValidateClientProfile(clientProfile);
-
-        var sql = @"INSERT INTO ClientProfile 
-                    (user_id, image, skills, job_success, total_jobs, total_hours, in_queue_service, location, last_delivery, member_since, education, genderID, englishLevelID)
-                    VALUES 
-                    (@UserId, @Image, @Skills, @JobSuccess, @TotalJobs, @TotalHours, @InQueueService, @Location, @LastDelivery, @MemberSince, @Education, @GenderId, @EnglishLevelId)";
-
-        return await _dataDapper.ExecuteSqlAsync(sql, new
+        try
         {
-            clientProfile.UserId,
-            clientProfile.Image,
-            clientProfile.Skills,
-            clientProfile.JobSuccess,
-            clientProfile.TotalJobs,
-            clientProfile.TotalHours,
-            clientProfile.InQueueService,
-            clientProfile.Location,
-            clientProfile.LastDelivery,
-            clientProfile.MemberSince,
-            clientProfile.Education,
-            GenderId = clientProfile.GenderId,
-            EnglishLevelId = clientProfile.EnglishLevelId
-        });
+            ValidateClientProfile(clientProfile);
+
+            var sql = @"
+                INSERT INTO ClientProfile 
+                (user_id, image, skills, job_success, total_jobs, total_hours, in_queue_service, location, last_delivery, member_since, education, genderID, englishLevelID)
+                VALUES 
+                (@UserId, @Image, @Skills, @JobSuccess, @TotalJobs, @TotalHours, @InQueueService, @Location, @LastDelivery, @MemberSince, @Education, @GenderId, @EnglishLevelId)";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, new
+            {
+                UserId = clientProfile.UserId,
+                Image = clientProfile.Image,
+                Skills = clientProfile.Skills,
+                JobSuccess = clientProfile.JobSuccess,
+                TotalJobs = clientProfile.TotalJobs,
+                TotalHours = clientProfile.TotalHours,
+                InQueueService = clientProfile.InQueueService,
+                Location = clientProfile.Location,
+                LastDelivery = clientProfile.LastDelivery,
+                MemberSince = clientProfile.MemberSince,
+                Education = clientProfile.Education,
+                GenderId = clientProfile.GenderId,
+                EnglishLevelId = clientProfile.EnglishLevelId
+            });
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error while creating client profile: {ex.Message}", ex);
+        }
     }
 
     public async Task<bool> UpdateClientProfileAsync(int id, ClientProfile clientProfile)
     {
-        if (clientProfile == null || id != clientProfile.Id || !clientProfile.isValid())
-            throw new ArgumentException("Invalid client profile data.");
+        try
+        {
+            if (clientProfile == null || id != clientProfile.Id || !clientProfile.IsValid())
+            {
+                throw new ArgumentException("Invalid client profile data.");
+            }
 
-        var sql = @"UPDATE ClientProfile SET
-                        user_id = @UserId,
-                        image = @Image,
-                        skills = @Skills,
-                        job_success = @JobSuccess,
-                        total_jobs = @TotalJobs,
-                        total_hours = @TotalHours,
-                        in_queue_service = @InQueueService,
-                        location = @Location,
-                        last_delivery = @LastDelivery,
-                        member_since = @MemberSince,
-                        education = @Education,
-                        genderID = @GenderId,
-                        englishLevelID = @EnglishLevelId
-                    WHERE id = @Id";
+            var sql = @"
+                UPDATE ClientProfile 
+                SET user_id = @UserId,
+                    image = @Image,
+                    skills = @Skills,
+                    job_success = @JobSuccess,
+                    total_jobs = @TotalJobs,
+                    total_hours = @TotalHours,
+                    in_queue_service = @InQueueService,
+                    location = @Location,
+                    last_delivery = @LastDelivery,
+                    member_since = @MemberSince,
+                    education = @Education,
+                    genderID = @GenderId,
+                    englishLevelID = @EnglishLevelId
+                WHERE id = @Id";
 
-        return await _dataDapper.ExecuteSqlAsync(sql, clientProfile);
+            return await _dataDapper.ExecuteSqlAsync(sql, clientProfile);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error while updating client profile with ID {id}: {ex.Message}", ex);
+        }
     }
 
     public async Task<bool> DeleteClientProfileAsync(int id)
@@ -84,7 +102,9 @@ public class ClientService : IClientService
 
     private void ValidateClientProfile(ClientProfile clientProfile)
     {
-        if (clientProfile == null || !clientProfile.isValid())
+        if (clientProfile == null || !clientProfile.IsValid())
+        {
             throw new ArgumentException("Invalid client profile data.");
+        }
     }
 }
