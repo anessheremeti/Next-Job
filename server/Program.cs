@@ -1,5 +1,6 @@
 using HelloWorld.Data;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -40,6 +41,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+// internal class JwtBearerDefaults
+// {
+//     internal static void AuthenticationScheme(AuthenticationOptions options)
+//     {
+//         throw new NotImplementedException();
+//     }
+// }
 
 builder.Services.AddAuthorization();
 
