@@ -65,7 +65,8 @@ namespace HelloWorld.Controllers
                     UserTypeId = request.UserTypeId,
                     FullName = request.FullName,
                     CompanyName = request.CompanyName,
-                    Email = request.Email
+                    Email = request.Email,
+                    Image = request.Image
                 };
 
                 if (!user.IsValid(out var validationMessage))

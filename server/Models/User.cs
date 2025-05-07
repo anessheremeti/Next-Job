@@ -7,15 +7,17 @@ public class User
 
     public int UserTypeId { get; set; }
 
-    public string? FullName { get; set; }
+    public string? FullName { get; set; } 
 
-    public string? CompanyName { get; set; }
+    public string? CompanyName { get; set; }  
 
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;  
 
-    public string PasswordHash { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;  
 
-    public DateTime? CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? CreatedAt { get; set; } = DateTime.Now;  
+
+    public string? Image { get; set; } 
 
     public virtual UserType? UserType { get; set; }
 
