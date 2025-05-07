@@ -44,7 +44,8 @@ namespace HelloWorld.Controllers
                 UserTypeId = userTypeId,
                 FullName = request.FullName,
                 CompanyName = request.CompanyName,
-                Email = request.Email
+                Email = request.Email,
+                Image = request.Image
             };
 
             user.SetPassword(request.Password);
@@ -59,9 +60,9 @@ namespace HelloWorld.Controllers
                 return BadRequest("Email already in use.");
 
             var sql = @"INSERT INTO Users 
-                        (user_type_id, full_name, company_name, email, password_hash, created_at)
-                        VALUES 
-                        (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+            (user_type_id, full_name, company_name, email, password_hash, image, created_at)
+            VALUES 
+            (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @Image, @CreatedAt)";
 
             var insertParams = new
             {
@@ -70,8 +71,10 @@ namespace HelloWorld.Controllers
                 user.CompanyName,
                 user.Email,
                 user.PasswordHash,
+                user.Image,
                 user.CreatedAt
             };
+
 
             try
             {
@@ -145,8 +148,10 @@ namespace HelloWorld.Controllers
 
             var user = _dataDapper.LoadDataSingle<User>(
                 @"SELECT u.id, u.user_type_id AS UserTypeId, ut.UserTypeID, ut.UserTypeName,
-                         u.full_name AS FullName, u.company_name AS CompanyName, 
-                         u.email, u.created_at AS CreatedAt
+                u.full_name AS FullName, u.company_name AS CompanyName, 
+                u.email, u.image, u.created_at AS CreatedAt
+
+
                   FROM Users u
                   JOIN UserType ut ON u.user_type_id = ut.UserTypeID
                   WHERE u.id = @Id", new { Id = userId });
@@ -160,6 +165,7 @@ namespace HelloWorld.Controllers
                 user.FullName,
                 user.CompanyName,
                 user.Email,
+                user.Image,
                 user.UserType,
                 user.CreatedAt
             });
