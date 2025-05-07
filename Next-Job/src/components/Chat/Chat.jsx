@@ -67,7 +67,9 @@ const Chat = () => {
     }));
   
     try {
-      await fetch("http://localhost:5123/api/messages", {
+      const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+      await fetch(`${baseURL}/api/Message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

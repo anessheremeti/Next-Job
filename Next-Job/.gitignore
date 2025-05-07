@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+# Local env files
+*.local
+.env
 # Ignore auto-generated AssemblyInfo
 obj/**/*.AssemblyInfo.cs
 obj/**/AssemblyInfo.cs
