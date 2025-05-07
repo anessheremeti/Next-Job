@@ -31,9 +31,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Company WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<Company>(sql, parameters);
+                var sql = "SELECT * FROM Company WHERE id = @Id";
+                return await _dataDapper.LoadDataSingleAsync<Company>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
@@ -45,27 +44,23 @@ namespace HelloWorld.Services
         {
             try
             {
-<<<<<<< HEAD
-                string validationMessage = string.Empty; 
-                if (company == null || !company.IsValid(out validationMessage))
-                {
-                    throw new ArgumentException($"Invalid company data: {validationMessage}");
-                }
+                if (company == null)
+                    throw new ArgumentNullException(nameof(company), "Company object is null.");
 
-                var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
-=======
-                string sql = @"INSERT INTO Company (owner_id, name, description, website, created_at)
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
-                            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+                if (!company.IsValid(out var validationMessage))
+                    throw new ArgumentException("Invalid company data. " + (validationMessage ?? "Unknown validation error."));
+
+                var sql = @"
+            INSERT INTO Company (owner_id, name, description, website, created_at) 
+            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(" Error inserting company: " + ex.Message);
-                throw; 
+                Console.WriteLine($"[ERROR] Failed to insert company: {ex.Message}");
+                throw;
             }
-            
         }
 
 
@@ -73,20 +68,23 @@ namespace HelloWorld.Services
         {
             try
             {
-                string validationMessage = string.Empty;
-                if (company == null || id != company.Id || !company.IsValid(out validationMessage))
-                {
-                    throw new ArgumentException($"Invalid company data: {validationMessage}");
-                }
+                if (company == null)
+                    throw new ArgumentNullException(nameof(company), "Company object is null.");
 
+                if (id != company.Id)
+                    throw new ArgumentException("ID mismatch between parameter and company object.");
 
-                var sql = @"UPDATE Company 
-                            SET OwnerId = @OwnerId, 
-                                Name = @Name, 
-                                Description = @Description, 
-                                Website = @Website, 
-                                CreatedAt = @CreatedAt 
-                            WHERE Id = @Id";
+                if (!company.IsValid(out var validationMessage))
+                    throw new ArgumentException("Invalid company data. " + (validationMessage ?? "Unknown validation error."));
+
+                var sql = @"
+            UPDATE Company 
+            SET owner_id = @OwnerId, 
+                name = @Name, 
+                description = @Description, 
+                website = @Website, 
+                created_at = @CreatedAt 
+            WHERE id = @Id";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
@@ -96,19 +94,18 @@ namespace HelloWorld.Services
             }
         }
 
+
         public async Task<bool> DeleteCompanyAsync(int id)
         {
             try
             {
-                var sql = "DELETE FROM Company WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var sql = "DELETE FROM Company WHERE id = @Id";
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error while deleting company with ID {id}: {ex.Message}", ex);
             }
         }
-        
     }
 }

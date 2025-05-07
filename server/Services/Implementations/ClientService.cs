@@ -1,8 +1,9 @@
 using HelloWorld.Data;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System;
+using HelloWorld.Models;
 using HelloWorld.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 public class ClientService : IClientService
 {
@@ -39,19 +40,19 @@ public class ClientService : IClientService
 
             return await _dataDapper.ExecuteSqlAsync(sql, new
             {
-                UserId = clientProfile.UserId,
-                Image = clientProfile.Image,
-                Skills = clientProfile.Skills,
-                JobSuccess = clientProfile.JobSuccess,
-                TotalJobs = clientProfile.TotalJobs,
-                TotalHours = clientProfile.TotalHours,
-                InQueueService = clientProfile.InQueueService,
-                Location = clientProfile.Location,
-                LastDelivery = clientProfile.LastDelivery,
-                MemberSince = clientProfile.MemberSince,
-                Education = clientProfile.Education,
-                GenderId = clientProfile.GenderId,
-                EnglishLevelId = clientProfile.EnglishLevelId
+                clientProfile.UserId,
+                clientProfile.Image,
+                clientProfile.Skills,
+                clientProfile.JobSuccess,
+                clientProfile.TotalJobs,
+                clientProfile.TotalHours,
+                clientProfile.InQueueService,
+                clientProfile.Location,
+                clientProfile.LastDelivery,
+                clientProfile.MemberSince,
+                clientProfile.Education,
+                clientProfile.GenderId,
+                clientProfile.EnglishLevelId
             });
         }
         catch (Exception ex)

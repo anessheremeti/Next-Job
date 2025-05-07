@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using HelloWorld.Models;
 
 namespace HelloWorld.Controllers
 {
@@ -56,22 +58,8 @@ namespace HelloWorld.Controllers
             }
         }
 
-<<<<<<< HEAD
         // POST: api/freelancerprofile
         [HttpPost]
-        public async Task<IActionResult> CreateFreelancerProfile([FromBody] FreelancerProfile profile)
-        {
-            try
-            {
-                if (profile == null)
-                    return BadRequest("Profile data is required.");
-
-                string validationMessage = string.Empty;
-                if (!profile.IsValid(out validationMessage))
-                    return BadRequest($"Validation failed: {validationMessage}");
-=======
-        // POST api/freelancerprofile
-       [HttpPost]
         public async Task<IActionResult> CreateFreelancerProfile([FromBody] CreateFreelancerProfileDto dto)
         {
             try
@@ -90,8 +78,8 @@ namespace HelloWorld.Controllers
                     MemberSince = dto.MemberSince
                 };
 
-                profile.Validate();
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
+                if (!profile.IsValid(out string validationMessage))
+                    return BadRequest($"Validation failed: {validationMessage}");
 
                 var isCreated = await _freelancerProfileService.CreateFreelancerProfileAsync(profile);
 
@@ -110,11 +98,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-<<<<<<< HEAD
         // PUT: api/freelancerprofile/{id}
-=======
-        // PUT api/freelancerprofile/{id}
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFreelancerProfile(int id, [FromBody] FreelancerProfile profile)
         {
@@ -123,8 +107,7 @@ namespace HelloWorld.Controllers
                 if (profile == null || id != profile.Id)
                     return BadRequest("Invalid freelancer profile data.");
 
-                string validationMessage = string.Empty;
-                if (!profile.IsValid(out validationMessage))
+                if (!profile.IsValid(out string validationMessage))
                     return BadRequest($"Validation failed: {validationMessage}");
 
                 var isUpdated = await _freelancerProfileService.UpdateFreelancerProfileAsync(id, profile);
@@ -151,7 +134,7 @@ namespace HelloWorld.Controllers
                 if (!isDeleted)
                     return NotFound($"Freelancer profile with ID {id} not found.");
 
-                return NoContent(); 
+                return NoContent();
             }
             catch (Exception ex)
             {

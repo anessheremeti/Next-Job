@@ -1,17 +1,10 @@
 using HelloWorld.Data;
 using HelloWorld.Services;
-
-using HelloWorld.WebSocket;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Net.WebSockets;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +13,6 @@ builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-
-// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -54,7 +45,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "NextJob API", Version = "v1" });
 
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
@@ -72,43 +63,13 @@ builder.Services.AddSwaggerGen(c =>
     };
 
     c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 });
 
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "NextJob API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-// Register app services
+// Dependency Injection
 builder.Services.AddScoped<DataDapper>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
@@ -131,81 +92,67 @@ builder.Services.AddScoped<IPaymentStatusService, PaymentStatusService>();
 builder.Services.AddScoped<IUserTypeService, UserTypeService>();
 builder.Services.AddScoped<IContractStatusService, ContractStatusService>();
 
-
-
-
-if (string.IsNullOrEmpty(jwtKey) || string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience))
-{
-    throw new ArgumentException("JWT Key, Issuer, or Audience is missing in appsettings.json");
-}
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
-    });
-
-
-builder.Services.AddControllers();
-
-
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
-// Enable WebSocket support
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "NextJob API v1");
+        c.RoutePrefix = "swagger";
+    });
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseWebSockets();
-var connections = new List<WebSocket>();
+var connections = new List<System.Net.WebSockets.WebSocket>();
+
 app.Map("/ws", async context =>
 {
     if (context.WebSockets.IsWebSocketRequest)
     {
         var curName = context.Request.Query["name"];
-
-        using var ws = await context.WebSockets.AcceptWebSocketAsync();
+        var ws = await context.WebSockets.AcceptWebSocketAsync();
 
         connections.Add(ws);
-
         await Broadcast($"{curName} joined the room");
         await Broadcast($"{connections.Count} users connected");
-        await ReceiveMessage(ws,
-            async (result, buffer) =>
+
+        await ReceiveMessage(ws, async (result, buffer) =>
+        {
+            if (result.MessageType == WebSocketMessageType.Text)
             {
-                if (result.MessageType == WebSocketMessageType.Text)
-                {
-                    string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    await Broadcast(curName + ": " + message);
-                }
-                else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
-                {
-                    connections.Remove(ws);
-                    await Broadcast($"{curName} left the room");
-                    await Broadcast($"{connections.Count} users connected");
-                    await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-                }
-            });
+                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                await Broadcast($"{curName}: {message}");
+            }
+            else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
+            {
+                connections.Remove(ws);
+                await Broadcast($"{curName} left the room");
+                await Broadcast($"{connections.Count} users connected");
+                await ws.CloseAsync(result.CloseStatus ?? WebSocketCloseStatus.NormalClosure, result.CloseStatusDescription, CancellationToken.None);
+            }
+        });
     }
     else
     {
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
     }
 });
-async Task ReceiveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
+
+async Task ReceiveMessage(WebSocket socket, Func<WebSocketReceiveResult, byte[], Task> handleMessage)
 {
     var buffer = new byte[1024 * 4];
     while (socket.State == WebSocketState.Open)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        handleMessage(result, buffer);
+        await handleMessage(result, buffer);
     }
 }
 
@@ -216,34 +163,10 @@ async Task Broadcast(string message)
     {
         if (socket.State == WebSocketState.Open)
         {
-            var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
-            await socket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+            await socket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 }
 
-await app.RunAsync();
-
-// Enable Swagger if in development
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "User API v1");
-        c.RoutePrefix = "swagger";
-    });
-}
-
-
-// Auth and routing
-
-app.UseHttpsRedirection();
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
-
-// ✅ RUN the app LAST
 app.Run();

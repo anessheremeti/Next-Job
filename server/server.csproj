@@ -13,11 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
-<<<<<<< HEAD
-<PackageReference Include="WebSocketSharp" Version="1.0.3-rc9" />
-=======
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
   </ItemGroup>
+
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

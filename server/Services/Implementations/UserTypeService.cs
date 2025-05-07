@@ -2,6 +2,7 @@ using HelloWorld.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using HelloWorld.Models;
 
 namespace HelloWorld.Services
 {
@@ -44,6 +45,31 @@ namespace HelloWorld.Services
         {
             var sql = "DELETE FROM UserType WHERE UserTypeId = @Id";
             return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
+        }
+
+        public Task<IEnumerable<UserType>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserType?> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CreateAsync(UserType userType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync(int id, UserType userType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

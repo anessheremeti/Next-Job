@@ -32,9 +32,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Contracts WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<Contract>(sql, parameters);
+                var sql = "SELECT * FROM Contracts WHERE id = @Id";
+                return await _dataDapper.LoadDataSingleAsync<Contract>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
@@ -46,36 +45,27 @@ namespace HelloWorld.Services
         {
             try
             {
-<<<<<<< HEAD
-                string validationMessage = string.Empty;
-                if (contract == null || !contract.IsValid(out validationMessage))
-=======
                 if (dto == null)
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
+                    throw new ArgumentException("Contract data is required.");
+
+                var contract = new Contract
                 {
+                    FreelancerId = dto.FreelancerId,
+                    ClientId = dto.ClientId,
+                    JobId = dto.JobId,
+                    StartDate = dto.StartDate,
+                    EndDate = dto.EndDate,
+                    ContractStatusId = dto.ContractStatusId
+                };
+
+                if (!contract.IsValid(out var validationMessage))
                     throw new ArgumentException($"Invalid contract data. {validationMessage}");
-                }
 
-<<<<<<< HEAD
-                var sql = @"INSERT INTO Contracts 
-                            (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
-                            VALUES 
-                            (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
+                var sql = @"
+                    INSERT INTO Contracts (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
+                    VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
 
-                return await _dataDapper.ExecuteSqlAsync(sql, new
-                {
-                    contract.FreelancerId,
-                    contract.ClientId,
-                    contract.JobId,
-                    contract.StartDate,
-                    contract.EndDate,
-                    contract.ContractStatusId
-                });
-=======
-                var sql = @"INSERT INTO Contracts (freelancer_id, client_id, job_id, start_date, end_date, contract_status_id) 
-                            VALUES (@FreelancerId, @ClientId, @JobId, @StartDate, @EndDate, @ContractStatusId)";
-                return await _dataDapper.ExecuteSqlAsync(sql, dto);
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
+                return await _dataDapper.ExecuteSqlAsync(sql, contract);
             }
             catch (Exception ex)
             {
@@ -87,23 +77,27 @@ namespace HelloWorld.Services
         {
             try
             {
-                string validationMessage = string.Empty;
-                if (contract == null || id != contract.Id || !contract.IsValid(out validationMessage))
-                {
-                    throw new ArgumentException($"Invalid contract data. {validationMessage}");
-                }
+                if (contract == null)
+                    throw new ArgumentException("Contract object is null.");
 
-<<<<<<< HEAD
-                var sql = @"UPDATE Contracts SET 
-                            freelancer_id = @FreelancerId, 
-                            client_id = @ClientId, 
-                            job_id = @JobId, 
-                            start_date = @StartDate, 
-                            end_date = @EndDate, 
-                            contract_status_id = @ContractStatusId 
-                            WHERE id = @Id";
+                if (id != contract.Id)
+                    throw new ArgumentException("Mismatched contract ID.");
 
-                return await _dataDapper.ExecuteSqlAsync(sql, new
+                string validationMessage;
+                if (!contract.IsValid(out validationMessage))
+                    throw new ArgumentException("Invalid contract data: " + validationMessage);
+
+                var sql = @"
+            UPDATE Contracts 
+            SET freelancer_id = @FreelancerId, 
+                client_id = @ClientId, 
+                job_id = @JobId, 
+                start_date = @StartDate, 
+                end_date = @EndDate, 
+                contract_status_id = @ContractStatusId 
+            WHERE id = @Id";
+
+                var parameters = new
                 {
                     contract.FreelancerId,
                     contract.ClientId,
@@ -112,15 +106,9 @@ namespace HelloWorld.Services
                     contract.EndDate,
                     contract.ContractStatusId,
                     Id = id
-                });
-=======
-                var sql = @"UPDATE Contracts 
-                            SET freelancer_id = @FreelancerId, client_id = @ClientId, job_id = @JobId, start_date = @StartDate, 
-                                end_date = @EndDate, contract_status_id = @ContractStatusId 
-                            WHERE id = @Id";
-                contract.Id = id;
-                return await _dataDapper.ExecuteSqlAsync(sql, contract);
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
+                };
+
+                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }
             catch (Exception ex)
             {
@@ -128,13 +116,13 @@ namespace HelloWorld.Services
             }
         }
 
+
         public async Task<bool> DeleteContractAsync(int id)
         {
             try
             {
                 var sql = "DELETE FROM Contracts WHERE id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {

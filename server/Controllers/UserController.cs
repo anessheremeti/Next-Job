@@ -1,4 +1,5 @@
 using HelloWorld.Services;
+using HelloWorld.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
@@ -56,15 +57,6 @@ namespace HelloWorld.Controllers
         {
             try
             {
-<<<<<<< HEAD
-                if (user == null)
-                    return BadRequest("User data is required.");
-
-                if (!user.IsValid(out var validationMessage))
-                    return BadRequest(validationMessage);
-
-                var isCreated = await _userService.CreateUserAsync(user);
-=======
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -76,9 +68,10 @@ namespace HelloWorld.Controllers
                     Email = request.Email
                 };
 
-                bool isCreated = await _userService.CreateUserAsync(user, request.Password);
+                if (!user.IsValid(out var validationMessage))
+                    return BadRequest(validationMessage);
 
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
+                bool isCreated = await _userService.CreateUserAsync(user, request.Password);
                 if (!isCreated)
                     return StatusCode(500, "Failed to create user.");
 
@@ -90,8 +83,6 @@ namespace HelloWorld.Controllers
             }
         }
 
-<<<<<<< HEAD
-        // PUT api/user/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
         {
@@ -115,7 +106,6 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/user/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -132,7 +122,5 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-=======
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
     }
 }

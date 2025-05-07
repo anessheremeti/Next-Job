@@ -67,13 +67,6 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[8.1.0, )"
-<<<<<<< HEAD
-            },
-            "WebSocketSharp": {
-              "target": "Package",
-              "version": "[1.0.3-rc9, )"
-=======
->>>>>>> 0f29022aeaf03c092a16ca8baead4826b969538e
             }
           },
           "imports": [

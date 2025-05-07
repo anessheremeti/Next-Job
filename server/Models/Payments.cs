@@ -1,4 +1,5 @@
 using System;
+using HelloWorld.Models;
 
 public class Payment
 {
@@ -10,9 +11,8 @@ public class Payment
 
     public DateTime? PaymentDate { get; set; } = DateTime.Now;
 
-    public int PaymentStatusId { get; set; }  // foreign key
+    public int PaymentStatusId { get; set; }  
 
-    // Optional properties (related entities)
     public virtual Contract? Contract { get; set; }
     public virtual PaymentStatus? PaymentStatus { get; set; }
 
