@@ -15,7 +15,4 @@ public class CreateUserRequest
 
     [Required, MinLength(6)]
     public string Password { get; set; } = string.Empty;
-
-    [MaxLength(500)]
-    public string? Image { get; set; } 
 }

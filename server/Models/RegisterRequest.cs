@@ -1,3 +1,4 @@
+
 using System.ComponentModel.DataAnnotations;
 
 public class RegisterRequest
@@ -19,7 +20,4 @@ public class RegisterRequest
     [Required(ErrorMessage = "Password is required.")]
     [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
     public string Password { get; set; } = string.Empty;
-
-    [Url(ErrorMessage = "Image must be a valid URL.")]
-    public string? Image { get; set; } // Fusha e re
 }

@@ -1,4 +1,3 @@
-
 using HelloWorld.Data;
 using HelloWorld.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -51,19 +50,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
-                if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
-                {
-                    context.Token = authHeader.Substring("Bearer ".Length).Trim();
-                }
-                return Task.CompletedTask;
-            }
-        };
     });
 
 builder.Services.AddAuthorization();
@@ -94,6 +80,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Dependency Injection
 builder.Services.AddScoped<DataDapper>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
@@ -130,11 +117,12 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseWebSockets();
-var connections = new List<WebSocket>();
+var connections = new List<System.Net.WebSockets.WebSocket>();
 
 app.Map("/ws", async context =>
 {
