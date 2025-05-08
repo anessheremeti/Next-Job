@@ -3,6 +3,7 @@ import leftSign from "../../assets/left-sign.png";
 import vertical from "../../assets/vertical.png";
 import logo from "../../assets/Logo 1.png";
 import serviceGroup from "../../assets/service-group.png";
+import axios from 'axios';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -25,8 +26,7 @@ function SignUp() {
       ...formData,
       [name]: value
     });
-    
- 
+
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -39,13 +39,11 @@ function SignUp() {
     let valid = true;
     const newErrors = { ...errors };
 
- 
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
       valid = false;
     }
 
-  
     if (!formData.email) {
       newErrors.email = 'Email is required';
       valid = false;
@@ -54,7 +52,6 @@ function SignUp() {
       valid = false;
     }
 
-  
     if (!formData.password) {
       newErrors.password = 'Password is required';
       valid = false;
@@ -63,7 +60,6 @@ function SignUp() {
       valid = false;
     }
 
-    
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
       valid = false;
@@ -76,21 +72,45 @@ function SignUp() {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     if (validateForm()) {
-     
-      console.log('Form submitted:', formData);
-      
-      alert('Registration successful!');
-      formData.name = '';
-      formData.email = '';
-      formData.password= '';
-      formData.confirmPassword = '';
-      console.log('Your data  ' , formData)
+      try {
+        const response = await axios.post('http://localhost:5123/signup', {
+          fullName: formData.name,
+          companyName: "",               
+          email: formData.email,
+          password: formData.password,
+          image: "",                     
+          userType: "Freelancer"         
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        if (response.status === 200 || response.status === 201) {
+          alert('Registration successful!');
+          console.log('Server response:', response.data);
+          setFormData({
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+          });
+        }
+      } catch (error) {
+        if (error.response && typeof error.response.data === 'string') {
+          alert(`Error: ${error.response.data}`);
+        } else {
+          alert('Registration failed. Please try again.');
+        }
+        console.error('Registration error:', error);
+      }
     }
   };
+  
 
   return (
     <div className='flex flex-col items-center lg:flex-row justify-center mx-10 my-40 gap-16'>
@@ -101,12 +121,13 @@ function SignUp() {
             <img src={leftSign} alt="left-sign" />
             <a href='#' className='text-[#00000080] font-poppins hover:underline'>Back to Home</a>    
           </div>
+
           <div className='flex items-center justify-center gap-5 flex-col md:flex-row'>
             <h1 className='text-6xl text-[#216F4C] font-poppins font-medium flex flex-row'>Sign Up</h1>
             <img src={vertical} alt="vertical" className='hidden xl:flex' />
             <img src={logo} alt="logo"/>
           </div>
-          
+
           <label htmlFor="name" className='font-poppins text-[#00000080] text-lg'>Full Name</label>
           <input 
             type="text" 
@@ -117,7 +138,7 @@ function SignUp() {
             onChange={handleChange}
           />
           {errors.name && <p className="text-red-500 text-sm -mt-2">{errors.name}</p>}
-          
+
           <label htmlFor="email" className='font-poppins text-[#00000080] text-lg'>Email</label>
           <input 
             type="email" 
@@ -128,7 +149,7 @@ function SignUp() {
             onChange={handleChange}
           />
           {errors.email && <p className="text-red-500 text-sm -mt-2">{errors.email}</p>}
-          
+
           <label htmlFor="password" className='font-poppins text-[#00000080] text-lg'>Password</label>
           <input 
             type="password" 
@@ -139,7 +160,7 @@ function SignUp() {
             onChange={handleChange}
           />
           {errors.password && <p className="text-red-500 text-sm -mt-2">{errors.password}</p>}
-          
+
           <label htmlFor="confirmPassword" className='font-poppins text-[#00000080] text-lg'>Confirm Password</label>
           <input 
             type="password" 
@@ -150,14 +171,14 @@ function SignUp() {
             onChange={handleChange}
           />
           {errors.confirmPassword && <p className="text-red-500 text-sm -mt-2">{errors.confirmPassword}</p>}
-          
+
           <button 
             type="submit"
             className='bg-[#216F4C] self-center w-[70%] p-2 text-white font-poppins rounded-full mt-5 hover:bg-[#2a9464]'
           >
             Sign Up
           </button>
-          
+
           <div className='flex items-center justify-center gap-2 text-[#00000080]'>
             <p>Have an account? </p>
             <a className='text-[#216F4C] font-semibold font-poppins hover:underline' href="#">Log In</a>

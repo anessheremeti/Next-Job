@@ -17,8 +17,11 @@ import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
 
+import Details from './components/Details/Details.jsx';
+import AfterSignIn from './components/AfterSignIn/AfterSignIn.jsx';
 import SignUp from './components/SignUp-In/SignUp.jsx'
 import SignIn from './components/SignUp-In/SignIn.jsx';
+import Choose from './components/SignUp-In/Choose.jsx'
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
@@ -38,15 +41,19 @@ function App() {
         <Route path="/client-start" element={<ClientStart />} />
         <Route path="/company-details" element={<CompanyDetails />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
 
         
         {/* Blend */}
         <Route path="/find-job-companies" element={<FindJobCompanies />} />
         <Route path="/find-talent" element={<FindTalent />} />
         <Route path="/find-work" element={<FindWork />} />
-        
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/choose" element={<Choose />} />
+        <Route path="/aftersignin" element={<AfterSignIn/>}/>
+        <Route path="/details" element={<Details/>}/>
+
+
         {/* Company/Administration */}
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
         <Route path="/withdrawal" element={<Withdrawal />} />
