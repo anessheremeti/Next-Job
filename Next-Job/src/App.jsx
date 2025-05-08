@@ -17,6 +17,7 @@ import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
 
+import DetailsSecond from './components/Details/DetailsSecond.jsx';
 import Details from './components/Details/Details.jsx';
 import AfterSignIn from './components/AfterSignIn/AfterSignIn.jsx';
 import SignUp from './components/SignUp-In/SignUp.jsx'
@@ -52,7 +53,7 @@ function App() {
         <Route path="/choose" element={<Choose />} />
         <Route path="/aftersignin" element={<AfterSignIn/>}/>
         <Route path="/details" element={<Details/>}/>
-
+        <Route path="/detailssecond" element={<DetailsSecond/>}/>
 
         {/* Company/Administration */}
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
