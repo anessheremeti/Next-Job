@@ -4,6 +4,7 @@ import dot from "../../assets/dot.png";
 import { Link } from "react-router";
 import SignUp from '../SignUp-In/SignUp.jsx';
 import SignIn from '../SignUp-In/SignIn.jsx';
+import Choose from '../SignUp-In/Choose.jsx'
 import { AiOutlineClose,AiOutlineMenu} from "react-icons/ai";
 
 function Navbar() {
@@ -40,7 +41,7 @@ function Navbar() {
               Log in
             </button>
           </Link>
-          <Link to="/signup">
+          <Link to="/choose">
             <button className='bg-[rgba(33,111,76,1)] text-white rounded-full px-7 py-2 hover:bg-transparent hover:text-[#216F4C] hover:border hover:border-[#216F4C] transition duration-300 font-poppins'>
               Register
             </button>
