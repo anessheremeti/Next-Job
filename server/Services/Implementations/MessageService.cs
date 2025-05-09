@@ -16,91 +16,73 @@ namespace HelloWorld.Services
 
         public async Task<IEnumerable<Message>> GetMessagesAsync()
         {
-            try
-            {
-                var sql = "SELECT * FROM Message";
-                return await _dataDapper.LoadDataAsync<Message>(sql);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving message records: {ex.Message}", ex);
-            }
+            var sql = @"SELECT 
+                            id AS Id,
+                            sender_id AS SenderId,
+                            receiver_id AS ReceiverId,
+                            message AS MessageContent,
+                            date_time AS DateTime
+                        FROM Messages";
+            return await _dataDapper.LoadDataAsync<Message>(sql);
         }
 
         public async Task<Message?> GetMessageByIdAsync(int id)
         {
-            try
-            {
-                var sql = "SELECT * FROM Message WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<Message>(sql, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving message record with ID {id}: {ex.Message}", ex);
-            }
+            var sql = @"SELECT 
+                            id AS Id,
+                            sender_id AS SenderId,
+                            receiver_id AS ReceiverId,
+                            message AS MessageContent,
+                            date_time AS DateTime
+                        FROM Messages
+                        WHERE id = @Id";
+            return await _dataDapper.LoadDataSingleAsync<Message>(sql, new { Id = id });
         }
 
         public async Task<IEnumerable<Message>> GetMessagesBySenderAsync(int senderId)
         {
-            try
-            {
-                var sql = "SELECT * FROM Message WHERE SenderId = @SenderId";
-                var parameters = new { SenderId = senderId };
-                return await _dataDapper.LoadDataAsync<Message>(sql, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving messages for sender ID {senderId}: {ex.Message}", ex);
-            }
+            var sql = @"SELECT 
+                            id AS Id,
+                            sender_id AS SenderId,
+                            receiver_id AS ReceiverId,
+                            message AS MessageContent,
+                            date_time AS DateTime
+                        FROM Messages
+                        WHERE sender_id = @SenderId";
+            return await _dataDapper.LoadDataAsync<Message>(sql, new { SenderId = senderId });
         }
 
         public async Task<IEnumerable<Message>> GetMessagesByReceiverAsync(int receiverId)
         {
-            try
-            {
-                var sql = "SELECT * FROM Message WHERE ReceiverId = @ReceiverId";
-                var parameters = new { ReceiverId = receiverId };
-                return await _dataDapper.LoadDataAsync<Message>(sql, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while retrieving messages for receiver ID {receiverId}: {ex.Message}", ex);
-            }
+            var sql = @"SELECT 
+                            id AS Id,
+                            sender_id AS SenderId,
+                            receiver_id AS ReceiverId,
+                            message AS MessageContent,
+                            date_time AS DateTime
+                        FROM Messages
+                        WHERE receiver_id = @ReceiverId";
+            return await _dataDapper.LoadDataAsync<Message>(sql, new { ReceiverId = receiverId });
         }
 
         public async Task<bool> CreateMessageAsync(Message message)
         {
-            try
-            {
-                if (message == null)
-                {
-                    throw new ArgumentException("Message data is required.");
-                }
+            if (message == null)
+                throw new ArgumentException("Message data is required.");
 
-                var sql = "INSERT INTO Message (SenderId, ReceiverId, MessageContent, DateTime) " +
-                          "VALUES (@SenderId, @ReceiverId, @MessageContent, @DateTime)";
+            if (!message.IsValid(out string validationMessage))
+                throw new ArgumentException($"Validation failed: {validationMessage}");
 
-                return await _dataDapper.ExecuteSqlAsync(sql, message);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while creating message record: {ex.Message}", ex);
-            }
+            var sql = @"INSERT INTO Messages (sender_id, receiver_id, message, date_time)
+                        VALUES (@SenderId, @ReceiverId, @MessageContent, @DateTime)";
+
+            return await _dataDapper.ExecuteSqlAsync(sql, message);
         }
 
         public async Task<bool> DeleteMessageAsync(int id)
         {
-            try
-            {
-                var sql = "DELETE FROM Message WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error while deleting message record with ID {id}: {ex.Message}", ex);
-            }
+            var sql = "DELETE FROM Messages WHERE id = @Id";
+            return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
         }
     }
 }

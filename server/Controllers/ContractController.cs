@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
+using HelloWorld.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -16,18 +17,14 @@ namespace HelloWorld.Controllers
             _contractService = contractService;
         }
 
-        // GET api/contract
         [HttpGet]
         public async Task<IActionResult> GetContracts()
         {
             try
             {
                 var contracts = await _contractService.GetContractsAsync();
-
                 if (contracts == null || !contracts.Any())
-                {
                     return NotFound("No contracts found.");
-                }
 
                 return Ok(contracts);
             }
@@ -37,18 +34,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/contract/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContractById(int id)
         {
             try
             {
                 var contract = await _contractService.GetContractByIdAsync(id);
-
                 if (contract == null)
-                {
                     return NotFound($"Contract with ID {id} not found.");
-                }
 
                 return Ok(contract);
             }
@@ -58,25 +51,19 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/contract
         [HttpPost]
-        public async Task<IActionResult> CreateContract([FromBody] Contract contract)
+        public async Task<IActionResult> CreateContract([FromBody] ContractCreateDto dto)
         {
             try
             {
-                if (contract == null)
-                {
+                if (dto == null)
                     return BadRequest("Contract data is required.");
-                }
 
-                var isCreated = await _contractService.CreateContractAsync(contract);
-
+                var isCreated = await _contractService.CreateContractAsync(dto);
                 if (!isCreated)
-                {
                     return StatusCode(500, "Failed to create contract.");
-                }
 
-                return CreatedAtAction(nameof(GetContractById), new { id = contract.Id }, contract);
+                return Ok("Contract created successfully.");
             }
             catch (Exception ex)
             {
@@ -84,23 +71,17 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // PUT api/contract/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateContract(int id, [FromBody] Contract contract)
         {
             try
             {
                 if (contract == null || id != contract.Id)
-                {
                     return BadRequest("Invalid contract data.");
-                }
 
                 var isUpdated = await _contractService.UpdateContractAsync(id, contract);
-
                 if (!isUpdated)
-                {
                     return StatusCode(500, "Failed to update contract.");
-                }
 
                 return NoContent();
             }
@@ -110,18 +91,14 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/contract/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContract(int id)
         {
             try
             {
                 var isDeleted = await _contractService.DeleteContractAsync(id);
-
                 if (!isDeleted)
-                {
                     return NotFound($"Contract with ID {id} not found.");
-                }
 
                 return NoContent();
             }

@@ -2,7 +2,6 @@ using HelloWorld.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace HelloWorld.Services
 {
@@ -33,8 +32,7 @@ namespace HelloWorld.Services
             try
             {
                 var sql = "SELECT * FROM FreelancerProfile WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<FreelancerProfile>(sql, parameters);
+                return await _dataDapper.LoadDataSingleAsync<FreelancerProfile>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
@@ -44,48 +42,39 @@ namespace HelloWorld.Services
 
         public async Task<bool> CreateFreelancerProfileAsync(FreelancerProfile profile)
         {
-
-            Console.WriteLine($"Inserting profile for UserId: {profile.UserId}, HourlyRate: {profile.HourlyRate}");
-
             try
             {
-                if (profile == null)
-                {
-                    throw new ArgumentException("Profile data is required.");
-                }
+                string validationMessage = string.Empty;
+                if (profile == null || !profile.IsValid(out validationMessage))
+                    throw new ArgumentException($"Invalid profile data: {validationMessage}");
 
-                var sql = @"INSERT INTO FreelancerProfile (UserId, Skills, HourlyRate, PortfolioLink, Location, LastDelivery, MemberSince) 
-                            VALUES (@UserId, @Skills, @HourlyRate, @PortfolioLink, @Location, @LastDelivery, @MemberSince)";
+                var sql = @"INSERT INTO FreelancerProfile 
+                            (user_id, skills, hourly_rate, portfolio_link, location, last_delivery, member_since) 
+                            VALUES 
+                            (@UserId, @Skills, @HourlyRate, @PortfolioLink, @Location, @LastDelivery, @MemberSince)";
+
                 return await _dataDapper.ExecuteSqlAsync(sql, profile);
             }
-           catch (Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine($"Insert failed: {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                }
                 throw new Exception($"Error while creating freelancer profile: {ex.Message}", ex);
             }
-
         }
-        
-        
 
         public async Task<bool> UpdateFreelancerProfileAsync(int id, FreelancerProfile profile)
         {
             try
             {
-                if (profile == null || id != profile.Id)
-                {
-                    throw new ArgumentException("Invalid freelancer profile data.");
-                }
+                string validationMessage = string.Empty;
+                if (profile == null || id != profile.Id || !profile.IsValid(out validationMessage))
+                    throw new ArgumentException($"Invalid profile data: {validationMessage}");
 
                 var sql = @"UPDATE FreelancerProfile 
-                            SET UserId = @UserId, Skills = @Skills, HourlyRate = @HourlyRate, PortfolioLink = @PortfolioLink, 
-                                Location = @Location, LastDelivery = @LastDelivery, MemberSince = @MemberSince 
-                            WHERE Id = @Id";
-                profile.Id = id;
+                            SET user_id = @UserId, skills = @Skills, hourly_rate = @HourlyRate, 
+                                portfolio_link = @PortfolioLink, location = @Location, 
+                                last_delivery = @LastDelivery, member_since = @MemberSince 
+                            WHERE id = @Id";
+
                 return await _dataDapper.ExecuteSqlAsync(sql, profile);
             }
             catch (Exception ex)
@@ -98,9 +87,8 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM FreelancerProfile WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var sql = "DELETE FROM FreelancerProfile WHERE id = @Id";
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace HelloWorld.Controllers
 {
@@ -16,7 +17,7 @@ namespace HelloWorld.Controllers
             _applicationService = applicationService;
         }
 
-        // GET api/application
+        // GET: api/application
         [HttpGet]
         public async Task<IActionResult> GetApplications()
         {
@@ -37,7 +38,7 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/application/{id}
+        // GET: api/application/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetApplicationById(int id)
         {
@@ -58,25 +59,20 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/application
-        [HttpPost]
-        public async Task<IActionResult> CreateApplication([FromBody] Application application)
+        // GET: api/application/freelancer/{freelancerId}
+        [HttpGet("freelancer/{freelancerId}")]
+        public async Task<IActionResult> GetByFreelancerId(int freelancerId)
         {
             try
             {
-                if (application == null || application.JobId == 0 || application.FreelancerId == 0)
+                var applications = await _applicationService.GetByFreelancerIdAsync(freelancerId);
+
+                if (applications == null || !applications.Any())
                 {
-                    return BadRequest("Invalid application data.");
+                    return NotFound($"No applications found for freelancer ID {freelancerId}.");
                 }
 
-                bool isCreated = await _applicationService.CreateApplicationAsync(application);
-
-                if (!isCreated)
-                {
-                    return StatusCode(500, "Failed to create application.");
-                }
-
-                return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application);
+                return Ok(applications);
             }
             catch (Exception ex)
             {
@@ -84,7 +80,37 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // PUT api/application/{id}
+        // POST: api/application
+        [HttpPost]
+        public async Task<IActionResult> CreateApplication([FromBody] ApplicationCreateDto dto)
+        {
+            try
+            {
+                var application = new Application
+                {
+                    JobId = dto.JobId,
+                    FreelancerId = dto.FreelancerId,
+                    CoverLetter = dto.CoverLetter,
+                    DateApplied = dto.DateApplied
+                };
+
+                if (!application.IsValid(out var message))
+                    return BadRequest(message);
+
+                var createdApp = await _applicationService.CreateAndReturnAsync(application);
+
+                if (createdApp == null)
+                    return StatusCode(500, "Failed to create application.");
+
+                return CreatedAtAction(nameof(GetApplicationById), new { id = createdApp.Id }, createdApp);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // PUT: api/application/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateApplication(int id, [FromBody] Application application)
         {
@@ -93,6 +119,16 @@ namespace HelloWorld.Controllers
                 if (application == null || id != application.Id)
                 {
                     return BadRequest("Invalid application data.");
+                }
+
+                if (!await _applicationService.ExistsAsync(id))
+                {
+                    return NotFound($"Application with ID {id} not found.");
+                }
+
+                if (!application.IsValid(out var validationMessage))
+                {
+                    return BadRequest(validationMessage);
                 }
 
                 bool isUpdated = await _applicationService.UpdateApplicationAsync(id, application);
@@ -110,17 +146,22 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // DELETE api/application/{id}
+        // DELETE: api/application/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApplication(int id)
         {
             try
             {
+                if (!await _applicationService.ExistsAsync(id))
+                {
+                    return NotFound($"Application with ID {id} not found.");
+                }
+
                 bool isDeleted = await _applicationService.DeleteApplicationAsync(id);
 
                 if (!isDeleted)
                 {
-                    return NotFound($"Application with ID {id} not found.");
+                    return StatusCode(500, "Failed to delete application.");
                 }
 
                 return NoContent();

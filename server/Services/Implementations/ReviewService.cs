@@ -18,7 +18,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Review";
+                var sql = "SELECT * FROM Reviews";
                 return await _dataDapper.LoadDataAsync<Review>(sql);
             }
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Review WHERE Id = @Id";
+                var sql = "SELECT * FROM Reviews WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.LoadDataSingleAsync<Review>(sql, parameters);
             }
@@ -50,8 +50,13 @@ namespace HelloWorld.Services
                     throw new ArgumentException("Review data is required.");
                 }
 
-                var sql = "INSERT INTO Review (ReviewerId, ReviewedUserId, Rating, Comment, CreatedAt) " +
-                          "VALUES (@ReviewerId, @ReviewedUserId, @Rating, @Comment, @CreatedAt)";
+                if (!review.IsValid(out string validationMessage))
+                {
+                    throw new ArgumentException($"Invalid review data: {validationMessage}");
+                }
+
+                var sql = @"INSERT INTO Reviews (Reviewer_Id, Reviewed_User_Id, Rating, Comment, Created_At) 
+                            VALUES (@ReviewerId, @ReviewedUserId, @Rating, @Comment, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, review);
             }
@@ -65,7 +70,7 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "DELETE FROM Review WHERE Id = @Id";
+                var sql = "DELETE FROM Reviews WHERE Id = @Id";
                 var parameters = new { Id = id };
                 return await _dataDapper.ExecuteSqlAsync(sql, parameters);
             }

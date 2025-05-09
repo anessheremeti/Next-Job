@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using HelloWorld.Services;
+using HelloWorld.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 using System.Linq;
 
 namespace HelloWorld.Controllers
@@ -16,20 +18,26 @@ namespace HelloWorld.Controllers
             _userService = userService;
         }
 
-        // GET api/user
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
             try
             {
                 var users = await _userService.GetUsersAsync();
-
                 if (users == null || !users.Any())
-                {
                     return NotFound("No users found.");
-                }
 
-                return Ok(users);
+                var userDtos = users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    CompanyName = u.CompanyName,
+                    Email = u.Email,
+                    UserTypeId = u.UserTypeId,
+                    CreatedAt = u.CreatedAt
+                });
+
+                return Ok(userDtos);
             }
             catch (Exception ex)
             {
@@ -37,20 +45,27 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // GET api/user/{id}
+    
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             try
             {
                 var user = await _userService.GetUserByIdAsync(id);
-
                 if (user == null)
-                {
                     return NotFound($"User with ID {id} not found.");
-                }
 
-                return Ok(user);
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    CompanyName = user.CompanyName,
+                    Email = user.Email,
+                    UserTypeId = user.UserTypeId,
+                    CreatedAt = user.CreatedAt
+                };
+
+                return Ok(userDto);
             }
             catch (Exception ex)
             {
@@ -58,25 +73,80 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST api/user
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
             try
             {
-                if (user == null || !user.IsValid())
-                {
-                    return BadRequest("Invalid user data.");
-                }
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-                var isCreated = await _userService.CreateUserAsync(user);
+                var user = new User
+                {
+                    UserTypeId = request.UserTypeId,
+                    FullName = request.FullName,
+                    CompanyName = request.CompanyName,
+                    Email = request.Email
+                };
+
+                user.SetPassword(request.Password); 
+
+                if (!user.IsValid(out var validationMessage))
+                    return BadRequest(validationMessage);
+
+                bool isCreated = await _userService.CreateUserAsync(user, request.Password);
+
 
                 if (!isCreated)
-                {
                     return StatusCode(500, "Failed to create user.");
-                }
 
                 return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        {
+            try
+            {
+                if (user == null || id != user.Id)
+                    return BadRequest("Invalid user data.");
+
+                if (!string.IsNullOrWhiteSpace(user.PasswordHash) && !user.PasswordHash.StartsWith("$2b$"))
+                {
+                    user.SetPassword(user.PasswordHash); 
+                }
+
+                if (!user.IsValid(out var validationMessage))
+                    return BadRequest(validationMessage);
+
+                var isUpdated = await _userService.UpdateUserAsync(id, user);
+                if (!isUpdated)
+                    return StatusCode(500, "Failed to update user.");
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var isDeleted = await _userService.DeleteUserAsync(id);
+                if (!isDeleted)
+                    return NotFound($"User with ID {id} not found.");
+
+                return NoContent();
             }
             catch (Exception ex)
             {

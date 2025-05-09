@@ -26,15 +26,13 @@ namespace HelloWorld.Services
                 throw new Exception($"Error while retrieving companies: {ex.Message}", ex);
             }
         }
-        
-        //Ktu e marrmi me id company
+
         public async Task<Company?> GetCompanyByIdAsync(int id)
         {
             try
             {
-                var sql = "SELECT * FROM Company WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.LoadDataSingleAsync<Company>(sql, parameters);
+                var sql = "SELECT * FROM Company WHERE id = @Id";
+                return await _dataDapper.LoadDataSingleAsync<Company>(sql, new { Id = id });
             }
             catch (Exception ex)
             {
@@ -42,40 +40,52 @@ namespace HelloWorld.Services
             }
         }
 
-      
         public async Task<bool> CreateCompanyAsync(Company company)
         {
             try
             {
                 if (company == null)
-                {
-                    throw new ArgumentException("Company data is required.");
-                }
+                    throw new ArgumentNullException(nameof(company), "Company object is null.");
 
-                var sql = @"INSERT INTO Company (OwnerId, Name, Description, Website, CreatedAt) 
-                VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
+                if (!company.IsValid(out var validationMessage))
+                    throw new ArgumentException("Invalid company data. " + (validationMessage ?? "Unknown validation error."));
+
+                var sql = @"
+            INSERT INTO Company (owner_id, name, description, website, created_at) 
+            VALUES (@OwnerId, @Name, @Description, @Website, @CreatedAt)";
 
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while creating company: {ex.Message}", ex);
+                Console.WriteLine($"[ERROR] Failed to insert company: {ex.Message}");
+                throw;
             }
         }
+
 
         public async Task<bool> UpdateCompanyAsync(int id, Company company)
         {
             try
             {
-                if (company == null || id != company.Id)
-                {
-                    throw new ArgumentException("Invalid company data.");
-                }
+                if (company == null)
+                    throw new ArgumentNullException(nameof(company), "Company object is null.");
 
-                var sql = @"UPDATE Company 
-                            SET OwnerId = @OwnerId, Name = @Name, Description = @Description, Website = @Website, CreatedAt = @CreatedAt 
-                            WHERE Id = @Id";
-                company.Id = id;
+                if (id != company.Id)
+                    throw new ArgumentException("ID mismatch between parameter and company object.");
+
+                if (!company.IsValid(out var validationMessage))
+                    throw new ArgumentException("Invalid company data. " + (validationMessage ?? "Unknown validation error."));
+
+                var sql = @"
+            UPDATE Company 
+            SET owner_id = @OwnerId, 
+                name = @Name, 
+                description = @Description, 
+                website = @Website, 
+                created_at = @CreatedAt 
+            WHERE id = @Id";
+
                 return await _dataDapper.ExecuteSqlAsync(sql, company);
             }
             catch (Exception ex)
@@ -84,13 +94,13 @@ namespace HelloWorld.Services
             }
         }
 
+
         public async Task<bool> DeleteCompanyAsync(int id)
         {
             try
             {
-                var sql = "DELETE FROM Company WHERE Id = @Id";
-                var parameters = new { Id = id };
-                return await _dataDapper.ExecuteSqlAsync(sql, parameters);
+                var sql = "DELETE FROM Company WHERE id = @Id";
+                return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
             }
             catch (Exception ex)
             {
