@@ -7,6 +7,7 @@ import Companies from './components/Cards/companies.jsx';
 import Faq from '../src/components/FAQ/faq.jsx'
 
 import PortfolioWithPrice from "../src/components/Portfolio - with Price/PortfolioWithPrice.jsx";
+import { BrowserRouter, Routes, Route } from "react-router";
 
 import UsersDashboard from './components/UsersDashboard/UserDashboard.jsx'
 import FindTalent from './components/FindTalent/FindTalent.jsx'
@@ -17,33 +18,40 @@ import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
-
+import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
+import CompanyProfileWithEdits from './components/CompanyProfileWithEdits/CompanyProfileWithEdits.jsx';
+import CompanyProfile from './components/CompanyProfile/CompanyProfile.jsx';
+import ConfigureProfileUser from './components/ConfigureProfileUser/ConfigureProfileUser.jsx';
 function App() {
 
   return (
     <>
+      <Routes>
         {/* Ensar */}
-        {/*<PortfolioWithPrice/>*/}
-        {/*<Workpage/>*/}
-        {/*<MyJobs/>*/}
-        {/*<ClientStart/>*/} 
-        <CompanyDetails/>
-
-   
-
+        <Route index element={<LandingPage />} />
+        <Route path="/portfolio-with-price" element={<PortfolioWithPrice />} />
+        <Route path="/workpage" element={<Workpage />} />
+        <Route path="/my-jobs" element={<MyJobs />} />
+        <Route path="/client-start" element={<ClientStart />} />
+        <Route path="/company-details" element={<CompanyDetails />} />
+        <Route path="/CompanyProfileWithEdits" element={<CompanyProfileWithEdits />} />
+        <Route path="/CompanyProfile" element={<CompanyProfile />} />
+        <Route path="/ConfigureProfileUser" element={<ConfigureProfileUser />} />
+        
         {/* Blend */}
-        {/* <LandingPage/> */}
-        {/* <FindJobCompanies/> */}
-        {/* <FindTalent/> */}
-        {/* <FindWork/> */}
-  
-
-        {/* <CompanyDashboard/> */}
-        {/* <Withdrawal/> */}
-        {/* <AdminDashboard/> */}
-
+        <Route path="/find-job-companies" element={<FindJobCompanies />} />
+        <Route path="/find-talent" element={<FindTalent />} />
+        <Route path="/find-work" element={<FindWork />} />
+        
+        {/* Company/Administration */}
+        <Route path="/company-dashboard" element={<CompanyDashboard />} />
+        <Route path="/withdrawal" element={<Withdrawal />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/users-dashboard" element={<UsersDashboard />} />
+        <Route path="/withdrawal-dashboard" element={<WithDrawalDashboard />} />
+      </Routes>
     </>
-  )
+  );
 }
 
 export default App;
