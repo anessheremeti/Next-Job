@@ -27,6 +27,7 @@ import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
 import Chat from './components/Chat/Chat.jsx';
+import JobPostFromAdmin from './components/JobPostFromAdmin/JobPostFromAdmin.jsx';
 function App() {
 
   return (
@@ -44,7 +45,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
 
         
-        {/* Blend */}
+   
         <Route path="/find-job-companies" element={<FindJobCompanies />} />
         <Route path="/find-talent" element={<FindTalent />} />
         <Route path="/find-work" element={<FindWork />} />
@@ -54,8 +55,8 @@ function App() {
         <Route path="/aftersignin" element={<AfterSignIn/>}/>
         <Route path="/details" element={<Details/>}/>
         <Route path="/detailssecond" element={<DetailsSecond/>}/>
-
-        {/* Company/Administration */}
+        <Route path="/jobpostfromadmin" element={<JobPostFromAdmin/>}/>
+      
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
         <Route path="/withdrawal" element={<Withdrawal />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
