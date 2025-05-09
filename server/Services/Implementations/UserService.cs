@@ -17,23 +17,35 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        var sql = @"SELECT u.id, u.user_type_id AS UserTypeId, u.full_name, u.company_name, 
-                           u.email, u.password_hash, u.created_at,
-                           ut.UserTypeName AS UserTypeName
-                    FROM Users u
-                    LEFT JOIN UserType ut ON u.user_type_id = ut.UserTypeID";
+        var sql = @"SELECT u.id,
+            u.user_type_id AS UserTypeId,
+            u.full_name AS FullName,
+            u.company_name AS CompanyName,
+            u.email,
+            u.password_hash,
+            u.created_at,
+            ut.UserTypeName AS UserTypeName
+        FROM Users u
+        LEFT JOIN UserType ut ON u.user_type_id = ut.UserTypeID
+        ";
 
         return await _dataDapper.LoadDataAsync<User>(sql);
     }
 
     public async Task<User?> GetUserByIdAsync(int id)
     {
-        var sql = @"SELECT u.id, u.user_type_id AS UserTypeId, u.full_name, u.company_name, 
-                           u.email, u.password_hash, u.created_at,
-                           ut.UserTypeName AS UserTypeName
-                    FROM Users u
-                    LEFT JOIN UserType ut ON u.user_type_id = ut.UserTypeID
-                    WHERE u.id = @Id";
+                var sql = @"SELECT u.id,
+            u.user_type_id AS UserTypeId,
+            u.full_name AS FullName,
+            u.company_name AS CompanyName,
+            u.email,
+            u.password_hash,
+            u.created_at,
+            ut.UserTypeName AS UserTypeName
+        FROM Users u
+        LEFT JOIN UserType ut ON u.user_type_id = ut.UserTypeID
+        WHERE u.id = @Id
+        ";
 
         return await _dataDapper.LoadDataSingleAsync<User>(sql, new { Id = id });
     }
@@ -63,11 +75,11 @@ public class UserService : IUserService
 
         if (string.IsNullOrWhiteSpace(user.FullName))
         {
-            user.FullName = "Unknown Name";  
+            user.FullName = "Unknown Name";
         }
         if (string.IsNullOrWhiteSpace(user.CompanyName))
         {
-            user.CompanyName = "Unknown Company"; 
+            user.CompanyName = "Unknown Company";
         }
 
         var sql = @"INSERT INTO Users (user_type_id, full_name, company_name, email, password_hash, created_at)
@@ -85,7 +97,7 @@ public class UserService : IUserService
 
         return await _dataDapper.ExecuteSqlAsync(sql, parameters);
     }
-   
+
 
 
     public async Task<bool> UpdateUserAsync(int id, User user)

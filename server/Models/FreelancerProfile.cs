@@ -54,6 +54,9 @@ public class FreelancerProfile
         if (!string.IsNullOrEmpty(Skills) && Skills.Length > 500)
             validationMessage += "Skills should not exceed 500 characters.\n";
 
+        Console.WriteLine("Validation error: " + validationMessage);
+
         return string.IsNullOrEmpty(validationMessage);
+
     }
 }

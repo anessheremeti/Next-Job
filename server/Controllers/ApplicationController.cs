@@ -97,14 +97,12 @@ namespace HelloWorld.Controllers
                 if (!application.IsValid(out var message))
                     return BadRequest(message);
 
-                var isCreated = await _applicationService.CreateApplicationAsync(application);
+                var createdApp = await _applicationService.CreateAndReturnAsync(application);
 
-                if (!isCreated)
-                {
+                if (createdApp == null)
                     return StatusCode(500, "Failed to create application.");
-                }
 
-                return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application);
+                return CreatedAtAction(nameof(GetApplicationById), new { id = createdApp.Id }, createdApp);
             }
             catch (Exception ex)
             {
