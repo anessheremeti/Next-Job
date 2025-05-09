@@ -98,7 +98,12 @@ public class Startup
         services.AddScoped<IPaymentStatusService, PaymentStatusService>();
         services.AddScoped<IUserTypeService, UserTypeService>();
 
-        services.AddControllers();
+        services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

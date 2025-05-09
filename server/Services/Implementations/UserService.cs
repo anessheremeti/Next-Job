@@ -1,6 +1,7 @@
 using HelloWorld.Data;
 using HelloWorld.Models;
 using HelloWorld.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -60,8 +61,17 @@ public class UserService : IUserService
         user.SetPassword(plainPassword);
         user.CreatedAt = DateTime.Now;
 
+        if (string.IsNullOrWhiteSpace(user.FullName))
+        {
+            user.FullName = "Unknown Name";  
+        }
+        if (string.IsNullOrWhiteSpace(user.CompanyName))
+        {
+            user.CompanyName = "Unknown Company"; 
+        }
+
         var sql = @"INSERT INTO Users (user_type_id, full_name, company_name, email, password_hash, created_at)
-                    VALUES (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
+                VALUES (@UserTypeId, @FullName, @CompanyName, @Email, @PasswordHash, @CreatedAt)";
 
         var parameters = new
         {
@@ -75,6 +85,8 @@ public class UserService : IUserService
 
         return await _dataDapper.ExecuteSqlAsync(sql, parameters);
     }
+   
+
 
     public async Task<bool> UpdateUserAsync(int id, User user)
     {
@@ -100,10 +112,5 @@ public class UserService : IUserService
     {
         var sql = "DELETE FROM Users WHERE id = @Id";
         return await _dataDapper.ExecuteSqlAsync(sql, new { Id = id });
-    }
-
-    public Task<bool> CreateUserAsync(User user)
-    {
-        throw new NotImplementedException();
     }
 }

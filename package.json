@@ -4,6 +4,6 @@
     "classnames": "^2.5.1",
     "lucide-react": "^0.508.0",
     "react-icons": "^5.5.0",
-    "react-phone-input-2": "^2.15.1"
+    "react-phone-input-2": "^2.14.0"
   }
 }

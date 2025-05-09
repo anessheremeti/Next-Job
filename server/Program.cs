@@ -24,7 +24,12 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -178,6 +183,8 @@ async Task Broadcast(string message)
         }
     }
 }
+
+
 app.UseCors("AllowConfiguredOrigins");
 app.MapControllers();
 app.Run();
