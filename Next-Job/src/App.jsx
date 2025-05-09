@@ -33,6 +33,7 @@ import ConfigureProfileUser from './components/ConfigureProfileUser/ConfigurePro
 
 import Chat from './components/Chat/Chat.jsx';
 import JobPostFromAdmin from './components/JobPostFromAdmin/JobPostFromAdmin.jsx';
+import AddPortfolio from './components/AddPortfolio/AddPortfolio.jsx';
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
         <Route path="/CompanyProfileWithEdits" element={<CompanyProfileWithEdits />} />
         <Route path="/CompanyProfile" element={<CompanyProfile />} />
         <Route path="/ConfigureProfileUser" element={<ConfigureProfileUser />} />
+        <Route path="/AddPortfolio" element={<AddPortfolio />} />
 
         <Route path="/chat" element={<Chat />} />
 
