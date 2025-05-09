@@ -17,13 +17,32 @@ public class ClientProfile
     public int? GenderId { get; set; }
     public int? EnglishLevelId { get; set; }
 
-    public bool IsValid()
+    public bool IsValid(out string validationMessage)
     {
-        return UserId.HasValue &&
-               !string.IsNullOrWhiteSpace(Skills) &&
-               !string.IsNullOrWhiteSpace(Location) &&
-               !string.IsNullOrWhiteSpace(Education) &&
-               GenderId.HasValue && GenderId > 0 &&
-               EnglishLevelId.HasValue && EnglishLevelId > 0;
+        validationMessage = string.Empty;
+
+        if (!UserId.HasValue || UserId <= 0)
+            validationMessage += "UserId is required and must be greater than 0.\n";
+
+        if (string.IsNullOrWhiteSpace(Skills))
+            validationMessage += "Skills are required.\n";
+
+        if (string.IsNullOrWhiteSpace(Location))
+            validationMessage += "Location is required.\n";
+
+        if (string.IsNullOrWhiteSpace(Education))
+            validationMessage += "Education is required.\n";
+
+        if (!GenderId.HasValue || GenderId <= 0)
+            validationMessage += "GenderId is required and must be greater than 0.\n";
+
+        if (!EnglishLevelId.HasValue || EnglishLevelId <= 0)
+            validationMessage += "EnglishLevelId is required and must be greater than 0.\n";
+
+        return string.IsNullOrEmpty(validationMessage);
     }
+
+
+
+
 }

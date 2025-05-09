@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 public interface IApplicationService
 {
-    Task<IEnumerable<Application>> GetApplicationsAsync();
-    Task<ApplicationDetailsDto> GetApplicationByIdAsync(int id);  // përdor DTO për më shumë detaje
+    Task<IEnumerable<ApplicationDetailsDto>> GetApplicationsAsync();
+    Task<ApplicationDetailsDto> GetApplicationByIdAsync(int id);
     Task<IEnumerable<Application>> GetByFreelancerIdAsync(int freelancerId);
     Task<bool> ExistsAsync(int id);
-    Task<bool> CreateApplicationAsync(Application application);
+    Task<ApplicationDetailsDto?> CreateAndReturnAsync(Application application); // ndryshimi këtu
     Task<bool> UpdateApplicationAsync(int id, Application application);
     Task<bool> DeleteApplicationAsync(int id);
 }

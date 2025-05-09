@@ -16,13 +16,49 @@ public class ClientService : IClientService
 
     public async Task<IEnumerable<ClientProfile>> GetClientProfilesAsync()
     {
-        var sql = "SELECT * FROM ClientProfile";
+        var sql = @"
+        SELECT 
+            id AS Id,
+            user_id AS UserId,
+            image AS Image,
+            skills AS Skills,
+            job_success AS JobSuccess,
+            total_jobs AS TotalJobs,
+            total_hours AS TotalHours,
+            in_queue_service AS InQueueService,
+            location AS Location,
+            last_delivery AS LastDelivery,
+            member_since AS MemberSince,
+            education AS Education,
+            genderID AS GenderId,
+            englishLevelID AS EnglishLevelId
+        FROM ClientProfile";
+
         return await _dataDapper.LoadDataAsync<ClientProfile>(sql);
     }
 
+
     public async Task<ClientProfile?> GetClientProfileByIdAsync(int id)
     {
-        var sql = "SELECT * FROM ClientProfile WHERE Id = @Id";
+        var sql = @"
+        SELECT 
+            id AS Id,
+            user_id AS UserId,
+            image AS Image,
+            skills AS Skills,
+            job_success AS JobSuccess,
+            total_jobs AS TotalJobs,
+            total_hours AS TotalHours,
+            in_queue_service AS InQueueService,
+            location AS Location,
+            last_delivery AS LastDelivery,
+            member_since AS MemberSince,
+            education AS Education,
+            genderID AS GenderId,
+            englishLevelID AS EnglishLevelId
+        FROM ClientProfile
+        WHERE id = @Id";
+
         return await _dataDapper.LoadDataSingleAsync<ClientProfile>(sql, new { Id = id });
     }
 
@@ -65,9 +101,14 @@ public class ClientService : IClientService
     {
         try
         {
-            if (clientProfile == null || id != clientProfile.Id || !clientProfile.IsValid())
+            if (clientProfile == null || id != clientProfile.Id)
             {
-                throw new ArgumentException("Invalid client profile data.");
+                throw new ArgumentException("Invalid client profile ID or null profile.");
+            }
+
+            if (!clientProfile.IsValid(out string validationMessage))
+            {
+                throw new ArgumentException($"Invalid client profile data: {validationMessage}");
             }
 
             var sql = @"
@@ -103,9 +144,14 @@ public class ClientService : IClientService
 
     private void ValidateClientProfile(ClientProfile clientProfile)
     {
-        if (clientProfile == null || !clientProfile.IsValid())
+        if (clientProfile == null)
         {
-            throw new ArgumentException("Invalid client profile data.");
+            throw new ArgumentException("Client profile is null.");
+        }
+
+        if (!clientProfile.IsValid(out string validationMessage))
+        {
+            throw new ArgumentException($"Invalid client profile data: {validationMessage}");
         }
     }
 }

@@ -59,16 +59,23 @@ namespace HelloWorld.Controllers
             }
         }
 
-        // POST: api/clientprofile
+
         [HttpPost]
         public async Task<IActionResult> CreateClientProfile([FromBody] ClientProfile clientProfile)
         {
             try
             {
-                if (clientProfile == null || !clientProfile.IsValid())
+                if (clientProfile == null)
                 {
-                    return BadRequest("Invalid client profile data.");
+                    return BadRequest("Client profile is required.");
                 }
+
+                string validationMessage;
+                if (!clientProfile.IsValid(out validationMessage))
+                {
+                    return BadRequest(validationMessage);
+                }
+
 
                 var isCreated = await _clientService.CreateClientProfileAsync(clientProfile);
 
@@ -85,15 +92,24 @@ namespace HelloWorld.Controllers
             }
         }
 
+
+
+
+
         // PUT: api/clientprofile/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClientProfile(int id, [FromBody] ClientProfile clientProfile)
         {
             try
             {
-                if (clientProfile == null || id != clientProfile.Id || !clientProfile.IsValid())
+                if (clientProfile == null || id != clientProfile.Id)
                 {
-                    return BadRequest("Invalid client profile data.");
+                    return BadRequest("Invalid client profile payload or ID mismatch.");
+                }
+
+                if (!clientProfile.IsValid(out string validationMessage))
+                {
+                    return BadRequest(validationMessage);
                 }
 
                 var isUpdated = await _clientService.UpdateClientProfileAsync(id, clientProfile);
