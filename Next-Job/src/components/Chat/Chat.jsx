@@ -14,11 +14,30 @@ const Chat = () => {
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [ws, setWs] = useState(null);
-
+  const [userData,setUserData] = useState({});
   const scrollRef = useRef(null);
   const curUser = { name: "You" }; 
-
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
+   /* const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5123/api/User")
+        console.log("Raw response:", response);
+    
+        if (!response.ok) {
+          const errorText = await response.text(); // Get full error message
+          throw new Error(`Status: ${response.status} | Body: ${errorText}`);
+        }
+    
+        const data = await response.json();
+        console.log("Fetched data:", data.map((e) => console.log(e.fullName)));
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error.message || error);
+      }
+    };
+    
+    fetchData(); */
     if (selectedUserId) {
       const socket = new WebSocket(`ws://localhost:5123/ws?name=${curUser.name}`);
 
@@ -49,6 +68,8 @@ const Chat = () => {
         socket.close();
       };
     }
+
+   
   }, [selectedUserId]);
 
   const onChangeHandler = (e) => {
@@ -83,8 +104,7 @@ const Chat = () => {
       });
     } catch (err) {
       console.error("Error saving message:", err);
-    }
-  
+    }  
     setMessage("");
   };
   
