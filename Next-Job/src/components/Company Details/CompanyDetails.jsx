@@ -18,7 +18,7 @@ function CompanyDetails() {
       <form className="space-y-6">
         <div className='flex flex-col gap-2 '>
         <label htmlFor="">Company name</label>
-        <input type="text" placeholder="Company name" className="w-full p-3 border rounded-xl" defaultValue="Tom Wilson" />
+        <input type="text" placeholder="Company name" className="w-full p-3 border rounded-xl"  />
         </div>
 
         <div className="flex flex-row flex-wrap gap-3">
