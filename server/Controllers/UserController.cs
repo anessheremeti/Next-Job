@@ -27,7 +27,17 @@ namespace HelloWorld.Controllers
                 if (users == null || !users.Any())
                     return NotFound("No users found.");
 
-                return Ok(users);
+                var userDtos = users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    CompanyName = u.CompanyName,
+                    Email = u.Email,
+                    UserTypeId = u.UserTypeId,
+                    CreatedAt = u.CreatedAt
+                });
+
+                return Ok(userDtos);
             }
             catch (Exception ex)
             {
@@ -35,6 +45,7 @@ namespace HelloWorld.Controllers
             }
         }
 
+    
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
@@ -44,7 +55,17 @@ namespace HelloWorld.Controllers
                 if (user == null)
                     return NotFound($"User with ID {id} not found.");
 
-                return Ok(user);
+                var userDto = new UserDto
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    CompanyName = user.CompanyName,
+                    Email = user.Email,
+                    UserTypeId = user.UserTypeId,
+                    CreatedAt = user.CreatedAt
+                };
+
+                return Ok(userDto);
             }
             catch (Exception ex)
             {
