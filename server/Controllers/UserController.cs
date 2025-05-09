@@ -68,10 +68,14 @@ namespace HelloWorld.Controllers
                     Email = request.Email
                 };
 
+                user.SetPassword(request.Password); 
+
                 if (!user.IsValid(out var validationMessage))
                     return BadRequest(validationMessage);
 
                 bool isCreated = await _userService.CreateUserAsync(user, request.Password);
+
+
                 if (!isCreated)
                     return StatusCode(500, "Failed to create user.");
 
@@ -91,6 +95,11 @@ namespace HelloWorld.Controllers
                 if (user == null || id != user.Id)
                     return BadRequest("Invalid user data.");
 
+                if (!string.IsNullOrWhiteSpace(user.PasswordHash) && !user.PasswordHash.StartsWith("$2b$"))
+                {
+                    user.SetPassword(user.PasswordHash); 
+                }
+
                 if (!user.IsValid(out var validationMessage))
                     return BadRequest(validationMessage);
 
@@ -105,6 +114,7 @@ namespace HelloWorld.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
