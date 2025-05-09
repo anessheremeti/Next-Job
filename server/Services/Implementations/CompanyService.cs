@@ -18,8 +18,24 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Company";
-                return await _dataDapper.LoadDataAsync<Company>(sql);
+                var sql = @"
+                SELECT 
+                    c.id, c.owner_id AS OwnerId, c.name, c.description, c.website, c.created_at AS CreatedAt,
+                    u.id, u.full_name, u.email
+                FROM Company c
+                LEFT JOIN [Users] u ON c.owner_id = u.id
+            ";
+
+
+                return await _dataDapper.LoadDataWithJoinAsync<Company, User>(
+                    sql,
+                    (company, owner) =>
+                    {
+                        company.Owner = owner;
+                        return company;
+                    },
+                    splitOn: "OwnerId"
+                );
             }
             catch (Exception ex)
             {
@@ -31,14 +47,38 @@ namespace HelloWorld.Services
         {
             try
             {
-                var sql = "SELECT * FROM Company WHERE id = @Id";
-                return await _dataDapper.LoadDataSingleAsync<Company>(sql, new { Id = id });
+                var sql = @"
+                    SELECT 
+                        c.id, c.owner_id AS OwnerId, c.name, c.description, c.website, c.created_at AS CreatedAt,
+                        u.id,
+                        u.user_type_id AS UserTypeId,
+                        u.full_name AS FullName,
+                        u.company_name AS CompanyName,
+                        u.email,
+                        u.password_hash AS PasswordHash,
+                        u.created_at AS CreatedAt
+                    FROM Company c
+                    LEFT JOIN [Users] u ON c.owner_id = u.id
+                ";
+
+
+                return await _dataDapper.LoadDataSingleWithJoinAsync<Company, User>(
+                    sql,
+                    (company, owner) =>
+                    {
+                        company.Owner = owner;
+                        return company;
+                    },
+                    new { Id = id },
+                    splitOn: "OwnerId"
+                );
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error while retrieving company with ID {id}: {ex.Message}", ex);
             }
         }
+
 
         public async Task<bool> CreateCompanyAsync(Company company)
         {

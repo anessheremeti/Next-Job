@@ -96,6 +96,55 @@ namespace HelloWorld.Data
             }
         }
 
+
+        public async Task<IEnumerable<TFirst>> LoadDataWithJoinAsync<TFirst, TSecond>(
+    string sql,
+    Func<TFirst, TSecond, TFirst> map,
+    object? parameters = null,
+    string splitOn = "Id")
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                return await connection.QueryAsync<TFirst, TSecond, TFirst>(
+                    sql,
+                    map,
+                    parameters,
+                    splitOn: splitOn
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Gabim në LoadDataWithJoinAsync: {ex.Message}");
+                return Enumerable.Empty<TFirst>();
+            }
+        }
+        public async Task<TFirst?> LoadDataSingleWithJoinAsync<TFirst, TSecond>(
+            string sql,
+            Func<TFirst, TSecond, TFirst> map,
+            object? parameters = null,
+            string splitOn = "Id")
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                var result = await connection.QueryAsync<TFirst, TSecond, TFirst>(
+                    sql,
+                    map,
+                    parameters,
+                    splitOn: splitOn
+                );
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Gabim në LoadDataSingleWithJoinAsync: {ex.Message}");
+                return default;
+            }
+        }
+
+
         public async Task<bool> ExecuteSqlAsync(string sql, object parameters)
         {
             try
@@ -111,4 +160,5 @@ namespace HelloWorld.Data
             }
         }
     }
+
 }
