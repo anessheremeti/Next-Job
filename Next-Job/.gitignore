@@ -1,27 +1,46 @@
-# Logs
-logs
-*.log
+# --- .NET ---
+bin/
+obj/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.pdb
+*.cache
+*.dbmdl
+*.bak
+
+# Assembly info
+obj/**/*.AssemblyInfo.cs
+obj/**/AssemblyInfo.cs
+
+# --- Node.js / JS ---
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
+dist/
+dist-ssr/
 *.local
-# Ignore auto-generated AssemblyInfo
-obj/**/*.AssemblyInfo.cs
-obj/**/AssemblyInfo.cs
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# --- Logs ---
+logs
+*.log
+
+# --- System Files ---
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+Thumbs.db
+
+# --- Editor configs ---
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# --- OS swap/lock files ---
 *.sw?
+*.lock
+*.tmp

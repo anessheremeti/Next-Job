@@ -16,34 +16,59 @@ import FindWork from './components/FindWork/FindWork.jsx';
 import CompanyDashboard from './components/CompanyDashboard/CompanyDashboard.jsx';
 import Workpage from "./components/WorkPage/WorkPage.jsx";
 import MyJobs from './components/MyJobs/MyJobs.jsx';
+
+import DetailsSecond from './components/Details/DetailsSecond.jsx';
+import Details from './components/Details/Details.jsx';
+import AfterSignIn from './components/AfterSignIn/AfterSignIn.jsx';
+import SignUp from './components/SignUp-In/SignUp.jsx'
+import SignIn from './components/SignUp-In/SignIn.jsx';
+import Choose from './components/SignUp-In/Choose.jsx'
 import ClientStart from './components/Client - Start/ClientStart.jsx';
 import CompanyDetails from './components/Company Details/CompanyDetails.jsx';
 import WithDrawalDashboard from './components/WithDrawalDashboard/WithDrawalDashboard.jsx'
+
 import CompanyProfileWithEdits from './components/CompanyProfileWithEdits/CompanyProfileWithEdits.jsx';
 import CompanyProfile from './components/CompanyProfile/CompanyProfile.jsx';
 import ConfigureProfileUser from './components/ConfigureProfileUser/ConfigureProfileUser.jsx';
+
+import Chat from './components/Chat/Chat.jsx';
+import JobPostFromAdmin from './components/JobPostFromAdmin/JobPostFromAdmin.jsx';
+
 function App() {
 
   return (
     <>
       <Routes>
-        {/* Ensar */}
+  
+
+
         <Route index element={<LandingPage />} />
         <Route path="/portfolio-with-price" element={<PortfolioWithPrice />} />
         <Route path="/workpage" element={<Workpage />} />
         <Route path="/my-jobs" element={<MyJobs />} />
         <Route path="/client-start" element={<ClientStart />} />
         <Route path="/company-details" element={<CompanyDetails />} />
+
         <Route path="/CompanyProfileWithEdits" element={<CompanyProfileWithEdits />} />
         <Route path="/CompanyProfile" element={<CompanyProfile />} />
         <Route path="/ConfigureProfileUser" element={<ConfigureProfileUser />} />
+
+        <Route path="/chat" element={<Chat />} />
+
+
         
-        {/* Blend */}
+   
         <Route path="/find-job-companies" element={<FindJobCompanies />} />
         <Route path="/find-talent" element={<FindTalent />} />
         <Route path="/find-work" element={<FindWork />} />
-        
-        {/* Company/Administration */}
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/choose" element={<Choose />} />
+        <Route path="/aftersignin" element={<AfterSignIn/>}/>
+        <Route path="/details" element={<Details/>}/>
+        <Route path="/detailssecond" element={<DetailsSecond/>}/>
+        <Route path="/jobpostfromadmin" element={<JobPostFromAdmin/>}/>
+      
         <Route path="/company-dashboard" element={<CompanyDashboard />} />
         <Route path="/withdrawal" element={<Withdrawal />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
