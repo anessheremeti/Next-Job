@@ -50,6 +50,7 @@ export default function AddPortfolio() {
             <form className="flex flex-col mt-6 space-y-5" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-5">
                <div>
+               <label className="mb-2" htmlFor="">Project title</label>
                <input
                   type="text"
                   name="title"
@@ -63,7 +64,8 @@ export default function AddPortfolio() {
 
               <div className="flex flex-row flex-wrap gap-5">
                   <div className="flex flex-col gap-5 flex-grow">
-                  <div>
+                  <div >
+                    <label className="mb-2" htmlFor="">Your Role (Optional)</label>
                   <input
                     type="text"
                     name="role"
@@ -75,6 +77,7 @@ export default function AddPortfolio() {
                 </div>
 
                 <div>
+                  <label className="mb-2" htmlFor="">Project description</label>
                   <textarea
                     name="description"
                     placeholder="Briefly describe the project’s goals, your solution and the impact you made here"
@@ -89,6 +92,7 @@ export default function AddPortfolio() {
                 </div>
 
                 <div>
+                  <label className="mb-2" htmlFor="">Skills and deliverables</label>
                   <input
                     type="text"
                     name="skills"
